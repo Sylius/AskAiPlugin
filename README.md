@@ -140,7 +140,9 @@ needs `ANTHROPIC_API_KEY` in its environment.
 ### Step 6 - Give administrators API access
 
 The agent calls the Admin API as the administrator who is chatting, so that administrator
-needs `ROLE_API_ACCESS`. The panel then appears on every admin page.
+needs `ROLE_API_ACCESS`. The panel then appears on every admin page, for the administrators
+with that role only (`sylius_ai_assistant.access.role` names another role when the assistant
+should be narrower than the API, see Configuration).
 
 ## Demo in Docker
 
@@ -180,6 +182,8 @@ sylius_ai_assistant:
         read_only_prefixes: [list_, get_, search_, count_, open_]
         write_prefixes: [create_, update_, add_, remove_, set_, archive_, restore_, resend_, cancel_, ship_, complete_, accept_, reject_, generate_]
         exclude: []                 # single tools taken away by name, e.g. [update_channel]
+    access:
+        role: ROLE_API_ACCESS       # who sees and uses the panel; a role of your own must imply ROLE_API_ACCESS
     poll_interval: 2000             # ms, how often the panel polls during a turn
     navigation:
         pages: { ... }              # the admin pages the agent may open, see Navigation

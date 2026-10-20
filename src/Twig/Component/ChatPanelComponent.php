@@ -28,6 +28,7 @@ use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -68,6 +69,7 @@ final class ChatPanelComponent
         private readonly RequestStack $requestStack,
         private readonly ConversationTimelineInterface $timeline,
         int $pollInterval,
+        private readonly string $accessRole,
     ) {
         $this->pollInterval = $pollInterval;
     }
@@ -243,8 +245,16 @@ final class ChatPanelComponent
         return $action;
     }
 
+    /**
+     * The administrator the panel works for. Every action goes through here, so an administrator without
+     * the configured role (the hook template checks the same one) gets a denial, not a half-done turn.
+     */
     private function getAdminUser(): AdminUserInterface
     {
+        if (!$this->security->isGranted($this->accessRole)) {
+            throw new AccessDeniedException(sprintf('The AI assistant needs the "%s" role.', $this->accessRole));
+        }
+
         $user = $this->security->getUser();
         Assert::isInstanceOf($user, AdminUserInterface::class);
 

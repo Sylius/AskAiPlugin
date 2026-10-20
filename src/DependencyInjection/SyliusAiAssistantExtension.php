@@ -58,6 +58,8 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
         // extension loads, and the grids reference those parameters.
         $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
         $this->registerResources('sylius_ai_assistant', $config['driver'], $config['resources'], $container);
+        // The twig global of config.yaml reads it, and TwigBundle's configuration is merged before this extension loads.
+        $container->setParameter('sylius_ai_assistant.access.role', $config['access']['role']);
         (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config')))->load('grids.yaml');
 
         $this->prependDoctrineMappings($container);

@@ -77,6 +77,7 @@ return static function (ContainerConfigurator $container): void {
             service('request_stack'),
             service('sylius_ai_assistant.chat.timeline'),
             param('sylius_ai_assistant.poll_interval'),
+            param('sylius_ai_assistant.access.role'),
         ])
         ->call('setLiveResponder', [service('ux.live_component.live_responder')])
         ->tag('sylius.live_component.admin', [

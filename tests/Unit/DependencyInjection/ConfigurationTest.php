@@ -83,6 +83,12 @@ final class ConfigurationTest extends TestCase
         self::assertContains('update_', $config['tools']['write_prefixes'], 'Excluding a tool leaves the prefixes alone.');
     }
 
+    public function testThePanelIsForApiAccessByDefault(): void
+    {
+        self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);
+        self::assertSame('ROLE_AI_ASSISTANT', $this->process(['access' => ['role' => 'ROLE_AI_ASSISTANT']])['access']['role']);
+    }
+
     public function testTheNavigationPagesMergeAcrossConfigsAndSwitchOffWithFalse(): void
     {
         self::assertSame([], $this->process([])['navigation']['pages'], 'The defaults come from config/config.yaml, not from the tree.');
