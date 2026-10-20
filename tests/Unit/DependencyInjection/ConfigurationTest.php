@@ -24,6 +24,7 @@ use Sylius\AiAssistantPlugin\Entity\MessageInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Sylius\Resource\Factory\Factory;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
 final class ConfigurationTest extends TestCase
@@ -80,6 +81,34 @@ final class ConfigurationTest extends TestCase
         $config = $this->process(['tools' => ['exclude' => ['update_channel', 'remove_product']]]);
         self::assertSame(['update_channel', 'remove_product'], $config['tools']['exclude']);
         self::assertContains('update_', $config['tools']['write_prefixes'], 'Excluding a tool leaves the prefixes alone.');
+    }
+
+    public function testTheNavigationPagesMergeAcrossConfigsAndSwitchOffWithFalse(): void
+    {
+        self::assertSame([], $this->process([])['navigation']['pages'], 'The defaults come from config/config.yaml, not from the tree.');
+
+        $plugin = ['navigation' => ['pages' => [
+            'products' => ['repository' => 'sylius.repository.product', 'field' => 'code', 'edit' => 'sylius_admin_product_update'],
+            'orders' => ['repository' => 'sylius.repository.order', 'field' => 'tokenValue', 'edit' => 'sylius_admin_order_update', 'index' => 'sylius_admin_order_index', 'search' => 'number'],
+        ]]];
+        $application = ['navigation' => ['pages' => [
+            'orders' => false,
+            'tickets' => ['repository' => 'app.repository.ticket', 'field' => 'id', 'edit' => 'app_admin_ticket_update', 'parent' => ['param' => 'customerId', 'path' => 'customer.id']],
+        ]]];
+
+        $pages = (new Processor())->processConfiguration(new Configuration(), [$plugin, $application])['navigation']['pages'];
+
+        self::assertSame(['products', 'tickets'], array_keys($pages));
+        self::assertSame(['param' => 'customerId', 'path' => 'customer.id'], $pages['tickets']['parent']);
+        self::assertArrayNotHasKey('show', $pages['tickets'], 'Optional routes are absent, not null.');
+    }
+
+    public function testANavigationPageNeedsItsRepositoryFieldAndEditRoute(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessageMatches('/"edit".*must be configured/');
+
+        $this->process(['navigation' => ['pages' => ['tickets' => ['repository' => 'app.repository.ticket', 'field' => 'id']]]]);
     }
 
     /**
