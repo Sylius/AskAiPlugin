@@ -223,14 +223,15 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(AdminUrlResolverInterface::class, 'sylius_ai_assistant.navigation.admin_url_resolver');
 
-    $services->set(OpenAdminPage::class)
+    // The assistant's own tool, for the agent only (not served by the MCP server).
+    $services->set('sylius_ai_assistant.tool.open_admin_page', OpenAdminPage::class)
         ->args([
             service('sylius_ai_assistant.navigation.admin_url_resolver'),
             service('sylius_ai_assistant.agent.context'),
             service('sylius_ai_assistant.repository.conversation'),
             service('doctrine.orm.entity_manager'),
         ])
-        ->tag('mcp.tool')
+        ->tag(CollectToolsPass::TOOL_TAG)
     ;
 
     // --- Hooks into the Admin MCP plugin -------------------------------------------------

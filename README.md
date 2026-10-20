@@ -190,7 +190,7 @@ sylius_ai_assistant:
 ### The agent
 
 The agent is `ai.agent.sylius_ai_assistant`, defined by `symfony/ai-bundle` from
-configuration the plugin prepends; the plugin only swaps in its toolbox (the Admin MCP tools) and
+configuration the plugin prepends; the plugin only adds the Admin MCP tools to its toolbox and
 tags its processors for it. So the agent is configured where every Symfony AI agent is, and the
 application overrides any of it:
 
@@ -370,6 +370,32 @@ message. Reads always pass through, as does everything outside a chat turn (OAut
 Requirements: the administrator using the chat needs `ROLE_API_ACCESS` (the agent calls the
 Admin API as them). Which tools the agent gets: `sylius_ai_assistant.tools.read_only_prefixes`
 and `tools.write_prefixes`, minus the names listed in `tools.exclude`.
+
+### Your own tools
+
+A tool of your own is a Symfony AI tool (`#[AsTool]`, or a service with a name, a description
+and a method) that joins the Admin MCP tools in the agent's toolbox; it is not served by the
+MCP server, and the write gate does not apply to it (it is called in-process, not through the
+Admin API). Either tag it for this agent only:
+
+```php
+#[AsTool(name: 'count_open_tickets', description: 'count_open_tickets() → the number of open support tickets.')]
+final class CountOpenTickets
+{
+    public function __invoke(): int { /* ... */ }
+}
+```
+
+```yaml
+services:
+    App\Ai\Tool\CountOpenTickets:
+        tags: [sylius_ai_assistant.tool]
+```
+
+or list it under the agent in `ai.yaml`, as for any Symfony AI agent (`tools: [{ service: ... }]`,
+with `name`, `description` and `method` when the class has no `#[AsTool]`); the Admin MCP
+tools are added to that list. Tools tagged `ai.tool` for every agent of the application join as
+well. The plugin's own `open_admin_page` is registered this way.
 
 ## Navigation
 
