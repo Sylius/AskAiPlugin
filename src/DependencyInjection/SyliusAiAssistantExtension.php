@@ -17,10 +17,12 @@ use Sylius\AiAssistantPlugin\DependencyInjection\Compiler\CollectToolsPass;
 use Sylius\Bundle\CoreBundle\DependencyInjection\PrependDoctrineMigrationsTrait;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class SyliusAiAssistantExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
@@ -37,6 +39,16 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.php');
+
+        $pages = $config['navigation']['pages'];
+        $container->setParameter('sylius_ai_assistant.navigation.pages', $pages);
+        $container->getDefinition('sylius_ai_assistant.navigation.admin_url_resolver')
+            ->replaceArgument(0, $pages)
+            ->replaceArgument(1, ServiceLocatorTagPass::register($container, array_map(
+                static fn (string $id): Reference => new Reference($id),
+                array_combine(array_column($pages, 'repository'), array_column($pages, 'repository')),
+            )))
+        ;
     }
 
     public function prepend(ContainerBuilder $container): void

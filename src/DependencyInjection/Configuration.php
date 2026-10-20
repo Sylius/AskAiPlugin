@@ -67,9 +67,47 @@ final class Configuration implements ConfigurationInterface
             ->end()
         ;
 
+        $this->addNavigationSection($rootNode);
         $this->addResourcesSection($rootNode);
 
         return $treeBuilder;
+    }
+
+    /** The admin pages the agent may open; the defaults are in config/config.yaml. */
+    private function addNavigationSection(ArrayNodeDefinition $node): void
+    {
+        $node
+            ->children()
+                ->arrayNode('navigation')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('pages')
+                            ->info('The admin pages the agent may open, keyed by the Admin API collection segment (products, orders, …); one entry switches off with `false`.')
+                            ->useAttributeAsKey('resource')
+                            ->normalizeKeys(false)
+                            ->arrayPrototype()
+                                ->canBeUnset()
+                                ->children()
+                                    ->scalarNode('repository')->isRequired()->cannotBeEmpty()->info('Service id of the repository the identifier is looked up in.')->end()
+                                    ->scalarNode('field')->isRequired()->cannotBeEmpty()->info('The entity field the Admin API identifies the resource by (code, tokenValue, id).')->end()
+                                    ->scalarNode('show')->cannotBeEmpty()->info('Route of the show page; without it "show" opens the edit page.')->end()
+                                    ->scalarNode('edit')->isRequired()->cannotBeEmpty()->info('Route of the edit page.')->end()
+                                    ->scalarNode('index')->cannotBeEmpty()->info('Route of the list page; without it the resource has no list page.')->end()
+                                    ->scalarNode('search')->cannotBeEmpty()->info('The grid filter a search term goes to (criteria[<search>][value]); without it the term is ignored.')->end()
+                                    ->arrayNode('parent')
+                                        ->info('For a nested resource: the route parameter of the parent and the property path it is read from.')
+                                        ->children()
+                                            ->scalarNode('param')->isRequired()->cannotBeEmpty()->end()
+                                            ->scalarNode('path')->isRequired()->cannotBeEmpty()->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     private function addResourcesSection(ArrayNodeDefinition $node): void

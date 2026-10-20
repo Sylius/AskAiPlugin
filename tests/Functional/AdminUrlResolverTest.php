@@ -66,6 +66,17 @@ final class AdminUrlResolverTest extends KernelTestCase
         self::assertNull($this->resolver->resolve('products', 'NO_SUCH_CODE'));
     }
 
+    public function testTheApplicationAddsAPageAndSwitchesADefaultOneOff(): void
+    {
+        self::assertSame("/admin/products/{$this->productId}", $this->resolver->resolve('test-products', $this->productCode), 'A page added under sylius_ai_assistant.navigation.pages.');
+        self::assertNull($this->resolver->resolve('exchange-rates', null, AdminUrlResolver::PAGE_LIST), 'A default page switched off with false.');
+        self::assertSame("/admin/customer-groups/{$this->groupId}/edit", $this->resolver->resolve('customer-groups', $this->groupCode), 'The other defaults stay.');
+
+        $described = implode("\n", $this->resolver->describePages());
+        self::assertStringContainsString('test-products (identifier: code)', $described);
+        self::assertStringNotContainsString('exchange-rates', $described);
+    }
+
     public function testListPagesWithAndWithoutSearch(): void
     {
         self::assertSame('/admin/customer-groups/', $this->resolver->resolve('customer-groups', null, AdminUrlResolver::PAGE_LIST));

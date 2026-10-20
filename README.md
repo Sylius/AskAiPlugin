@@ -181,6 +181,8 @@ sylius_ai_assistant:
         write_prefixes: [create_, update_, add_, remove_, set_, archive_, restore_, resend_, cancel_, ship_, complete_, accept_, reject_, generate_]
         exclude: []                 # single tools taken away by name, e.g. [update_channel]
     poll_interval: 2000             # ms, how often the panel polls during a turn
+    navigation:
+        pages: { ... }              # the admin pages the agent may open, see Navigation
     resources:                      # Sylius resources: conversation, message, agent_action
         conversation:
             classes:
@@ -408,9 +410,25 @@ for see/show/open/edit requests and to answer with one confirming sentence, and 
 pages it can open; data goes to the chat only for questions. After an approved action is
 executed, the panel goes to the page of what was created (show page) or changed (edit page)
 on its own, from the `@id` of the API response; nothing happens when the administrator is
-already there. `AdminUrlResolver` holds the whitelist of resources → admin routes and grid
-filters (`config/services.php`); the panel performs the navigation on its next poll and keeps
-itself open across the page load (cookie).
+already there. The pages the agent may open are `sylius_ai_assistant.navigation.pages`, a
+whitelist keyed by the Admin API collection segment (the defaults are in the plugin's
+`config/config.yaml`); the panel performs the navigation on its next poll and keeps itself
+open across the page load (cookie). Add a resource of your own, or switch a default one off:
+
+```yaml
+sylius_ai_assistant:
+    navigation:
+        pages:
+            tickets:                                  # /api/v2/admin/tickets/{id}
+                repository: app.repository.ticket     # where the identifier is looked up
+                field: id                             # the field the Admin API identifies it by
+                show: app_admin_ticket_show           # optional, "show" falls back to edit
+                edit: app_admin_ticket_update
+                index: app_admin_ticket_index         # optional, no list page without it
+                search: search                        # optional, the grid filter a search term goes to
+                # parent: { param: customerId, path: customer.id }   for a nested resource
+            exchange-rates: false
+```
 
 ## Development
 

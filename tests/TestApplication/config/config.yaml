@@ -2,6 +2,13 @@ imports:
     - { resource: "@SyliusAdminMcpServerPlugin/config/config.yaml" }
     - { resource: "@SyliusAiAssistantPlugin/config/config.yaml" }
 
+# The application adds a page of its own to the agent's navigation and switches a default one off.
+sylius_ai_assistant:
+    navigation:
+        pages:
+            test-products: { repository: sylius.repository.product, field: code, show: sylius_admin_product_show, edit: sylius_admin_product_update, index: sylius_admin_product_index, search: search }
+            exchange-rates: false
+
 twig:
     paths:
         '%kernel.project_dir%/../../../tests/TestApplication/templates': ~

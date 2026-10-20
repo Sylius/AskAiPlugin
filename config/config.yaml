@@ -4,6 +4,37 @@ imports:
 parameters:
     env(SYLIUS_AI_ASSISTANT_TRANSPORT_DSN): 'doctrine://default?queue_name=sylius_ai_assistant'
 
+sylius_ai_assistant:
+    navigation:
+        # The admin pages the agent may open, keyed by the Admin API collection segment: the resource's
+        # show (or edit) page and its list page, with the grid filter a search term goes to. Add a
+        # resource of your own under the same key in your application, or switch one off with `false`.
+        pages:
+            products: { repository: sylius.repository.product, field: code, show: sylius_admin_product_show, edit: sylius_admin_product_update, index: sylius_admin_product_index, search: search }
+            product-variants: { repository: sylius.repository.product_variant, field: code, edit: sylius_admin_product_variant_update, parent: { param: productId, path: product.id } }
+            orders: { repository: sylius.repository.order, field: tokenValue, show: sylius_admin_order_show, edit: sylius_admin_order_update, index: sylius_admin_order_index, search: number }
+            customers: { repository: sylius.repository.customer, field: id, show: sylius_admin_customer_show, edit: sylius_admin_customer_update, index: sylius_admin_customer_index, search: search }
+            customer-groups: { repository: sylius.repository.customer_group, field: code, edit: sylius_admin_customer_group_update, index: sylius_admin_customer_group_index, search: search }
+            promotions: { repository: sylius.repository.promotion, field: code, edit: sylius_admin_promotion_update, index: sylius_admin_promotion_index, search: search }
+            promotion-coupons: { repository: sylius.repository.promotion_coupon, field: code, edit: sylius_admin_promotion_coupon_update, parent: { param: promotionId, path: promotion.id } }
+            catalog-promotions: { repository: sylius.repository.catalog_promotion, field: code, show: sylius_admin_catalog_promotion_show, edit: sylius_admin_catalog_promotion_update, index: sylius_admin_catalog_promotion_index, search: search }
+            taxons: { repository: sylius.repository.taxon, field: code, edit: sylius_admin_taxon_update, index: sylius_admin_taxon_index }
+            channels: { repository: sylius.repository.channel, field: code, edit: sylius_admin_channel_update, index: sylius_admin_channel_index, search: search }
+            shipping-methods: { repository: sylius.repository.shipping_method, field: code, edit: sylius_admin_shipping_method_update, index: sylius_admin_shipping_method_index, search: search }
+            payment-methods: { repository: sylius.repository.payment_method, field: code, edit: sylius_admin_payment_method_update, index: sylius_admin_payment_method_index, search: search }
+            zones: { repository: sylius.repository.zone, field: code, edit: sylius_admin_zone_update, index: sylius_admin_zone_index, search: name }
+            tax-categories: { repository: sylius.repository.tax_category, field: code, edit: sylius_admin_tax_category_update, index: sylius_admin_tax_category_index, search: search }
+            tax-rates: { repository: sylius.repository.tax_rate, field: code, edit: sylius_admin_tax_rate_update, index: sylius_admin_tax_rate_index }
+            countries: { repository: sylius.repository.country, field: code, edit: sylius_admin_country_update, index: sylius_admin_country_index }
+            currencies: { repository: sylius.repository.currency, field: code, edit: sylius_admin_currency_update, index: sylius_admin_currency_index }
+            locales: { repository: sylius.repository.locale, field: code, edit: sylius_admin_locale_update, index: sylius_admin_locale_index }
+            product-options: { repository: sylius.repository.product_option, field: code, edit: sylius_admin_product_option_update, index: sylius_admin_product_option_index, search: search }
+            product-attributes: { repository: sylius.repository.product_attribute, field: code, edit: sylius_admin_product_attribute_update, index: sylius_admin_product_attribute_index, search: search }
+            product-association-types: { repository: sylius.repository.product_association_type, field: code, edit: sylius_admin_product_association_type_update, index: sylius_admin_product_association_type_index }
+            product-reviews: { repository: sylius.repository.product_review, field: id, edit: sylius_admin_product_review_update, index: sylius_admin_product_review_index, search: title }
+            exchange-rates: { repository: sylius.repository.exchange_rate, field: id, edit: sylius_admin_exchange_rate_update, index: sylius_admin_exchange_rate_index }
+            administrators: { repository: sylius.repository.admin_user, field: id, edit: sylius_admin_admin_user_update, index: sylius_admin_admin_user_index, search: search }
+
 framework:
     messenger:
         buses:
