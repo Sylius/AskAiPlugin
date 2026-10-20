@@ -28,6 +28,9 @@ held as a proposed action with Approve/Reject in the panel.
 - Sylius 2.3+, PHP 8.2+, Symfony 7.4+.
 - [`sylius/admin-mcp-server-plugin`](https://github.com/Sylius/AdminMcpServerPlugin) installed and
   configured: the assistant works the store through its tools and the Admin API it talks to.
+- A working Admin API: the agent calls it as the administrator who is chatting, so the Lexik JWT
+  keypair must exist (`php bin/console lexik:jwt:generate-keypair`; a fresh Sylius-Standard
+  does not ship one) and that administrator needs `ROLE_API_ACCESS` (Step 6).
 - A Messenger worker: turns run asynchronously, never in the web request.
 - A model: an Anthropic API key (the default, `ai.platform.anthropic`) or any other Symfony AI
   platform (OpenAI, Gemini, Ollama, …). For development without paying for tokens, see
@@ -47,9 +50,27 @@ The Admin MCP plugin comes with it as a dependency. If it was not installed befo
 its own installation steps too (OAuth keys, `SYLIUS_ADMIN_MCP_SERVER_*` variables, bundle
 registration, configuration and routes import).
 
+With Symfony Flex active (the default in Sylius-Standard) two things happen during this command:
+
+- The `league/oauth2-server-bundle` recipe is applied and creates
+  `config/packages/league_oauth2_server.yaml` and `config/routes/league_oauth2_server.yaml`, which
+  conflict with the configuration the Admin MCP plugin ships. Replace both with empty stubs, as its
+  README says:
+
+  ```bash
+  echo "# Managed by sylius/admin-mcp-server-plugin" > config/packages/league_oauth2_server.yaml
+  echo "# Routes provided by sylius/admin-mcp-server-plugin" > config/routes/league_oauth2_server.yaml
+  ```
+
+- Flex registers the plugin's bundle in `config/bundles.php` but, as there is no recipe, does not
+  import its configuration, so the `cache:clear` that runs at the end of `composer require` fails
+  with `bus "sylius_ai_assistant.command_bus" ... does not exist`. This is expected: the error goes
+  away after Step 3.
+
 ### Step 2 - Register the bundle
 
-Add the plugin after the Admin MCP plugin in `config/bundles.php`:
+Skip this step when Flex has already added the plugin to `config/bundles.php`. Otherwise add it
+after the Admin MCP plugin:
 
 ```php
 return [
@@ -82,8 +103,11 @@ entrypoint and rebuild the admin assets:
 
 ```js
 // assets/admin/entrypoint.js
-import '../../vendor/sylius/ai-assistant-plugin/assets/admin/entrypoint.js';
+import '@vendor/sylius/ai-assistant-plugin/assets/admin/entrypoint';
 ```
+
+(`@vendor` is the alias Sylius-Standard's Webpack configuration defines; a relative
+`../../vendor/sylius/ai-assistant-plugin/assets/admin/entrypoint.js` works too.)
 
 ```bash
 yarn encore prod
