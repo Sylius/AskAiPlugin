@@ -7,9 +7,9 @@
     <div class="card-body ai-assistant__messages" data-test-timeline>
         {% for item in sylius_ai_assistant_timeline(conversation) %}
             {% if item.role is defined %}
-                {{ include('@SyliusAiAssistant/component/message.html.twig', { message: item }) }}
+                {{ include('@SyliusAiAssistantPlugin/component/message.html.twig', { message: item }) }}
             {% else %}
-                {{ include('@SyliusAiAssistant/component/action_card.html.twig', { action: item, interactive: false, link: true }) }}
+                {{ include('@SyliusAiAssistantPlugin/component/action_card.html.twig', { action: item, interactive: false, link: true }) }}
             {% endif %}
         {% else %}
             <p class="text-secondary m-0">{{ 'sylius.ui.no_results'|trans }}</p>

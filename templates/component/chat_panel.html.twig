@@ -20,9 +20,9 @@
                 {% else %}
                     {% for item in this.timeline %}
                         {% if item.role is defined %}
-                            {{ include('@SyliusAiAssistant/component/message.html.twig', { message: item }) }}
+                            {{ include('@SyliusAiAssistantPlugin/component/message.html.twig', { message: item }) }}
                         {% else %}
-                            {{ include('@SyliusAiAssistant/component/action_card.html.twig', { action: item }) }}
+                            {{ include('@SyliusAiAssistantPlugin/component/action_card.html.twig', { action: item }) }}
                         {% endif %}
                     {% else %}
                         <p class="text-secondary m-0">{{ 'sylius_ai_assistant.ui.what_would_you_like_to_do'|trans }}</p>
