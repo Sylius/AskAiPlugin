@@ -19,6 +19,7 @@ use Sylius\AiAssistantPlugin\Agent\AgentActionExecutorInterface;
 use Sylius\AiAssistantPlugin\Agent\ChatTurnContext;
 use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
 use Sylius\AiAssistantPlugin\Agent\Platform\PlatformCallLogger;
+use Sylius\AiAssistantPlugin\Agent\StoreInstructionsInputProcessor;
 use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallListener;
 use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallTrace;
 use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallTraceInterface;
@@ -117,6 +118,10 @@ return static function (ContainerConfigurator $container): void {
     $services->alias('sylius_ai_assistant.agent', CollectToolsPass::AGENT_SERVICE);
     $services->set('sylius_ai_assistant.agent.input_processor.admin_pages', AdminPagesInputProcessor::class)
         ->args([service('sylius_ai_assistant.navigation.admin_url_resolver')])
+        ->tag('ai.agent.input_processor', ['agent' => CollectToolsPass::AGENT_SERVICE])
+    ;
+    $services->set('sylius_ai_assistant.agent.input_processor.store_instructions', StoreInstructionsInputProcessor::class)
+        ->args([param('sylius_ai_assistant.prompt.additional_instructions')])
         ->tag('ai.agent.input_processor', ['agent' => CollectToolsPass::AGENT_SERVICE])
     ;
 
