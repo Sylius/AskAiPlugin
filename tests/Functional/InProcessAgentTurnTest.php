@@ -74,6 +74,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         self::assertContains('update_product', $exposedTools);
         self::assertContains('list_products', $exposedTools);
         self::assertNotContains('delete_product', $exposedTools, 'Destructive tools are never exposed.');
+        self::assertContains('open_admin_page', $exposedTools, "The assistant's own tool joins the Admin MCP tools.");
         self::assertSame('I proposed renaming the product; approve action #1 in the panel.', $reply->asText());
 
         /** @var list<AgentAction> $actions */

@@ -16,23 +16,23 @@ namespace Tests\Sylius\AiAssistantPlugin\Unit\DependencyInjection\Compiler;
 use Mcp\Capability\Attribute\McpTool;
 use PHPUnit\Framework\TestCase;
 use Sylius\AiAssistantPlugin\DependencyInjection\Compiler\CollectToolsPass;
+use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class CollectToolsPassTest extends TestCase
 {
-    public function testTheToolboxGetsTheToolsMatchingThePrefixesExceptTheExcludedOnes(): void
+    public function testTheToolboxGetsTheAdminMcpToolsMatchingThePrefixesExceptTheExcludedOnes(): void
     {
-        $container = $this->container(
-            readOnlyPrefixes: ['list_'],
-            writePrefixes: ['update_'],
-            exclude: ['update_channel'],
-        );
+        $container = $this->container(readOnlyPrefixes: ['list_'], writePrefixes: ['update_'], exclude: ['update_channel']);
 
         (new CollectToolsPass())->process($container);
 
-        self::assertSame(['list_channels', 'update_product'], $this->exposedTools($container));
+        self::assertSame(['list_channels', 'update_product'], $this->registeredAdminMcpTools($container));
+        self::assertSame([ListChannelsTool::class, UpdateProductTool::class], $this->toolbox($container));
     }
 
     public function testNothingIsExcludedByDefault(): void
@@ -41,7 +41,50 @@ final class CollectToolsPassTest extends TestCase
 
         (new CollectToolsPass())->process($container);
 
-        self::assertSame(['list_channels', 'update_channel', 'update_product'], $this->exposedTools($container));
+        self::assertSame(['list_channels', 'update_channel', 'update_product'], $this->registeredAdminMcpTools($container));
+    }
+
+    public function testTheAssistantsOwnToolsJoinWithoutBeingAdminMcpTools(): void
+    {
+        $container = $this->container(readOnlyPrefixes: ['list_'], writePrefixes: [], exclude: []);
+        $container->setDefinition('app.tool.own', (new Definition(OwnTool::class))->addTag(CollectToolsPass::TOOL_TAG));
+
+        (new CollectToolsPass())->process($container);
+
+        self::assertSame(['app.tool.own', ListChannelsTool::class], $this->toolbox($container));
+        self::assertSame(['list_channels'], $this->registeredAdminMcpTools($container), 'An own tool is described by its #[AsTool], not by the memory factory.');
+    }
+
+    public function testTheToolsTheBundleTaggedForEveryAgentAreKept(): void
+    {
+        $container = $this->container(readOnlyPrefixes: ['list_'], writePrefixes: [], exclude: []);
+        $container->setDefinition('app.tool.global', (new Definition(OwnTool::class))->addTag('ai.tool'));
+
+        (new CollectToolsPass())->process($container);
+
+        self::assertSame(['app.tool.global', ListChannelsTool::class], $this->toolbox($container));
+    }
+
+    public function testTheExplicitListFromAiYamlIsKept(): void
+    {
+        $container = $this->container(readOnlyPrefixes: ['list_'], writePrefixes: [], exclude: []);
+        $container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE)->replaceArgument(0, [new Reference('app.tool.listed')]);
+        $container->setDefinition('app.tool.listed', new Definition(OwnTool::class));
+
+        (new CollectToolsPass())->process($container);
+
+        self::assertSame(['app.tool.listed', ListChannelsTool::class], $this->toolbox($container));
+    }
+
+    public function testATaggedToolListedInAiYamlTooIsAddedOnce(): void
+    {
+        $container = $this->container(readOnlyPrefixes: [], writePrefixes: [], exclude: []);
+        $container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE)->replaceArgument(0, [new Reference('app.tool.own')]);
+        $container->setDefinition('app.tool.own', (new Definition(OwnTool::class))->addTag(CollectToolsPass::TOOL_TAG));
+
+        (new CollectToolsPass())->process($container);
+
+        self::assertSame(['app.tool.own'], $this->toolbox($container));
     }
 
     /**
@@ -56,7 +99,10 @@ final class CollectToolsPassTest extends TestCase
         $container->setParameter('sylius_ai_assistant.tools.write_prefixes', $writePrefixes);
         $container->setParameter('sylius_ai_assistant.tools.exclude', $exclude);
 
-        $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE, (new Definition(\stdClass::class))->setArguments([[]]));
+        // As symfony/ai-bundle defines them: the toolbox is a child of the abstract one, which holds every
+        // "ai.tool" tagged service; the child's own argument is the explicit list from ai.yaml, when there is one.
+        $container->setDefinition('ai.toolbox.abstract', (new Definition(\stdClass::class))->setAbstract(true)->setArguments([new TaggedIteratorArgument('ai.tool')]));
+        $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE, new ChildDefinition('ai.toolbox.abstract'));
         $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE . '.memory_factory', new Definition(\stdClass::class));
 
         foreach ([ListChannelsTool::class, UpdateChannelTool::class, UpdateProductTool::class, DeleteProductTool::class] as $class) {
@@ -66,8 +112,8 @@ final class CollectToolsPassTest extends TestCase
         return $container;
     }
 
-    /** @return list<string> */
-    private function exposedTools(ContainerBuilder $container): array
+    /** @return list<string> the tool names registered with the memory factory */
+    private function registeredAdminMcpTools(ContainerBuilder $container): array
     {
         $names = [];
         foreach ($container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE . '.memory_factory')->getMethodCalls() as [$method, $arguments]) {
@@ -75,11 +121,18 @@ final class CollectToolsPassTest extends TestCase
             $names[] = $arguments[1];
         }
 
-        $toolbox = $container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE)->getArgument(0);
-        self::assertContainsOnlyInstancesOf(Reference::class, $toolbox);
-        self::assertCount(\count($names), $toolbox, 'The toolbox holds exactly the registered tools.');
-
         return $names;
+    }
+
+    /** @return list<string> the service ids in the toolbox */
+    private function toolbox(ContainerBuilder $container): array
+    {
+        $tools = $container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE)->getArgument(0);
+        self::assertSame([], $container->getDefinition('ai.toolbox.abstract')->getArguments()[0] instanceof TaggedIteratorArgument ? [] : ['parent changed'], 'The abstract toolbox is left alone.');
+        self::assertIsArray($tools);
+        self::assertContainsOnlyInstancesOf(Reference::class, $tools);
+
+        return array_map(static fn (Reference $tool): string => (string) $tool, $tools);
     }
 }
 
@@ -112,5 +165,14 @@ final class DeleteProductTool
 {
     public function __invoke(): void
     {
+    }
+}
+
+#[AsTool(name: 'own_tool', description: 'An own tool')]
+final class OwnTool
+{
+    public function __invoke(): string
+    {
+        return '';
     }
 }
