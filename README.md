@@ -350,6 +350,12 @@ service has an id (`sylius_ai_assistant.*`) and an interface aliased to it, so a
 decorated or swapped by id. A turn that fails for any reason leaves the conversation in the
 `failed` state with a notice in the panel; a turn that never comes back can be cancelled there.
 
+Templates live under the bundle's `@SyliusAiAssistantPlugin` namespace, so the application
+overrides any of them the Symfony way: copy the file to
+`templates/bundles/SyliusAiAssistantPlugin/<same path>` (for example
+`templates/bundles/SyliusAiAssistantPlugin/component/action_card.html.twig` for the proposed
+action card, `component/chat_panel.html.twig` for the panel itself).
+
 ## The write gate
 
 `ProposingApiClient` decorates the Admin MCP API client. Inside a chat turn, `POST/PUT/PATCH/

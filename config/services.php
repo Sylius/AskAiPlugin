@@ -81,7 +81,7 @@ return static function (ContainerConfigurator $container): void {
         ->call('setLiveResponder', [service('ux.live_component.live_responder')])
         ->tag('sylius.live_component.admin', [
             'key' => 'sylius_ai_assistant:panel',
-            'template' => '@SyliusAiAssistant/component/chat_panel.html.twig',
+            'template' => '@SyliusAiAssistantPlugin/component/chat_panel.html.twig',
         ])
     ;
 

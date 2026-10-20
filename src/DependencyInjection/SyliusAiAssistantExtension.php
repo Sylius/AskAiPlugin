@@ -50,10 +50,6 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
         $this->prependDoctrineMappings($container);
         $this->prependDoctrineMigrations($container);
 
-        $container->prependExtensionConfig('twig', [
-            'paths' => [__DIR__ . '/../../templates' => 'SyliusAiAssistant'],
-        ]);
-
         $container->prependExtensionConfig('framework', [
             'translator' => [
                 'paths' => [__DIR__ . '/../../translations'],

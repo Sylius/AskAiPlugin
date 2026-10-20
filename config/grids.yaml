@@ -19,7 +19,7 @@ sylius_grid:
                     label: sylius_ai_assistant.ui.topic
                     path: .
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/conversation_topic.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/conversation_topic.html.twig'
                 adminUser:
                     type: string
                     label: sylius_ai_assistant.ui.administrator
@@ -29,7 +29,7 @@ sylius_grid:
                     type: twig
                     label: sylius_ai_assistant.ui.messages
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/count.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/count.html.twig'
                         vars:
                             th_class: 'w-1 text-center'
                 state:
@@ -37,7 +37,7 @@ sylius_grid:
                     label: sylius.ui.state
                     sortable: ~
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/state.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/state.html.twig'
                 createdAt:
                     type: twig
                     label: sylius.ui.creation_date
@@ -98,24 +98,24 @@ sylius_grid:
                     type: twig
                     label: sylius_ai_assistant.ui.conversation
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/conversation_link.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/conversation_link.html.twig'
                 tool:
                     type: twig
                     label: sylius_ai_assistant.ui.tool
                     path: .
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/agent_action_tool.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/agent_action_tool.html.twig'
                 state:
                     type: twig
                     label: sylius.ui.state
                     sortable: ~
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/state.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/state.html.twig'
                 decidedBy:
                     type: twig
                     label: sylius_ai_assistant.ui.decided_by_user
                     options:
-                        template: '@SyliusAiAssistant/admin/grid/field/admin_user.html.twig'
+                        template: '@SyliusAiAssistantPlugin/admin/grid/field/admin_user.html.twig'
                 decidedAt:
                     type: twig
                     label: sylius_ai_assistant.ui.decided_at
