@@ -179,6 +179,7 @@ sylius_ai_assistant:
     tools:                          # which Admin MCP tools the agent gets, by name prefix
         read_only_prefixes: [list_, get_, search_, count_, open_]
         write_prefixes: [create_, update_, add_, remove_, set_, archive_, restore_, resend_, cancel_, ship_, complete_, accept_, reject_, generate_]
+        exclude: []                 # single tools taken away by name, e.g. [update_channel]
     poll_interval: 2000             # ms, how often the panel polls during a turn
     resources:                      # Sylius resources: conversation, message, agent_action
         conversation:
@@ -368,7 +369,7 @@ message. Reads always pass through, as does everything outside a chat turn (OAut
 
 Requirements: the administrator using the chat needs `ROLE_API_ACCESS` (the agent calls the
 Admin API as them). Which tools the agent gets: `sylius_ai_assistant.tools.read_only_prefixes`
-and `tools.write_prefixes`.
+and `tools.write_prefixes`, minus the names listed in `tools.exclude`.
 
 ## Navigation
 
