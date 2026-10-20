@@ -83,6 +83,12 @@ final class ConfigurationTest extends TestCase
         self::assertContains('update_', $config['tools']['write_prefixes'], 'Excluding a tool leaves the prefixes alone.');
     }
 
+    public function testTheStoreAddsInstructionsToThePrompt(): void
+    {
+        self::assertNull($this->process([])['prompt']['additional_instructions']);
+        self::assertSame("Answer in Polish.\n", $this->process(['prompt' => ['additional_instructions' => "Answer in Polish.\n"]])['prompt']['additional_instructions']);
+    }
+
     public function testThePanelIsForApiAccessByDefault(): void
     {
         self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);

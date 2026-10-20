@@ -184,6 +184,8 @@ sylius_ai_assistant:
         exclude: []                 # single tools taken away by name, e.g. [update_channel]
     access:
         role: ROLE_API_ACCESS       # who sees and uses the panel; a role of your own must imply ROLE_API_ACCESS
+    prompt:
+        additional_instructions: ~  # rules of the store appended to the system prompt, see The agent
     poll_interval: 2000             # ms, how often the panel polls during a turn
     navigation:
         pages: { ... }              # the admin pages the agent may open, see Navigation
@@ -215,12 +217,24 @@ ai:
 ```
 
 The system prompt is [`config/prompts/system_prompt.txt`](config/prompts/system_prompt.txt), a
-Symfony AI string template: `{pages}` is rendered with the admin pages the agent may open
-(`AdminPagesInputProcessor` sets the `pages` template variable). To change the prompt, copy the
-file into your application, edit the copy and point `prompt.file` at it; the rules about
-`open_admin_page` and `awaiting_approval` are what the chat panel relies on, keep them unless you
-change the panel too. The other `prompt` options of the bundle (`include_tools`, translation)
-work as documented in the [AI bundle](https://symfony.com/doc/current/ai/bundles/ai-bundle.html).
+Symfony AI string template: `{pages}` is rendered with the admin pages the agent may open and
+`{store_instructions}` with what the store adds (`AdminPagesInputProcessor` and
+`StoreInstructionsInputProcessor` set the template variables). A few rules of your own go in
+without touching the file:
+
+```yaml
+sylius_ai_assistant:
+    prompt:
+        additional_instructions: |
+            Always answer in Polish.
+            Our SKUs look like FW-1234; a "collection" is a taxon under /collections.
+```
+
+To rewrite the prompt, copy the file into your application, edit the copy and point
+`prompt.file` at it; the rules about `open_admin_page` and `awaiting_approval` are what the chat
+panel relies on, keep them unless you change the panel too. The other `prompt` options of the
+bundle (`include_tools`, translation) work as documented in the
+[AI bundle](https://symfony.com/doc/current/ai/bundles/ai-bundle.html).
 
 ## The admin log
 

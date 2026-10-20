@@ -55,9 +55,11 @@ final class InProcessAgentTurnTest extends KernelTestCase
 
         /** @var ScriptedPlatform $platform */
         $platform = self::getContainer()->get('sylius_ai_assistant_test.platform');
-        $platform->setScript(static function (Model $model, array|string|object $input, array $options) use (&$calls, &$exposedTools): ResultInterface {
+        $templateVars = [];
+        $platform->setScript(static function (Model $model, array|string|object $input, array $options) use (&$calls, &$exposedTools, &$templateVars): ResultInterface {
             ++$calls;
             $exposedTools = array_map(static fn (Tool $tool): string => $tool->getName(), array_filter($options['tools'] ?? [], static fn (mixed $t): bool => $t instanceof Tool));
+            $templateVars = $options['template_vars'] ?? [];
 
             if (1 === $calls) {
                 return new ToolCallResult([new ToolCall('call_1', 'update_product', ['code' => 'Ethereal_Drift_T_Shirt', 'body' => '{"name":"Renamed by the agent"}'])]);
@@ -75,6 +77,8 @@ final class InProcessAgentTurnTest extends KernelTestCase
         self::assertContains('list_products', $exposedTools);
         self::assertNotContains('delete_product', $exposedTools, 'Destructive tools are never exposed.');
         self::assertContains('open_admin_page', $exposedTools, "The assistant's own tool joins the Admin MCP tools.");
+        self::assertStringContainsString('products (identifier: code)', $templateVars['pages'] ?? '', 'The prompt gets the pages the agent may open.');
+        self::assertStringContainsString('Always answer in Polish.', $templateVars['store_instructions'] ?? '', 'The prompt gets the instructions of the store (test application config).');
         self::assertSame('I proposed renaming the product; approve action #1 in the panel.', $reply->asText());
 
         /** @var list<AgentAction> $actions */
