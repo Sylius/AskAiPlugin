@@ -25,7 +25,7 @@ held as a proposed action with Approve/Reject in the panel.
 
 ## Requirements
 
-- Sylius 2.3+, PHP 8.2+, Symfony 7.4+.
+- Sylius 2.1+, PHP 8.2+, Symfony 7.4+.
 - [`sylius/admin-mcp-server-plugin`](https://github.com/Sylius/AdminMcpServerPlugin) installed and
   configured: the assistant works the store through its tools and the Admin API it talks to.
 - A Messenger worker: turns run asynchronously, never in the web request.
