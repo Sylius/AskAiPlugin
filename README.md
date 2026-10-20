@@ -302,6 +302,11 @@ ai:
 | Gemini | `symfony/ai-gemini-platform`  | `gemini`          | `ai.platform.gemini` |
 | Ollama | `symfony/ai-ollama-platform`  | `ollama`          | `ai.platform.ollama` |
 
+The `symfony/ai-bundle` recipe has already created `config/packages/ai.yaml` with an `ai:` key
+(and the vendor's platform recipe adds its `ai.platform.<vendor>` entry and `<VENDOR>_API_KEY`
+there): put the `agent` part under that existing key rather than pasting the snippet at the end
+of the file, which gives `Duplicate key "ai"`.
+
 Ollama takes `endpoint` instead of `api_key`. The full list of platforms and their options is in
 the [Symfony AI documentation](https://symfony.com/doc/current/ai/index.html); any other service
 implementing `PlatformInterface` works too, point `platform` at its id.
@@ -358,6 +363,24 @@ on a different `platform`, nothing in the plugin changes:
               platform: ai.platform.gemini
               model: gemini-2.5-flash
   ```
+
+## Customization
+
+Everything below is either configuration or the usual Symfony and Sylius extension points; no
+fork and no copy of a service definition is needed for:
+
+| To                                                        | Use                                                                                          |
+|-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| Another vendor or model                                   | `ai.agent.sylius_ai_assistant.platform` / `model` ([Choosing the model](#choosing-the-model)) |
+| A few rules of the store in the prompt                    | `sylius_ai_assistant.prompt.additional_instructions` ([The agent](#the-agent))               |
+| A prompt of your own                                      | `ai.agent.sylius_ai_assistant.prompt.file`                                                   |
+| Fewer tools, or one tool less                             | `tools.read_only_prefixes`, `tools.write_prefixes`, `tools.exclude` ([The write gate](#the-write-gate)) |
+| A tool of your own                                        | `#[AsTool]` + the `sylius_ai_assistant.tool` tag, or `tools:` in `ai.yaml` ([Your own tools](#your-own-tools)) |
+| A resource of your own the agent may open                 | `sylius_ai_assistant.navigation.pages` ([Navigation](#navigation))                           |
+| Who sees and uses the panel                               | `sylius_ai_assistant.access.role`                                                            |
+| Another look for the panel, the action card, the log pages | `templates/bundles/SyliusAiAssistantPlugin/…` ([Models and services](#models-and-services)) |
+| Extra fields on the entities, another repository          | `sylius_ai_assistant.resources.<name>.classes` ([Models and services](#models-and-services)) |
+| Different behaviour of a service                          | Decorate it by id or interface ([Models and services](#models-and-services))                 |
 
 ## Models and services
 
