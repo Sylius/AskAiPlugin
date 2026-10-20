@@ -19,7 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Gives the agent its toolbox: the Admin MCP tools whose names match the configured prefixes, called in-process.
+ * Gives the agent its toolbox: the Admin MCP tools whose names match the configured prefixes and are not
+ * excluded by name, called in-process.
  *
  * The agent and its toolbox are symfony/ai-bundle's ("ai.agent.sylius_ai_assistant", prepended by the
  * extension). The bundle builds each toolbox with a MemoryToolFactory, the same way it registers tools listed
@@ -50,6 +51,9 @@ final class CollectToolsPass implements CompilerPassInterface
             $container->getParameter('sylius_ai_assistant.tools.write_prefixes'),
         );
 
+        /** @var list<string> $excluded */
+        $excluded = $container->getParameter('sylius_ai_assistant.tools.exclude');
+
         $factory = $container->getDefinition(self::TOOL_FACTORY_SERVICE);
 
         $references = [];
@@ -63,7 +67,7 @@ final class CollectToolsPass implements CompilerPassInterface
                 /** @var McpTool $tool */
                 $tool = $attribute->newInstance();
                 $name = $tool->name ?? '';
-                if (!self::matches($name, $prefixes)) {
+                if (\in_array($name, $excluded, true) || !self::matches($name, $prefixes)) {
                     continue;
                 }
 

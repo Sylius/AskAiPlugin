@@ -73,6 +73,15 @@ final class ConfigurationTest extends TestCase
         self::assertSame(['list_', 'get_', 'search_', 'count_', 'open_'], $config['tools']['read_only_prefixes']);
     }
 
+    public function testSingleToolsCanBeExcludedByName(): void
+    {
+        self::assertSame([], $this->process([])['tools']['exclude']);
+
+        $config = $this->process(['tools' => ['exclude' => ['update_channel', 'remove_product']]]);
+        self::assertSame(['update_channel', 'remove_product'], $config['tools']['exclude']);
+        self::assertContains('update_', $config['tools']['write_prefixes'], 'Excluding a tool leaves the prefixes alone.');
+    }
+
     /**
      * @param array<string, mixed> $config
      *
