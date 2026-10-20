@@ -1,0 +1,11 @@
+{# One badge for both conversation states (idle, running, failed) and agent action states. #}
+{% set tone = {
+    idle: 'secondary',
+    running: 'info',
+    proposed: 'warning',
+    approved: 'info',
+    executed: 'success',
+    rejected: 'secondary',
+    failed: 'danger',
+}[state]|default('secondary') %}
+<span class="badge bg-{{ tone }}-lt text-{{ tone }}">{{ ('sylius_ai_assistant.ui.state.' ~ state)|trans }}</span>

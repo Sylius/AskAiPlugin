@@ -1,0 +1,19 @@
+<div class="ai-assistant__message ai-assistant__message--{{ message.role }}">
+    <div class="ai-assistant__bubble">
+        {%- if message.role == 'assistant' -%}
+            {{ message.content|sylius_ai_assistant_markdown }}
+        {%- else -%}
+            {{ message.content|nl2br }}
+        {%- endif -%}
+    </div>
+    {% if message.toolCalls is not empty %}
+        <details class="ai-assistant__tools small text-secondary">
+            <summary>{{ 'sylius_ai_assistant.ui.tool_calls'|trans({'%count%': message.toolCalls|length}) }}: {% for name, count in message.toolCallCounts %}{{ name }}{% if count > 1 %} ×{{ count }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</summary>
+            <ol class="ai-assistant__tool-list mt-1 mb-0 ps-3">
+                {% for call in message.toolCalls %}
+                    <li><code>{{ call.name }}</code>{% if call.arguments is not empty %} <span class="text-break">{{ call.arguments|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE')) }}</span>{% endif %}</li>
+                {% endfor %}
+            </ol>
+        </details>
+    {% endif %}
+</div>

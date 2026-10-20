@@ -1,0 +1,12 @@
+.git
+.idea
+.agents
+.claude
+var
+vendor
+node_modules
+tests/e2e/node_modules
+tests/TestApplication/.env.local
+tests/TestApplication/.env.*.local
+.phpunit.result.cache
+compose.override.yml

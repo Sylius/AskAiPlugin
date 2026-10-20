@@ -1,0 +1,32 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.base#javascripts':
+            ai_assistant_panel:
+                template: '@SyliusAiAssistant/hook/chat_panel.html.twig'
+                priority: -100
+
+        'sylius_ai_assistant.conversation.show.content':
+            sections:
+                template: '@SyliusAiAssistant/admin/conversation/show/content/sections.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.conversation.show.content.sections':
+            general:
+                template: '@SyliusAiAssistant/admin/conversation/show/content/sections/general.html.twig'
+                priority: 100
+            timeline:
+                template: '@SyliusAiAssistant/admin/conversation/show/content/sections/timeline.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.agent_action.show.content':
+            sections:
+                template: '@SyliusAiAssistant/admin/agent_action/show/content/sections.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.agent_action.show.content.sections':
+            general:
+                template: '@SyliusAiAssistant/admin/agent_action/show/content/sections/general.html.twig'
+                priority: 100
+            details:
+                template: '@SyliusAiAssistant/admin/agent_action/show/content/sections/details.html.twig'
+                priority: 0

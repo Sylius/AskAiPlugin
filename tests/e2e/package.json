@@ -1,0 +1,14 @@
+{
+    "name": "sylius-ai-assistant-e2e",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "clickthrough": "node clickthrough.mjs",
+        "navigation": "node navigation.mjs",
+        "approve-edit": "node approve-edit.mjs",
+        "scroll": "node scroll.mjs"
+    },
+    "devDependencies": {
+        "playwright": "^1.58.2"
+    }
+}

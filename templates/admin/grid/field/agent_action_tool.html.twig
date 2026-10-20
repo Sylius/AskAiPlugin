@@ -1,0 +1,2 @@
+<code>{{ data.toolName ?? (data.httpMethod ~ ' ' ~ data.path) }}</code>
+{% if data.toolName is not null %}<div class="text-secondary small">{{ data.httpMethod }} {{ data.path }}</div>{% endif %}

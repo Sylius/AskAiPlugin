@@ -1,0 +1,22 @@
+imports:
+    - { resource: 'twig_hooks.yaml' }
+
+parameters:
+    env(SYLIUS_AI_ASSISTANT_TRANSPORT_DSN): 'doctrine://default?queue_name=sylius_ai_assistant'
+
+framework:
+    messenger:
+        buses:
+            # No doctrine_transaction middleware: a turn runs for seconds and the action
+            # executor must see rows committed by the Admin API process meanwhile. The
+            # worker's connection is pinged before a turn and closed after it instead.
+            sylius_ai_assistant.command_bus:
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+        transports:
+            sylius_ai_assistant:
+                dsn: '%env(SYLIUS_AI_ASSISTANT_TRANSPORT_DSN)%'
+        routing:
+            'Sylius\AiAssistantPlugin\Message\RunAgentTurn': sylius_ai_assistant
+            'Sylius\AiAssistantPlugin\Message\ExecuteAgentAction': sylius_ai_assistant

@@ -1,0 +1,41 @@
+{% set action = hookable_metadata.context.resource %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="card-title">{{ 'sylius.ui.general'|trans }}</div>
+    </div>
+    <div class="card-body">
+        <div class="divide-y">
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.conversation'|trans }}</div>
+                <div class="col-12 col-md-8">
+                    <a href="{{ path('sylius_ai_assistant_admin_conversation_show', { id: action.conversation.id }) }}">#{{ action.conversation.id }}</a>
+                    <span class="text-secondary">{{ action.conversation.adminUser.username }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.tool'|trans }}</div>
+                <div class="col-12 col-md-8"><code>{{ action.toolName ?? '—' }}</code></div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.request'|trans }}</div>
+                <div class="col-12 col-md-8"><code>{{ action.httpMethod }} {{ action.path }}</code></div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.state'|trans }}</div>
+                <div class="col-12 col-md-8">{{ include('@SyliusAiAssistant/admin/common/state_badge.html.twig', { state: action.state }) }}</div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.decided_by_user'|trans }}</div>
+                <div class="col-12 col-md-8">{{ action.decidedBy ? action.decidedBy.username : '—' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.decided_at'|trans }}</div>
+                <div class="col-12 col-md-8">{{ action.decidedAt ? action.decidedAt|date('d-m-Y H:i:s') : '—' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.creation_date'|trans }}</div>
+                <div class="col-12 col-md-8">{{ action.createdAt|date('d-m-Y H:i:s') }}</div>
+            </div>
+        </div>
+    </div>
+</div>

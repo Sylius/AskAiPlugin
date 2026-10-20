@@ -1,0 +1,4 @@
+{# Styles and behaviour come from assets/admin/entrypoint.js, built with the application's admin assets. #}
+{% if is_granted('ROLE_ADMINISTRATION_ACCESS') %}
+    {{ component('sylius_ai_assistant:panel', { open: app.request.cookies.get('sylius_ai_assistant_open') == '1' }) }}
+{% endif %}

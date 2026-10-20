@@ -1,0 +1,19 @@
+{
+	frankenphp
+}
+
+(app) {
+	root * /app/vendor/sylius/test-application/public
+	encode zstd gzip
+	php_server
+}
+
+# Always served plain on 8000: used by the worker (Admin API) and the health check.
+:8000 {
+	import app
+}
+
+# Public entry point: set SERVER_NAME to the domain and Caddy obtains a TLS certificate.
+{$SERVER_NAME:localhost} {
+	import app
+}

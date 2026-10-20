@@ -1,0 +1,41 @@
+{% set tone = {
+    proposed: 'warning',
+    approved: 'info',
+    executed: 'success',
+    rejected: 'secondary',
+    failed: 'danger',
+}[action.state] %}
+{% set state = ('sylius_ai_assistant.ui.state.' ~ action.state)|trans %}
+{# interactive: Approve/Reject buttons (the live panel); link: the badge opens the action's admin page (the log). #}
+{% set interactive = interactive is defined ? interactive : true %}
+{% set link = link is defined ? link : false %}
+<div class="card ai-assistant__action border-{{ tone }}" data-action-id="{{ action.id }}">
+    <div class="card-body p-2">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            {% if link %}<a href="{{ path('sylius_ai_assistant_admin_agent_action_show', { id: action.id }) }}" class="badge bg-{{ tone }}-lt text-{{ tone }}">#{{ action.id }} · {{ state }}</a>{% else %}<span class="badge bg-{{ tone }}-lt text-{{ tone }}">#{{ action.id }} · {{ state }}</span>{% endif %}
+            <code class="small text-truncate">{{ action.toolName ?? (action.httpMethod ~ ' ' ~ action.path) }}</code>
+        </div>
+        <details class="small">
+            <summary class="text-secondary">{{ action.httpMethod }} {{ action.path }}</summary>
+            {% if action.body is not null %}
+                <pre class="ai-assistant__json mt-1 mb-0">{{ action.body|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+            {% endif %}
+            {% if action.snapshotBefore is not null %}
+                <div class="text-secondary mt-1">{{ 'sylius_ai_assistant.ui.current_state'|trans }}</div>
+                <pre class="ai-assistant__json mb-0">{{ action.snapshotBefore|slice(0, 4000) }}</pre>
+            {% endif %}
+            {% if action.result is not null %}
+                <div class="text-secondary mt-1">{{ 'sylius_ai_assistant.ui.result'|trans }}</div>
+                <pre class="ai-assistant__json mb-0">{{ action.result|slice(0, 4000) }}</pre>
+            {% endif %}
+        </details>
+        {% if action.proposed and interactive %}
+            <div class="d-flex gap-2 mt-2">
+                <button type="button" class="btn btn-sm btn-success" data-action="live#action" data-live-action-param="approve" data-live-id-param="{{ action.id }}">{{ 'sylius_ai_assistant.ui.approve'|trans }}</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ action.id }}">{{ 'sylius_ai_assistant.ui.reject'|trans }}</button>
+            </div>
+        {% elseif action.decidedBy is not null %}
+            <div class="text-secondary small mt-1">{{ 'sylius_ai_assistant.ui.decided_by'|trans({'%state%': state, '%user%': action.decidedBy.username}) }}</div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,116 @@
+{
+    "name": "sylius/ai-assistant-plugin",
+    "type": "sylius-plugin",
+    "description": "AI chat panel inside the Sylius admin, driven by the Admin MCP tools with human approval of write actions.",
+    "keywords": [
+        "sylius",
+        "sylius-plugin",
+        "ai",
+        "chat",
+        "mcp",
+        "agent"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "league/commonmark": "^2.6",
+        "sylius/admin-mcp-server-plugin": "^0.1",
+        "sylius/sylius": "^2.1",
+        "symfony/ai-agent": "^0.14",
+        "symfony/ai-anthropic-platform": "^0.14",
+        "symfony/ai-bundle": "^0.14",
+        "symfony/ai-chat": "^0.14",
+        "symfony/ai-platform": "^0.14",
+        "symfony/http-foundation": "^7.4 || ^8.1",
+        "symfony/messenger": "^7.4 || ^8.1",
+        "symfony/ux-live-component": "^2.20",
+        "symfony/yaml": "^7.4 || ^8.1",
+        "webmozart/assert": "^1.11"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-webmozart-assert": "^2.0",
+        "phpunit/phpunit": "^10.5",
+        "sylius-labs/coding-standard": "^4.4",
+        "sylius/sylius-ai-dev-tools": "^0.6.0",
+        "sylius/test-application": "^2.0.0@alpha",
+        "symfony/ai-ollama-platform": "^0.14.0",
+        "symfony/browser-kit": "^7.4 || ^8.1",
+        "symfony/css-selector": "^7.4 || ^8.1",
+        "symfony/debug-bundle": "^7.4 || ^8.1",
+        "symfony/dotenv": "^7.4 || ^8.1",
+        "symfony/http-client": "^7.4 || ^8.1",
+        "symfony/intl": "^7.4 || ^8.1",
+        "symfony/runtime": "^7.4 || ^8.1",
+        "symfony/web-profiler-bundle": "^7.4 || ^8.1",
+        "symfony/webpack-encore-bundle": "^2.2"
+    },
+    "suggest": {
+        "symfony/ai-open-ai-platform": "To run the agent on the OpenAI API",
+        "symfony/ai-gemini-platform": "To run the agent on the Gemini API",
+        "symfony/ai-ollama-platform": "To run the agent on a local Ollama"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "php-http/discovery": false,
+            "phpstan/extension-installer": true,
+            "symfony/flex": true,
+            "symfony/runtime": true,
+            "symfony/ai-mate-composer-plugin": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
+        "symfony": {
+            "require": "^7.4 || ^8.1"
+        },
+        "public-dir": "vendor/sylius/test-application/public",
+        "ai-mate": {
+            "extension": false,
+            "scan-dirs": [
+                "mate/src"
+            ],
+            "includes": [
+                "mate/config.php"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Sylius\\AiAssistantPlugin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Sylius\\AiAssistantPlugin\\": [
+                "tests/",
+                "tests/TestApplication/src/"
+            ],
+            "Mate\\": "mate/src/"
+        }
+    },
+    "scripts": {
+        "database-reset": [
+            "vendor/bin/console doctrine:database:drop --force --if-exists",
+            "vendor/bin/console doctrine:database:create",
+            "vendor/bin/console doctrine:migrations:migrate -n",
+            "vendor/bin/console sylius:fixtures:load -n"
+        ],
+        "frontend-clear": [
+            "cd vendor/sylius/test-application && yarn install && yarn build",
+            "vendor/bin/console assets:install"
+        ],
+        "test-app-init": [
+            "@database-reset",
+            "@frontend-clear"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

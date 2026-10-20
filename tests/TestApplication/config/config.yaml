@@ -1,0 +1,49 @@
+imports:
+    - { resource: "@SyliusAdminMcpServerPlugin/config/config.yaml" }
+    - { resource: "@SyliusAiAssistantPlugin/config/config.yaml" }
+
+twig:
+    paths:
+        '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    TestApplication:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/../../../tests/TestApplication/src/Entity'
+                        prefix: Tests\Sylius\AiAssistantPlugin
+
+when@test:
+    services:
+        sylius_ai_assistant_test.platform:
+            class: Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform
+            public: true
+        test.sylius_ai_assistant.chat:
+            alias: sylius_ai_assistant.chat
+            public: true
+        test.sylius_ai_assistant.agent.context:
+            alias: sylius_ai_assistant.agent.context
+            public: true
+        test.sylius_ai_assistant.navigation.admin_url_resolver:
+            alias: sylius_ai_assistant.navigation.admin_url_resolver
+            public: true
+        test.sylius_ai_assistant.message_handler.run_agent_turn:
+            alias: sylius_ai_assistant.message_handler.run_agent_turn
+            public: true
+    ai:
+        agent:
+            sylius_ai_assistant:
+                platform: sylius_ai_assistant_test.platform
+                model: scripted
+
+# sylius/test-application's own when@prod wires the Doctrine caches through
+# Symfony\Component\Cache\DoctrineProvider, gone since Symfony 6; DoctrineBundle 2 takes the
+# PSR-6 pools directly, so the two provider services become aliases of the pools.
+when@prod:
+    services:
+        doctrine.result_cache_provider: '@doctrine.result_cache_pool'
+        doctrine.system_cache_provider: '@doctrine.system_cache_pool'

@@ -1,0 +1,24 @@
+{% set action = hookable_metadata.context.resource %}
+{% set json = constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') %}
+<div class="row">
+    <div class="col-12 col-lg-6">
+        <div class="card mb-3">
+            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.tool_arguments'|trans }}</div></div>
+            <div class="card-body"><pre class="m-0">{{ action.toolArguments is not null ? action.toolArguments|json_encode(json) : '—' }}</pre></div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header"><div class="card-title">{{ 'sylius.ui.body'|trans }}</div></div>
+            <div class="card-body"><pre class="m-0">{{ action.body is not null ? action.body|json_encode(json) : '—' }}</pre></div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-3">
+            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.current_state'|trans }}</div></div>
+            <div class="card-body"><pre class="m-0">{{ action.snapshotBefore ?? '—' }}</pre></div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.result'|trans }}</div></div>
+            <div class="card-body"><pre class="m-0">{{ action.result ?? '—' }}</pre></div>
+        </div>
+    </div>
+</div>

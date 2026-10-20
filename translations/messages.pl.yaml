@@ -1,0 +1,37 @@
+sylius_ai_assistant:
+    ui:
+        ai_assistant: Asystent AI
+        new: Nowa
+        start_a_conversation_to_ask_about_your_store: Rozpocznij rozmowę, aby zapytać o swój sklep.
+        what_would_you_like_to_do: Co chcesz zrobić?
+        tool_calls: '1 wywołanie narzędzia|%count% wywołania narzędzi|%count% wywołań narzędzi'
+        thinking: Myślę…
+        cancel: Anuluj
+        start_conversation: Rozpocznij rozmowę
+        ask_about_orders_products_promotions: Zapytaj o zamówienia, produkty, promocje…
+        send: Wyślij
+        current_state: Stan bieżący
+        result: Wynik
+        approve: Zatwierdź
+        reject: Odrzuć
+        decided_by: '%state% przez %user%'
+        conversations: Rozmowy
+        conversation: Rozmowa
+        agent_actions: Akcje agenta
+        agent_action: Akcja agenta
+        topic: Temat
+        administrator: Administrator
+        messages: Wiadomości
+        tool: Narzędzie
+        tool_arguments: Argumenty narzędzia
+        request: Żądanie
+        decided_by_user: Zdecydował(a)
+        decided_at: Data decyzji
+        state:
+            idle: bezczynna
+            running: w toku
+            proposed: zaproponowana
+            approved: zatwierdzona
+            executed: wykonana
+            rejected: odrzucona
+            failed: nieudana

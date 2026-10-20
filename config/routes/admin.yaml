@@ -1,0 +1,49 @@
+sylius_ai_assistant_admin_conversation_index:
+    path: /conversations
+    methods: [GET]
+    defaults:
+        _controller: sylius_ai_assistant.controller.conversation::indexAction
+        _sylius:
+            section: admin
+            permission: true
+            template: '@SyliusAdmin/shared/crud/index.html.twig'
+            grid: sylius_ai_assistant_admin_conversation
+            vars:
+                hook_prefix: sylius_ai_assistant.conversation
+
+sylius_ai_assistant_admin_conversation_show:
+    path: /conversations/{id}
+    methods: [GET]
+    defaults:
+        _controller: sylius_ai_assistant.controller.conversation::showAction
+        _sylius:
+            section: admin
+            permission: true
+            template: '@SyliusAdmin/shared/crud/show.html.twig'
+            vars:
+                hook_prefix: sylius_ai_assistant.conversation
+
+sylius_ai_assistant_admin_agent_action_index:
+    path: /agent-actions
+    methods: [GET]
+    defaults:
+        _controller: sylius_ai_assistant.controller.agent_action::indexAction
+        _sylius:
+            section: admin
+            permission: true
+            template: '@SyliusAdmin/shared/crud/index.html.twig'
+            grid: sylius_ai_assistant_admin_agent_action
+            vars:
+                hook_prefix: sylius_ai_assistant.agent_action
+
+sylius_ai_assistant_admin_agent_action_show:
+    path: /agent-actions/{id}
+    methods: [GET]
+    defaults:
+        _controller: sylius_ai_assistant.controller.agent_action::showAction
+        _sylius:
+            section: admin
+            permission: true
+            template: '@SyliusAdmin/shared/crud/show.html.twig'
+            vars:
+                hook_prefix: sylius_ai_assistant.agent_action

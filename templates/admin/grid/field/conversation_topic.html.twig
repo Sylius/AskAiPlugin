@@ -1,0 +1,7 @@
+{# The first thing the administrator asked, as the conversation's title. #}
+{% set first = data.messages|filter(message => message.role == 'user')|first %}
+{% if first %}
+    <span title="{{ first.content }}">{{ first.content|u.truncate(80, '…') }}</span>
+{% else %}
+    <span class="text-secondary">—</span>
+{% endif %}

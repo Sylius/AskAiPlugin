@@ -1,0 +1,37 @@
+sylius_ai_assistant:
+    ui:
+        ai_assistant: AI assistant
+        new: New
+        start_a_conversation_to_ask_about_your_store: Start a conversation to ask about your store.
+        what_would_you_like_to_do: What would you like to do?
+        tool_calls: '1 tool call|%count% tool calls'
+        thinking: Thinking…
+        cancel: Cancel
+        start_conversation: Start conversation
+        ask_about_orders_products_promotions: Ask about orders, products, promotions…
+        send: Send
+        current_state: Current state
+        result: Result
+        approve: Approve
+        reject: Reject
+        decided_by: '%state% by %user%'
+        conversations: Conversations
+        conversation: Conversation
+        agent_actions: Agent actions
+        agent_action: Agent action
+        topic: Topic
+        administrator: Administrator
+        messages: Messages
+        tool: Tool
+        tool_arguments: Tool arguments
+        request: Request
+        decided_by_user: Decided by
+        decided_at: Decided at
+        state:
+            idle: idle
+            running: running
+            proposed: proposed
+            approved: approved
+            executed: executed
+            rejected: rejected
+            failed: failed

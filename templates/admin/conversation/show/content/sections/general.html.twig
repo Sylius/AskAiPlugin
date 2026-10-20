@@ -1,0 +1,26 @@
+{% set conversation = hookable_metadata.context.resource %}
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="card-title">{{ 'sylius.ui.general'|trans }}</div>
+    </div>
+    <div class="card-body">
+        <div class="divide-y">
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius_ai_assistant.ui.administrator'|trans }}</div>
+                <div class="col-12 col-md-8">{{ conversation.adminUser.username }} <span class="text-secondary">({{ conversation.adminUser.email }})</span></div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.state'|trans }}</div>
+                <div class="col-12 col-md-8">{{ include('@SyliusAiAssistant/admin/common/state_badge.html.twig', { state: conversation.state }) }}</div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.creation_date'|trans }}</div>
+                <div class="col-12 col-md-8">{{ conversation.createdAt|date('d-m-Y H:i:s') }}</div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.updating_date'|trans }}</div>
+                <div class="col-12 col-md-8">{{ conversation.updatedAt ? conversation.updatedAt|date('d-m-Y H:i:s') : '—' }}</div>
+            </div>
+        </div>
+    </div>
+</div>

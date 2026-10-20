@@ -1,0 +1,5 @@
+sylius_admin_mcp_server:
+    resource: "@SyliusAdminMcpServerPlugin/config/routes.yaml"
+
+sylius_ai_assistant:
+    resource: "@SyliusAiAssistantPlugin/config/routes.yaml"

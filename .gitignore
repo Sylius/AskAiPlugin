@@ -1,0 +1,32 @@
+/vendor/
+/var/
+/node_modules/
+/drivers/
+/composer.lock
+
+/etc/build/*
+!/etc/build/.gitignore
+
+/.phpunit.result.cache
+/behat.yml
+/phpunit.xml
+/compose.override.yml
+.phpunit.result.cache
+
+# Symfony CLI https://symfony.com/doc/current/setup/symfony_server.html#different-php-settings-per-project
+/.php-version
+/php.ini
+
+/tests/TestApplication/.env.local
+/tests/TestApplication/.env.*.local
+
+# Local AI tooling (Symfony AI Mate, agent instructions) stays on the developer's machine
+/.agents/
+/mate/
+/AGENTS.md
+/CLAUDE.md
+
+# Local testing & verification files
+/verification-test.md
+/OVERVIEW.md
+/tests/e2e/node_modules/
