@@ -46,7 +46,7 @@ jobs:
                 name: Build Sylius Test Application
                 uses: SyliusLabs/BuildTestAppAction@v4
                 with:
-                    e2e_js: "no"
+                    e2e_js: "yes"
                     cache_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}"
                     cache_restore_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-"
                     database: "${{ matrix.database }}"
