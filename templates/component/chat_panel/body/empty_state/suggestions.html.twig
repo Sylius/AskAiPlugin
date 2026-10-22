@@ -1,0 +1,8 @@
+{% if hookable_metadata.context.panel.conversation is not null %}
+    <div class="d-grid gap-2">
+        {% for key in ['show_todays_new_orders', 'which_products_are_out_of_stock', 'which_orders_are_waiting_to_be_shipped'] %}
+            {% set suggestion = ('sylius_ai_assistant.ui.suggestion.' ~ key)|trans %}
+            <button type="button" class="btn justify-content-start text-start text-wrap" data-ai-assistant-suggestion="{{ suggestion }}">{{ suggestion }}</button>
+        {% endfor %}
+    </div>
+{% endif %}

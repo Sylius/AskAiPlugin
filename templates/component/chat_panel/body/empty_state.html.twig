@@ -1,0 +1,5 @@
+{% if hookable_metadata.context.timeline is empty %}
+    <div class="mt-auto d-flex flex-column gap-3">
+        {% hook 'empty_state' %}
+    </div>
+{% endif %}

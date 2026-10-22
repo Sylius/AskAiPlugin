@@ -33,14 +33,14 @@ export async function openPanel({ newConversation = true } = {}) {
         snap: async (name) => {
             await page.screenshot({ path: `${SHOTS}${String(++shot).padStart(2, '0')}-${name}.png` });
         },
-        running: () => page.waitForFunction(() => document.querySelector('.ai-assistant input[data-model="draft"]')?.disabled === true, null, { timeout: 20000 }),
-        idle: () => page.waitForFunction(() => { const i = document.querySelector('.ai-assistant input[data-model="draft"]'); return i && !i.disabled; }, null, { timeout: 240000 }),
+        running: () => page.waitForFunction(() => document.querySelector('.ai-assistant [data-model="draft"]')?.disabled === true, null, { timeout: 20000 }),
+        idle: () => page.waitForFunction(() => { const i = document.querySelector('.ai-assistant [data-model="draft"]'); return i && !i.disabled; }, null, { timeout: 240000 }),
         lastReply: async () => (await page.locator('.ai-assistant__message--assistant .ai-assistant__bubble').last().innerText()).trim(),
         panelText: async () => (await page.locator('.ai-assistant__messages').innerText()).trim(),
         /** Sends a prompt; with expectUrl waits for the navigation the agent should trigger. Resolves to the reply. */
         ask: async (label, prompt, expectUrl = null) => {
             const before = page.url();
-            await page.fill('.ai-assistant input[data-model="draft"]', prompt);
+            await page.fill('.ai-assistant [data-model="draft"]', prompt);
             await page.keyboard.press('Enter');
             await api.running();
             if (expectUrl) {

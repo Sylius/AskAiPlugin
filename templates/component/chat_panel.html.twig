@@ -1,54 +1,18 @@
-<div {{ attributes.defaults({ class: 'ai-assistant' ~ (open ? ' ai-assistant--open' : '') }) }}
+<div {{ attributes.defaults({ class: 'ai-assistant d-flex flex-column-reverse align-items-end gap-3' ~ (open ? ' ai-assistant--open' : '') }) }}
     {% if open and (this.running or (this.conversation and this.conversation.pendingNavigation)) %}data-poll="delay({{ pollInterval }})|refresh"{% endif %}
 >
-    <button type="button" class="btn btn-primary btn-icon ai-assistant__toggle" data-action="live#action" data-live-action-param="toggle" title="{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}">
-        {{ ux_icon('tabler:message-chatbot', { class: 'icon' }) }}
+    <button type="button" class="btn rounded-circle shadow p-2 ai-assistant__toggle" data-action="live#action" data-live-action-param="toggle"
+            title="{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}" aria-label="{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}" aria-expanded="{{ open ? 'true' : 'false' }}">
+        {% if open %}
+            {{ ux_icon('tabler:x', { class: 'icon m-0' }) }}
+        {% else %}
+            <img src="{{ asset('bundles/syliusaiassistantplugin/images/assistant.webp') }}" alt="" class="w-100 h-100">
+        {% endif %}
     </button>
 
     {% if open %}
         <div class="card ai-assistant__panel">
-            <div class="card-header py-2">
-                <h3 class="card-title m-0">{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}</h3>
-                <div class="card-actions">
-                    <button type="button" class="btn btn-sm btn-ghost-secondary" data-action="live#action" data-live-action-param="startConversation">{{ 'sylius_ai_assistant.ui.new'|trans }}</button>
-                </div>
-            </div>
-
-            <div class="card-body ai-assistant__messages">
-                {% if this.conversation is null %}
-                    <p class="text-secondary m-0">{{ 'sylius_ai_assistant.ui.start_a_conversation_to_ask_about_your_store'|trans }}</p>
-                {% else %}
-                    {% for item in this.timeline %}
-                        {% if item.role is defined %}
-                            {{ include('@SyliusAiAssistantPlugin/component/message.html.twig', { message: item }) }}
-                        {% else %}
-                            {{ include('@SyliusAiAssistantPlugin/component/action_card.html.twig', { action: item }) }}
-                        {% endif %}
-                    {% else %}
-                        <p class="text-secondary m-0">{{ 'sylius_ai_assistant.ui.what_would_you_like_to_do'|trans }}</p>
-                    {% endfor %}
-                    {% if this.running %}
-                        <div class="ai-assistant__message ai-assistant__message--assistant">
-                            <div class="ai-assistant__bubble text-secondary">{{ 'sylius_ai_assistant.ui.thinking'|trans }}</div>
-                            <div class="ai-assistant__tools small text-secondary">
-                                <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-action="live#action" data-live-action-param="cancel">{{ 'sylius_ai_assistant.ui.cancel'|trans }}</button>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="card-footer p-2">
-                {% if this.conversation is null %}
-                    <button type="button" class="btn btn-primary w-100" data-action="live#action" data-live-action-param="startConversation">{{ 'sylius_ai_assistant.ui.start_conversation'|trans }}</button>
-                {% else %}
-                    <form data-action="live#action:prevent" data-live-action-param="send" class="d-flex gap-2">
-                        <input type="text" class="form-control" placeholder="{{ 'sylius_ai_assistant.ui.ask_about_orders_products_promotions'|trans }}"
-                               data-model="draft" autocomplete="off" {{ this.running ? 'disabled' : '' }}>
-                        <button type="submit" class="btn btn-primary" {{ this.running ? 'disabled' : '' }}>{{ 'sylius_ai_assistant.ui.send'|trans }}</button>
-                    </form>
-                {% endif %}
-            </div>
+            {% hook 'sylius_ai_assistant.chat_panel' with { panel: this } %}
         </div>
     {% endif %}
 </div>

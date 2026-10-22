@@ -22,19 +22,69 @@ document.addEventListener('ai-assistant:navigate', (event) => {
     }
 });
 
-// Live components dispatch no DOM event on re-render; the component's "render:finished" hook is the only signal.
+// Live components dispatch no DOM event on re-render; the component's "render:started" and "render:finished" hooks are the only signals.
+const STICK_DISTANCE = 48;
+let sent = false;
+
+const messagesOf = (root) => root.querySelector('.ai-assistant__messages');
+
+const isAtBottom = (messages) => messages.scrollHeight - messages.scrollTop - messages.clientHeight <= STICK_DISTANCE;
+
 const scrollDown = (root) => {
-    const messages = root.querySelector('.ai-assistant__messages');
+    const messages = messagesOf(root);
     if (messages) {
         messages.scrollTop = messages.scrollHeight;
     }
 };
+
+document.addEventListener('submit', (event) => {
+    if (event.target.closest('.ai-assistant')) {
+        sent = true;
+    }
+}, true);
 
 document.addEventListener('live:connect', (event) => {
     const root = event.target.closest ? event.target.closest('.ai-assistant') : null;
     if (!root) {
         return;
     }
+    let stick = true;
     scrollDown(root);
-    event.detail.component.on('render:finished', () => scrollDown(root));
+    event.detail.component.on('render:started', () => {
+        const messages = messagesOf(root);
+        stick = sent || !messages || isAtBottom(messages);
+    });
+    event.detail.component.on('render:finished', () => {
+        if (stick) {
+            scrollDown(root);
+        }
+        sent = false;
+    });
 }, true);
+
+document.addEventListener('keydown', (event) => {
+    const toggle = event.key === 'Escape' && event.target.closest ? event.target.closest('.ai-assistant--open')?.querySelector('.ai-assistant__toggle') : null;
+    if (toggle) {
+        toggle.click();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    const input = event.target.closest ? event.target.closest('.ai-assistant__input') : null;
+    if (!input || event.key !== 'Enter' || event.shiftKey || event.isComposing) {
+        return;
+    }
+    event.preventDefault();
+    input.form.requestSubmit();
+});
+
+document.addEventListener('click', (event) => {
+    const suggestion = event.target.closest('[data-ai-assistant-suggestion]');
+    const input = suggestion ? suggestion.closest('.ai-assistant').querySelector('.ai-assistant__input') : null;
+    if (!input || input.disabled) {
+        return;
+    }
+    input.value = suggestion.dataset.aiAssistantSuggestion;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.form.requestSubmit();
+});

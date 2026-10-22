@@ -17,7 +17,7 @@ const prompts = [
     'Which of all those is the most expensive? Answer with name, code and price.',
 ];
 for (const [i, prompt] of prompts.entries()) {
-    await ui.page.fill('.ai-assistant input[data-model="draft"]', prompt);
+    await ui.page.fill('.ai-assistant [data-model="draft"]', prompt);
     await ui.page.keyboard.press('Enter');
     await ui.running();
     await ui.page.waitForTimeout(300);
