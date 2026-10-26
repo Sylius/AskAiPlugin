@@ -1,0 +1,18 @@
+{% set panel = hookable_metadata.context.panel %}
+{% for item in hookable_metadata.context.timeline %}
+    {% if item.role is defined %}
+        {{ include('@SyliusAiAssistantPlugin/component/message.html.twig', { message: item }) }}
+    {% else %}
+        {{ include('@SyliusAiAssistantPlugin/component/action_card.html.twig', { action: item }) }}
+    {% endif %}
+{% endfor %}
+{% if panel.running %}
+    <div class="ai-assistant__message ai-assistant__message--assistant">
+        <div class="d-flex align-items-center gap-2">
+            <div class="ai-assistant__bubble ai-assistant__typing" role="status" aria-label="{{ 'sylius_ai_assistant.ui.thinking'|trans }}">
+                <span></span><span></span><span></span>
+            </div>
+            <button type="button" class="btn btn-link btn-sm p-0 text-secondary" data-action="live#action" data-live-action-param="cancel">{{ 'sylius_ai_assistant.ui.cancel'|trans }}</button>
+        </div>
+    </div>
+{% endif %}

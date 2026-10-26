@@ -1,0 +1,7 @@
+{% set panel = hookable_metadata.context.panel %}
+<div>
+    <div class="h3 mb-1">{{ 'sylius_ai_assistant.ui.what_would_you_like_to_do'|trans }}</div>
+    <p class="text-secondary m-0">
+        {{ (panel.conversation is null ? 'sylius_ai_assistant.ui.start_a_conversation_to_ask_about_your_store' : 'sylius_ai_assistant.ui.i_can_look_up_and_prepare_changes')|trans }}
+    </p>
+</div>

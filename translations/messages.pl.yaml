@@ -1,15 +1,22 @@
 sylius_ai_assistant:
     ui:
         ai_assistant: Asystent AI
-        new: Nowa
+        new_chat: Nowa rozmowa
+        changes_need_your_approval: Zmiany wymagają Twojej zgody
         start_a_conversation_to_ask_about_your_store: Rozpocznij rozmowę, aby zapytać o swój sklep.
         what_would_you_like_to_do: Co chcesz zrobić?
+        i_can_look_up_and_prepare_changes: Mogę wyszukać zamówienia, produkty i klientów oraz przygotować zmiany do zatwierdzenia.
+        suggestion:
+            show_todays_new_orders: "Pokaż dzisiejsze nowe zamówienia"
+            which_products_are_out_of_stock: Których produktów brakuje na stanie?
+            which_orders_are_waiting_to_be_shipped: Które zamówienia czekają na wysyłkę?
         tool_calls: '1 wywołanie narzędzia|%count% wywołania narzędzi|%count% wywołań narzędzi'
         thinking: Myślę…
         cancel: Anuluj
         start_conversation: Rozpocznij rozmowę
         ask_about_orders_products_promotions: Zapytaj o zamówienia, produkty, promocje…
         send: Wyślij
+        enter_to_send: Enter wysyła · Shift+Enter nowa linia
         current_state: Stan bieżący
         result: Wynik
         approve: Zatwierdź

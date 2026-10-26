@@ -1,15 +1,22 @@
 sylius_ai_assistant:
     ui:
         ai_assistant: AI assistant
-        new: New
+        new_chat: New chat
+        changes_need_your_approval: Changes need your approval
         start_a_conversation_to_ask_about_your_store: Start a conversation to ask about your store.
         what_would_you_like_to_do: What would you like to do?
+        i_can_look_up_and_prepare_changes: I can look up orders, products and customers, and prepare changes for you to approve.
+        suggestion:
+            show_todays_new_orders: "Show today's new orders"
+            which_products_are_out_of_stock: Which products are out of stock?
+            which_orders_are_waiting_to_be_shipped: Which orders are waiting to be shipped?
         tool_calls: '1 tool call|%count% tool calls'
         thinking: Thinking…
         cancel: Cancel
         start_conversation: Start conversation
         ask_about_orders_products_promotions: Ask about orders, products, promotions…
         send: Send
+        enter_to_send: Enter to send · Shift+Enter for a new line
         current_state: Current state
         result: Result
         approve: Approve

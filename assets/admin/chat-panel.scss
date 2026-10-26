@@ -4,23 +4,17 @@
     right: 1.5rem;
     bottom: 3.5rem;
     z-index: 1040;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: .75rem;
 
     &__toggle {
         width: 3rem;
         height: 3rem;
-        border-radius: 50%;
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
     }
 
     &__panel {
         width: 24rem;
         max-width: calc(100vw - 3rem);
         height: 32rem;
-        max-height: calc(100vh - 6rem);
+        max-height: calc(100vh - 9rem);
         display: flex;
         flex-direction: column;
         box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .2);
@@ -43,27 +37,81 @@
         &--user {
             align-items: flex-end;
         }
-    }
 
-    &__tools {
-        max-width: 85%;
-
-        summary {
-            cursor: pointer;
+        &--notice {
+            align-items: center;
         }
     }
 
-    &__tool-list {
+    &__panel &__message,
+    &__panel &__action {
+        animation: ai-assistant-in .25s ease-out both;
+    }
+
+    &__composer:focus-within {
+        border-color: var(--tblr-primary, #206bc4) !important;
+    }
+
+    &__composer &__input {
+        resize: none;
+        field-sizing: content;
+        height: auto;
+        min-height: 0;
+        max-height: 10rem;
+        background: transparent;
+    }
+
+    &__tools {
+        max-width: 90%;
+
+        summary {
+            cursor: pointer;
+            list-style: none;
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+        }
+    }
+
+    &__tool[open] {
+        flex-basis: 100%;
+    }
+
+    &__arguments {
         font-size: .75rem;
         max-height: 10rem;
         overflow: auto;
     }
 
+    &__typing {
+        display: flex;
+        gap: .25rem;
+        padding: .75rem .875rem;
+
+        span {
+            width: .4375rem;
+            height: .4375rem;
+            border-radius: 50%;
+            background: var(--tblr-secondary, #6c7a91);
+            animation: ai-assistant-typing 1.2s infinite ease-in-out;
+
+            &:nth-child(2) {
+                animation-delay: .15s;
+            }
+
+            &:nth-child(3) {
+                animation-delay: .3s;
+            }
+        }
+    }
+
     &__bubble {
-        max-width: 85%;
+        max-width: 90%;
         padding: .5rem .75rem;
-        border-radius: .75rem;
-        background: var(--tblr-bg-surface-secondary, #f1f5f9);
+        border: 1px solid var(--tblr-border-color, #dadcde);
+        border-radius: .875rem .875rem .875rem .25rem;
+        background: var(--tblr-bg-surface, #fff);
         overflow-wrap: anywhere;
 
         > :last-child {
@@ -84,36 +132,39 @@
         }
 
         table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
             font-size: .8125rem;
-            width: 100%;
+            white-space: nowrap;
+            overflow-wrap: normal;
             margin-bottom: .5rem;
         }
 
         th, td {
-            padding: .125rem .375rem;
+            padding: .25rem .5rem;
             border-bottom: 1px solid var(--tblr-border-color, #dadcde);
         }
     }
 
-    &__message--user &__bubble,
-    &__message--notice &__bubble {
-        white-space: pre-wrap;
+    &__bubble:has(table) {
+        max-width: 100%;
     }
 
+
     &__message--user &__bubble {
+        border-color: transparent;
+        border-radius: .875rem .875rem .25rem .875rem;
         background: var(--tblr-primary, #206bc4);
         color: #fff;
     }
 
-    &__message--notice &__bubble {
-        background: var(--tblr-warning-lt, #fff3cd);
-        font-size: .875rem;
+    &__panel &__messages {
+        background: var(--tblr-bg-surface-tertiary, #f8fafc);
     }
 
     &__action {
         margin: 0;
-        border-width: 1px;
-        border-left-width: 4px;
     }
 
     &__json {
@@ -125,5 +176,32 @@
         background: var(--tblr-bg-surface-tertiary, #f8fafc);
         padding: .375rem;
         border-radius: .25rem;
+    }
+}
+
+@keyframes ai-assistant-in {
+    from {
+        opacity: 0;
+        transform: translateY(.375rem);
+    }
+}
+
+@keyframes ai-assistant-typing {
+    0%, 60%, 100% {
+        opacity: .45;
+        transform: none;
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(-.25rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-assistant__panel .ai-assistant__message,
+    .ai-assistant__panel .ai-assistant__action,
+    .ai-assistant__typing span {
+        animation: none;
     }
 }

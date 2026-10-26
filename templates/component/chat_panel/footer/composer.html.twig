@@ -1,0 +1,14 @@
+{% set panel = hookable_metadata.context.panel %}
+{% if panel.conversation is null %}
+    <button type="button" class="btn btn-primary w-100" data-action="live#action" data-live-action-param="startConversation">{{ 'sylius_ai_assistant.ui.start_conversation'|trans }}</button>
+{% else %}
+    <form data-action="live#action:prevent" data-live-action-param="send" class="ai-assistant__composer d-flex align-items-end gap-2 border rounded-3 p-1">
+        <textarea class="form-control flex-fill border-0 shadow-none px-2 ai-assistant__input" rows="1" placeholder="{{ 'sylius_ai_assistant.ui.ask_about_orders_products_promotions'|trans }}"
+                  aria-label="{{ 'sylius_ai_assistant.ui.ask_about_orders_products_promotions'|trans }}"
+                  data-model="draft" autocomplete="off" {{ panel.running ? 'disabled' : '' }}></textarea>
+        <button type="submit" class="btn btn-primary btn-sm flex-shrink-0 lh-1 p-2 m-1" title="{{ 'sylius_ai_assistant.ui.send'|trans }}" aria-label="{{ 'sylius_ai_assistant.ui.send'|trans }}" {{ panel.running ? 'disabled' : '' }}>
+            {{ ux_icon('tabler:arrow-up', { class: 'icon m-0' }) }}
+        </button>
+    </form>
+    <div class="form-hint small mt-1 px-1">{{ 'sylius_ai_assistant.ui.enter_to_send'|trans }}</div>
+{% endif %}

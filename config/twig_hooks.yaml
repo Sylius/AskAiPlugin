@@ -5,6 +5,49 @@ sylius_twig_hooks:
                 template: '@SyliusAiAssistantPlugin/hook/chat_panel.html.twig'
                 priority: -100
 
+        'sylius_ai_assistant.chat_panel':
+            header:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/header.html.twig'
+                priority: 200
+            body:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/body.html.twig'
+                priority: 100
+            footer:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/footer.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.chat_panel.header':
+            title:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/title.html.twig'
+                priority: 200
+            history:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/history.html.twig'
+                priority: 100
+            new_chat:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/new_chat.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.chat_panel.body':
+            empty_state:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state.html.twig'
+                priority: 100
+            timeline:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/timeline.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.chat_panel.body.empty_state':
+            intro:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state/intro.html.twig'
+                priority: 100
+            suggestions:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state/suggestions.html.twig'
+                priority: 0
+
+        'sylius_ai_assistant.chat_panel.footer':
+            composer:
+                template: '@SyliusAiAssistantPlugin/component/chat_panel/footer/composer.html.twig'
+                priority: 0
+
         'sylius_ai_assistant.conversation.show.content':
             sections:
                 template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/sections.html.twig'
