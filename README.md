@@ -378,7 +378,8 @@ fork and no copy of a service definition is needed for:
 | A tool of your own                                        | `#[AsTool]` + the `sylius_ai_assistant.tool` tag, or `tools:` in `ai.yaml` ([Your own tools](#your-own-tools)) |
 | A resource of your own the agent may open                 | `sylius_ai_assistant.navigation.pages` ([Navigation](#navigation))                           |
 | Who sees and uses the panel                               | `sylius_ai_assistant.access.role`                                                            |
-| Another look for the panel, the action card, the log pages | `templates/bundles/SyliusAiAssistantPlugin/…` ([Models and services](#models-and-services)) |
+| Something added to, removed from or reordered in the panel | the `sylius_ai_assistant.chat_panel.*` twig hooks ([The chat panel](#the-chat-panel))         |
+| Another look for a bubble, the action card, the log pages | `templates/bundles/SyliusAiAssistantPlugin/…` ([Models and services](#models-and-services)) |
 | Extra fields on the entities, another repository          | `sylius_ai_assistant.resources.<name>.classes` ([Models and services](#models-and-services)) |
 | Different behaviour of a service                          | Decorate it by id or interface ([Models and services](#models-and-services))                 |
 
@@ -398,7 +399,42 @@ Templates live under the bundle's `@SyliusAiAssistantPlugin` namespace, so the a
 overrides any of them the Symfony way: copy the file to
 `templates/bundles/SyliusAiAssistantPlugin/<same path>` (for example
 `templates/bundles/SyliusAiAssistantPlugin/component/action_card.html.twig` for the proposed
-action card, `component/chat_panel.html.twig` for the panel itself).
+action card, `component/message.html.twig` for a bubble). The panel itself is put together
+from twig hooks, so most changes to it need no copy at all.
+
+### The chat panel
+
+The open panel renders the `sylius_ai_assistant.chat_panel` hook with the live component as
+`panel` in the context (`hookable_metadata.context.panel`: `conversation`, `timeline`,
+`running`). Its hookables are themselves hooks, with the templates under
+`templates/component/chat_panel/`:
+
+| Hook                                              | Hookables (priority)                                          |
+|---------------------------------------------------|---------------------------------------------------------------|
+| `sylius_ai_assistant.chat_panel`                  | `header` (200), `body` (100), `footer` (0)                    |
+| `sylius_ai_assistant.chat_panel.header`           | `title` (200), `history` (100), `new_chat` (0)                |
+| `sylius_ai_assistant.chat_panel.body`             | `empty_state` (100), `timeline` (0); the context also carries `timeline` |
+| `sylius_ai_assistant.chat_panel.body.empty_state` | `intro` (100), `suggestions` (0)                              |
+| `sylius_ai_assistant.chat_panel.footer`           | `composer` (0)                                                |
+
+So the usual `sylius_twig_hooks` configuration adds, replaces, reorders or disables a part, for
+example a notice above the composer or the store's own suggested questions:
+
+```yaml
+sylius_twig_hooks:
+    hooks:
+        'sylius_ai_assistant.chat_panel.footer':
+            notice:
+                template: 'admin/ai_assistant/notice.html.twig'
+                priority: 10
+        'sylius_ai_assistant.chat_panel.body.empty_state':
+            suggestions:
+                template: 'admin/ai_assistant/suggestions.html.twig'
+```
+
+A suggestion is any element with `data-ai-assistant-suggestion="<the question>"`: clicking it
+sends the question. The composer's textarea keeps the `ai-assistant__input` class and the
+`draft` live model, which the keyboard handling and the browser tests rely on.
 
 ## The write gate
 

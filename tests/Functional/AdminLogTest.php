@@ -26,6 +26,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /** The read-only chat log in the admin: conversation and agent action grids and pages. */
 final class AdminLogTest extends WebTestCase
 {
+    use AdministratorTrait;
+
     private KernelBrowser $client;
 
     private AdminUser $admin;
@@ -40,13 +42,7 @@ final class AdminLogTest extends WebTestCase
         /** @var EntityManagerInterface $em */
         $em = self::getContainer()->get('doctrine.orm.entity_manager');
 
-        $this->admin = new AdminUser();
-        $this->admin->setUsername('log-test-' . uniqid());
-        $this->admin->setEmail($this->admin->getUsername() . '@example.com');
-        $this->admin->setPlainPassword('secret');
-        $this->admin->setLocaleCode('en_US');
-        $this->admin->setEnabled(true);
-        $em->persist($this->admin);
+        $this->admin = $this->createAdministrator('log-test', []);
 
         $this->conversation = new Conversation();
 

@@ -10,7 +10,6 @@ sylius_ai_assistant:
             show_todays_new_orders: "Pokaż dzisiejsze nowe zamówienia"
             which_products_are_out_of_stock: Których produktów brakuje na stanie?
             which_orders_are_waiting_to_be_shipped: Które zamówienia czekają na wysyłkę?
-        tool_calls: '1 wywołanie narzędzia|%count% wywołania narzędzi|%count% wywołań narzędzi'
         thinking: Myślę…
         cancel: Anuluj
         start_conversation: Rozpocznij rozmowę

@@ -46,6 +46,7 @@ use Sylius\AiAssistantPlugin\Tool\OpenAdminPage;
 use Sylius\AiAssistantPlugin\Twig\Component\ChatPanelComponent;
 use Sylius\AiAssistantPlugin\Twig\Extension\MarkdownExtension;
 use Sylius\AiAssistantPlugin\Twig\Extension\TimelineExtension;
+use Sylius\AiAssistantPlugin\Twig\Extension\ValueExtension;
 use Symfony\AI\Agent\Toolbox\Event\ToolCallRequested;
 use Symfony\AI\Platform\Event\InvocationEvent;
 use Symfony\AI\Platform\Event\ResultConvertedEvent;
@@ -88,6 +89,9 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $services->set('sylius_ai_assistant.twig.extension.markdown', MarkdownExtension::class)
+        ->tag('twig.extension')
+    ;
+    $services->set('sylius_ai_assistant.twig.extension.value', ValueExtension::class)
         ->tag('twig.extension')
     ;
     $services->set('sylius_ai_assistant.twig.extension.timeline', TimelineExtension::class)

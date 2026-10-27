@@ -21,13 +21,14 @@ use Sylius\AiAssistantPlugin\Entity\MessageRoles;
 use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
 use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
 use Sylius\AiAssistantPlugin\MessageHandler\RunAgentTurnHandler;
-use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
 
 /** A turn that blows up (any throwable, not only runtime exceptions) leaves the conversation failed, never running. */
 final class FailedTurnTest extends KernelTestCase
 {
+    use AdministratorTrait;
+
     private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
@@ -38,13 +39,7 @@ final class FailedTurnTest extends KernelTestCase
 
     public function testAThrowingModelFailsTheConversationWithANotice(): void
     {
-        $admin = new AdminUser();
-        $admin->setUsername('failed-turn-' . uniqid());
-        $admin->setEmail($admin->getUsername() . '@example.com');
-        $admin->setPlainPassword('secret');
-        $admin->setLocaleCode('en_US');
-        $admin->setEnabled(true);
-        $this->entityManager->persist($admin);
+        $admin = $this->createAdministrator('failed-turn', []);
         $conversation = new Conversation();
         $conversation->setAdminUser($admin);
         /** @var MessageFactoryInterface $messages */
