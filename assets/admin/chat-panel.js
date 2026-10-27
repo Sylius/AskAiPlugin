@@ -43,6 +43,12 @@ document.addEventListener('submit', (event) => {
     }
 }, true);
 
+document.addEventListener('click', (event) => {
+    if (event.target.closest('.ai-assistant [data-live-action-param]')) {
+        sent = true;
+    }
+}, true);
+
 document.addEventListener('live:connect', (event) => {
     const root = event.target.closest ? event.target.closest('.ai-assistant') : null;
     if (!root) {
@@ -59,8 +65,23 @@ document.addEventListener('live:connect', (event) => {
             scrollDown(root);
         }
         sent = false;
+        autosize(root.querySelector('.ai-assistant__input'));
     });
 }, true);
+
+const autosize = (input) => {
+    if (!input || CSS.supports('field-sizing', 'content')) {
+        return;
+    }
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 160)}px`;
+};
+
+document.addEventListener('input', (event) => {
+    if (event.target.matches && event.target.matches('.ai-assistant__input')) {
+        autosize(event.target);
+    }
+});
 
 document.addEventListener('keydown', (event) => {
     const toggle = event.key === 'Escape' && event.target.closest ? event.target.closest('.ai-assistant--open')?.querySelector('.ai-assistant__toggle') : null;

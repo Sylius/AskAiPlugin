@@ -23,6 +23,8 @@ use Symfony\Component\BrowserKit\Cookie;
 /** The open chat panel, put together from the `sylius_ai_assistant.chat_panel` twig hooks. */
 final class ChatPanelTest extends WebTestCase
 {
+    use AdministratorTrait;
+
     private KernelBrowser $client;
 
     private AdminUser $admin;
@@ -31,15 +33,7 @@ final class ChatPanelTest extends WebTestCase
     {
         $this->client = self::createClient();
 
-        $this->admin = new AdminUser();
-        $this->admin->setUsername('panel-test-' . uniqid());
-        $this->admin->setEmail($this->admin->getUsername() . '@example.com');
-        $this->admin->setPlainPassword('secret');
-        $this->admin->setLocaleCode('en_US');
-        $this->admin->setEnabled(true);
-        $this->admin->addRole('ROLE_API_ACCESS');
-        $this->entityManager()->persist($this->admin);
-        $this->entityManager()->flush();
+        $this->admin = $this->createAdministrator('panel-test');
 
         $this->client->loginUser($this->admin, 'admin');
         $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));

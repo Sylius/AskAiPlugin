@@ -18,7 +18,7 @@
                     {% if call.arguments is not empty %}
                         <dl class="ai-assistant__arguments font-monospace bg-body border rounded-2 px-2 py-1 mt-1 mb-0">
                             {% for name, value in call.arguments %}
-                                <div class="text-break"><dt class="d-inline fw-normal text-secondary">{{ name }}:</dt> <dd class="d-inline m-0">{{ value is iterable or value is null or value is same as(true) or value is same as(false) ? value|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE')) : value }}</dd></div>
+                                <div class="text-break"><dt class="d-inline fw-normal text-secondary">{{ name }}:</dt> <dd class="d-inline m-0">{{ value|sylius_ai_assistant_value }}</dd></div>
                             {% endfor %}
                         </dl>
                     {% endif %}

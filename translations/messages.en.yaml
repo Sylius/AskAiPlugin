@@ -10,7 +10,6 @@ sylius_ai_assistant:
             show_todays_new_orders: "Show today's new orders"
             which_products_are_out_of_stock: Which products are out of stock?
             which_orders_are_waiting_to_be_shipped: Which orders are waiting to be shipped?
-        tool_calls: '1 tool call|%count% tool calls'
         thinking: Thinking…
         cancel: Cancel
         start_conversation: Start conversation

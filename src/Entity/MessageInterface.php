@@ -43,12 +43,5 @@ interface MessageInterface extends ResourceInterface
     /** @param list<array{name: string, arguments: array<string, mixed>}> $toolCalls */
     public function setToolCalls(array $toolCalls): void;
 
-    /**
-     * Tool names with how many times each was called, in order of first use: "list_products ×3".
-     *
-     * @return array<string, int>
-     */
-    public function getToolCallCounts(): array;
-
     public function getCreatedAt(): \DateTimeImmutable;
 }

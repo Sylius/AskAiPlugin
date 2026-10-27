@@ -78,16 +78,6 @@ class Message implements MessageInterface
         $this->toolCalls = [] === $toolCalls ? null : $toolCalls;
     }
 
-    public function getToolCallCounts(): array
-    {
-        $counts = [];
-        foreach ($this->getToolCalls() as $call) {
-            $counts[$call['name']] = ($counts[$call['name']] ?? 0) + 1;
-        }
-
-        return $counts;
-    }
-
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;

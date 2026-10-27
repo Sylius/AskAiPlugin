@@ -22,7 +22,6 @@ use Sylius\AiAssistantPlugin\Entity\Conversation;
 use Sylius\AiAssistantPlugin\Entity\Message;
 use Sylius\AiAssistantPlugin\Entity\MessageRoles;
 use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Sylius\Component\Core\Model\AdminUser;
 use Symfony\AI\Platform\Model;
 use Symfony\AI\Platform\Result\ResultInterface;
 use Symfony\AI\Platform\Result\TextResult;
@@ -39,6 +38,8 @@ use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
  */
 final class InProcessAgentTurnTest extends KernelTestCase
 {
+    use AdministratorTrait;
+
     private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
@@ -103,14 +104,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
 
     private function createConversation(): Conversation
     {
-        $admin = new AdminUser();
-        $admin->setUsername('agent-test-' . uniqid());
-        $admin->setEmail($admin->getUsername() . '@example.com');
-        $admin->setPlainPassword('secret');
-        $admin->setLocaleCode('en_US');
-        $admin->setEnabled(true);
-        $admin->addRole('ROLE_API_ACCESS');
-        $this->entityManager->persist($admin);
+        $admin = $this->createAdministrator('agent-test');
 
         $conversation = new Conversation();
 
