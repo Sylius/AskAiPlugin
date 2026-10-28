@@ -22,11 +22,10 @@ use Sylius\AiAssistantPlugin\Agent\CurrentDateInputProcessor;
 use Sylius\AiAssistantPlugin\Agent\Platform\PlatformCallLogger;
 use Sylius\AiAssistantPlugin\Agent\StoreInstructionsInputProcessor;
 use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallListener;
-use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallTrace;
-use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallTraceInterface;
 use Sylius\AiAssistantPlugin\Api\ProposingApiClient;
 use Sylius\AiAssistantPlugin\Chat\ConversationChat;
 use Sylius\AiAssistantPlugin\Chat\ConversationChatInterface;
+use Sylius\AiAssistantPlugin\Chat\ConversationMessageStore;
 use Sylius\AiAssistantPlugin\Chat\ConversationTimeline;
 use Sylius\AiAssistantPlugin\Chat\ConversationTimelineInterface;
 use Sylius\AiAssistantPlugin\DependencyInjection\Compiler\CollectToolsPass;
@@ -55,8 +54,6 @@ use Symfony\AI\Platform\Event\ResultConvertedEvent;
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
-    // --- Resources: the factories of the entities that are never created empty ---------------
-    // They decorate the resource bundle's factories, so a replaced model class is still what gets created.
     $services->set('sylius_ai_assistant.custom_factory.message', MessageFactory::class)
         ->decorate('sylius_ai_assistant.factory.message')
         ->args([service('.inner')])
@@ -106,7 +103,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(ConversationTimelineInterface::class, 'sylius_ai_assistant.chat.timeline');
 
-    // --- Admin log: the "AI assistant" section of the admin menu ------------------------------
     $services->set('sylius_ai_assistant.listener.admin_menu', AdminMenuListener::class)
         ->tag('kernel.event_listener', ['event' => 'sylius.menu.admin.main'])
     ;
@@ -114,13 +110,6 @@ return static function (ContainerConfigurator $container): void {
     $services->set('sylius_ai_assistant.agent.context', ChatTurnContext::class);
     $services->alias(ChatTurnContextInterface::class, 'sylius_ai_assistant.agent.context');
 
-    // --- Symfony AI: the agent, its toolbox and the chat ---------------------------------
-
-    $services->set('sylius_ai_assistant.agent.tool_call_trace', ToolCallTrace::class);
-    $services->alias(ToolCallTraceInterface::class, 'sylius_ai_assistant.agent.tool_call_trace');
-
-    // The agent is "ai.agent.sylius_ai_assistant" from symfony/ai-bundle (prepended by the extension); these
-    // processors are tagged for it. The system prompt is the bundle's own (prompt.file); {now}, {pages} and {store_instructions} are its template variables.
     $services->alias('sylius_ai_assistant.agent', CollectToolsPass::AGENT_SERVICE);
     $services->set('sylius_ai_assistant.agent.input_processor.admin_pages', AdminPagesInputProcessor::class)
         ->args([service('sylius_ai_assistant.navigation.admin_url_resolver')])
@@ -136,14 +125,10 @@ return static function (ContainerConfigurator $container): void {
     ;
 
     $services->set('sylius_ai_assistant.agent.tool_call_listener', ToolCallListener::class)
-        ->args([
-            service('sylius_ai_assistant.mcp.current_tool_call'),
-            service('sylius_ai_assistant.agent.tool_call_trace'),
-        ])
+        ->args([service('sylius_ai_assistant.mcp.current_tool_call')])
         ->tag('kernel.event_listener', ['event' => ToolCallRequested::class, 'method' => 'onToolCallRequested'])
     ;
 
-    // What goes to the model and what comes back, at debug level.
     $services->set('sylius_ai_assistant.agent.platform_call_logger', PlatformCallLogger::class)
         ->args([service('logger')])
         ->tag('monolog.logger', ['channel' => 'sylius_ai_assistant'])
@@ -151,13 +136,19 @@ return static function (ContainerConfigurator $container): void {
         ->tag('kernel.event_listener', ['event' => ResultConvertedEvent::class, 'method' => 'onResultConverted'])
     ;
 
+    $services->set('sylius_ai_assistant.chat.message_store', ConversationMessageStore::class)
+        ->args([
+            service('sylius_ai_assistant.repository.conversation'),
+            service('sylius_ai_assistant.agent.context'),
+            service('sylius_ai_assistant.factory.message'),
+            service('doctrine.orm.entity_manager'),
+        ])
+    ;
+
     $services->set('sylius_ai_assistant.chat', ConversationChat::class)
         ->args([
             service('sylius_ai_assistant.agent'),
-            service('sylius_ai_assistant.factory.message'),
-            service('doctrine.orm.entity_manager'),
             service('sylius_ai_assistant.agent.context'),
-            service('sylius_ai_assistant.agent.tool_call_trace'),
         ])
     ;
     $services->alias(ConversationChatInterface::class, 'sylius_ai_assistant.chat');
@@ -196,10 +187,6 @@ return static function (ContainerConfigurator $container): void {
         ->tag('monolog.logger', ['channel' => 'sylius_ai_assistant'])
     ;
 
-    // --- Navigation ------------------------------------------------------------------------
-
-    // The whitelist of admin pages the agent may open: sylius_ai_assistant.navigation.pages (the plugin's
-    // config.yaml holds the defaults). The extension sets the pages and the locator of their repositories.
     $services->set('sylius_ai_assistant.navigation.admin_url_resolver', AdminUrlResolver::class)
         ->args([
             abstract_arg('the pages, from sylius_ai_assistant.navigation.pages'),
@@ -210,7 +197,6 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(AdminUrlResolverInterface::class, 'sylius_ai_assistant.navigation.admin_url_resolver');
 
-    // The assistant's own tool, for the agent only (not served by the MCP server).
     $services->set('sylius_ai_assistant.tool.open_admin_page', OpenAdminPage::class)
         ->args([
             service('sylius_ai_assistant.navigation.admin_url_resolver'),
@@ -221,10 +207,6 @@ return static function (ContainerConfigurator $container): void {
         ->tag(CollectToolsPass::TOOL_TAG)
     ;
 
-    // --- Hooks into the Admin MCP plugin -------------------------------------------------
-
-    // Inside a chat turn the Admin API is called as the conversation's administrator; the action
-    // executor calls it as the approving administrator.
     $services->set('sylius_ai_assistant.provider.admin_user_token', AdminUserTokenProvider::class)
         ->decorate('sylius_admin_mcp_server.provider.token')
         ->args([
@@ -236,11 +218,9 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(AdminUserTokenProviderInterface::class, 'sylius_ai_assistant.provider.admin_user_token');
 
-    // Which tool is running, for labelling proposed actions.
     $services->set('sylius_ai_assistant.mcp.current_tool_call', CurrentToolCall::class);
     $services->alias(CurrentToolCallInterface::class, 'sylius_ai_assistant.mcp.current_tool_call');
 
-    // The write gate: inside a chat turn, writes become proposed actions instead of API calls.
     $services->set('sylius_ai_assistant.api.proposing_client', ProposingApiClient::class)
         ->decorate('sylius_admin_mcp_server.client.api')
         ->args([

@@ -27,10 +27,6 @@ use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-/**
- * Replays an approved action and lets the agent report the outcome. If the replay itself
- * cannot be processed, the conversation is failed with a notice instead of staying "running".
- */
 final class ExecuteAgentActionHandler
 {
     /** @param RepositoryInterface<AgentActionInterface> $actionRepository */
@@ -83,7 +79,6 @@ final class ExecuteAgentActionHandler
         );
         $this->entityManager->flush();
 
-        // Let the agent see the outcome and wrap up (e.g. report the created resource's code).
         $this->messageBus->dispatch(new RunAgentTurn(
             (int) $conversation->getId(),
             SystemNotices::prompt(
@@ -99,10 +94,6 @@ final class ExecuteAgentActionHandler
         ));
     }
 
-    /**
-     * The admin page of the resource the action created or changed, from the response's @id:
-     * a created resource's own page, a changed resource's edit page (where the change shows).
-     */
     private function pageOf(AgentActionInterface $action): ?string
     {
         $data = json_decode((string) $action->getResult(), true);
@@ -114,10 +105,6 @@ final class ExecuteAgentActionHandler
         return $this->urlResolver->resolveIri($iri, 'POST' === $action->getHttpMethod() ? AdminUrlResolverInterface::PAGE_SHOW : AdminUrlResolverInterface::PAGE_EDIT);
     }
 
-    /**
-     * The raw API response is a few kilobytes of JSON-LD; the model only needs the identity
-     * of the resource and the fields the action set, as the API now reports them.
-     */
     private function summarize(AgentActionInterface $action): string
     {
         $raw = (string) $action->getResult();

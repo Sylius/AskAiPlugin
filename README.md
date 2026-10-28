@@ -188,6 +188,7 @@ sylius_ai_assistant:
         additional_instructions: ~  # rules of the store appended to the system prompt, see The agent
         time_zone: ~                # what "today" means to the agent, e.g. Europe/Warsaw; default: the worker's PHP time zone
     poll_interval: 2000             # ms, how often the panel polls during a turn
+    max_output_tokens: 8192         # the output budget of one model answer; a proposed write carries the whole resource
     suggestions: [ ... ]            # the questions offered on an empty conversation, see The chat panel
     navigation:
         pages: { ... }              # the admin pages the agent may open, see Navigation
@@ -210,11 +211,11 @@ ai:
     agent:
         sylius_ai_assistant:
             platform: ai.platform.anthropic       # any PlatformInterface service id
-            model: claude-haiku-4-5
+            model: 'claude-haiku-4-5?max_output_tokens=8192'   # the default model and its output budget (sylius_ai_assistant.max_output_tokens)
             prompt:
                 file: '%kernel.project_dir%/config/ai/system_prompt.txt'
             max_tool_calls: 50
-            exclude_tool_messages: true           # tool messages stay out of the stored history, the trace shows them
+            message_store: sylius_ai_assistant.chat.message_store   # the conversation entities; the reply keeps the tools it called
             fault_tolerant_toolbox: false
 ```
 
@@ -257,8 +258,8 @@ and `sylius_ai_assistant.agent_action.show`.
 The agent is built on the Symfony AI components. `symfony/ai-agent` runs the turn: the model
 of your choice through `symfony/ai-platform`, with the Admin MCP tools as its toolbox,
 called in-process (the same services the MCP server exposes; `delete_*` and `refund_*` are
-never exposed). `symfony/ai-chat` holds the conversation on a message store backed by the
-`Conversation`/`Message` entities. The tools the assistant called are stored with its reply
+never exposed). The agent continues and saves the conversation on its message store, backed by
+the `Conversation`/`Message` entities (a conversation is stored under its uuid). The tools the assistant called are stored with its reply
 and shown under it in the panel.
 
 ### Choosing the model
@@ -282,6 +283,11 @@ and shown under it in the panel.
               cache_retention: long
   ```
 
+A model of your own names its output budget itself, in the provider's own option (the
+examples below): a proposed write carries the whole resource, and the 1000 tokens Claude
+defaults to cut it in the middle of the tool call, which fails the turn. `sylius_ai_assistant.max_output_tokens`
+sets the budget of the default model only.
+
 Any other Symfony AI platform works the same way once the vendor's platform package is
 installed. For OpenAI:
 
@@ -298,7 +304,7 @@ ai:
     agent:
         sylius_ai_assistant:
             platform: ai.platform.openai
-            model: gpt-4o-mini
+            model: 'gpt-4o-mini?max_completion_tokens=8192'
 ```
 
 | Vendor | Package                       | `ai.platform` key | `platform`           |
@@ -338,8 +344,11 @@ on a different `platform`, nothing in the plugin changes:
       agent:
           sylius_ai_assistant:
               platform: ai.platform.ollama
-              model: 'qwen3?num_ctx=32768'
+              model: 'qwen3?num_ctx=32768&num_predict=8192'
   ```
+
+  For the plugin itself, `tests/TestApplication/config/ollama.yaml` does this for the test
+  application: add it to `SYLIUS_TEST_APP_CONFIGS_TO_IMPORT` in `tests/TestApplication/.env.local`.
 
   `num_ctx` matters: Ollama defaults to a 4096-token window and silently drops the front of
   a longer prompt, and the tool definitions alone are ~22k tokens, so without it the model sees
@@ -366,7 +375,7 @@ on a different `platform`, nothing in the plugin changes:
       agent:
           sylius_ai_assistant:
               platform: ai.platform.gemini
-              model: gemini-2.5-flash
+              model: 'gemini-2.5-flash?max_output_tokens=8192'
   ```
 
 ## Customization

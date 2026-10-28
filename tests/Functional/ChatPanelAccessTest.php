@@ -15,7 +15,6 @@ namespace Tests\Sylius\AiAssistantPlugin\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-/** The chat panel is for the administrators with the configured role (ROLE_API_ACCESS by default). */
 final class ChatPanelAccessTest extends WebTestCase
 {
     use AdministratorTrait;

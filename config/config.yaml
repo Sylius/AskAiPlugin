@@ -6,9 +6,6 @@ parameters:
 
 sylius_ai_assistant:
     navigation:
-        # The admin pages the agent may open, keyed by the Admin API collection segment: the resource's
-        # show (or edit) page and its list page, with the grid filter a search term goes to. Add a
-        # resource of your own under the same key in your application, or switch one off with `false`.
         pages:
             products: { repository: sylius.repository.product, field: code, show: sylius_admin_product_show, edit: sylius_admin_product_update, index: sylius_admin_product_index, search: search }
             product-variants: { repository: sylius.repository.product_variant, field: code, edit: sylius_admin_product_variant_update, parent: { param: productId, path: product.id } }
@@ -42,9 +39,6 @@ twig:
 framework:
     messenger:
         buses:
-            # No doctrine_transaction middleware: a turn runs for seconds and the action
-            # executor must see rows committed by the Admin API process meanwhile. The
-            # worker's connection is pinged before a turn and closed after it instead.
             sylius_ai_assistant.command_bus:
                 middleware:
                     - doctrine_ping_connection

@@ -16,10 +16,6 @@ namespace Sylius\AiAssistantPlugin\Entity;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Model\ResourceInterface;
 
-/**
- * A write the agent wanted to perform against the Admin API, held for a human decision.
- * Captured at the API client level (method + path + body), so it covers every tool.
- */
 interface AgentActionInterface extends ResourceInterface
 {
     public function getId(): ?int;
@@ -28,7 +24,6 @@ interface AgentActionInterface extends ResourceInterface
 
     public function setConversation(?ConversationInterface $conversation): void;
 
-    /** One of AgentActionStates::STATE_*. */
     public function getState(): string;
 
     public function isProposed(): bool;
@@ -45,7 +40,6 @@ interface AgentActionInterface extends ResourceInterface
 
     public function getHttpMethod(): string;
 
-    /** Stored upper-cased. */
     public function setHttpMethod(string $httpMethod): void;
 
     public function getPath(): string;
@@ -78,6 +72,5 @@ interface AgentActionInterface extends ResourceInterface
 
     public function markFailed(string $error): void;
 
-    /** Short human label: "update_product (PUT products/MUG)". */
     public function getLabel(): string;
 }

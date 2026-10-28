@@ -14,13 +14,8 @@ declare(strict_types=1);
 namespace Sylius\AiAssistantPlugin\Chat;
 
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Symfony\AI\Platform\Message\AssistantMessage;
 
 interface ConversationChatInterface
 {
-    /**
-     * Runs one turn of the conversation: the prompt goes to the agent as the conversation's
-     * administrator, the reply (and whatever the agent proposed on the way) is persisted.
-     */
-    public function submit(ConversationInterface $conversation, string $prompt): AssistantMessage;
+    public function submit(ConversationInterface $conversation, ?string $prompt = null): ?string;
 }

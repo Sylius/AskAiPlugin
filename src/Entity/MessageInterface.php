@@ -14,16 +14,20 @@ declare(strict_types=1);
 namespace Sylius\AiAssistantPlugin\Entity;
 
 use Sylius\Resource\Model\ResourceInterface;
+use Symfony\Component\Uid\UuidV7;
 
 interface MessageInterface extends ResourceInterface
 {
     public function getId(): ?int;
 
+    public function getUuid(): UuidV7;
+
+    public function setUuid(UuidV7 $uuid): void;
+
     public function getConversation(): ?ConversationInterface;
 
     public function setConversation(?ConversationInterface $conversation): void;
 
-    /** One of MessageRoles::ROLE_*. */
     public function getRole(): string;
 
     public function setRole(string $role): void;
@@ -32,12 +36,7 @@ interface MessageInterface extends ResourceInterface
 
     public function setContent(string $content): void;
 
-    /**
-     * Tools the assistant called while producing this message, in order: list of {name, arguments}.
-     * A trace for the administrator, not conversation history.
-     *
-     * @return list<array{name: string, arguments: array<string, mixed>}>
-     */
+    /** @return list<array{name: string, arguments: array<string, mixed>}> */
     public function getToolCalls(): array;
 
     /** @param list<array{name: string, arguments: array<string, mixed>}> $toolCalls */

@@ -14,94 +14,106 @@ declare(strict_types=1);
 namespace Sylius\AiAssistantPlugin\Chat;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallTraceInterface;
+use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
 use Sylius\AiAssistantPlugin\Entity\MessageInterface as MessageEntityInterface;
 use Sylius\AiAssistantPlugin\Entity\MessageRoles;
 use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Symfony\AI\Chat\ManagedStoreInterface;
-use Symfony\AI\Chat\MessageStoreInterface;
+use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
+use Symfony\AI\Agent\Exception\ConflictException;
+use Symfony\AI\Agent\Exception\RuntimeException;
+use Symfony\AI\Agent\MessageStore\MessageStoreInterface;
 use Symfony\AI\Platform\Message\AssistantMessage;
 use Symfony\AI\Platform\Message\Message;
 use Symfony\AI\Platform\Message\MessageBag;
 use Symfony\AI\Platform\Message\MessageInterface;
+use Symfony\AI\Platform\Result\ToolCall;
+use Symfony\Component\Uid\AbstractUid;
+use Symfony\Component\Uid\TimeBasedUidInterface;
+use Symfony\Component\Uid\UuidV7;
 
-/**
- * Symfony AI message store backed by one Conversation and its Message entities.
- *
- * The store is created per conversation (see ConversationChat). `load()` maps the persisted
- * user/assistant messages to a MessageBag; panel notices (role "notice") are not part of
- * the model-facing history, the handler folds them into the prompt. `save()` persists only
- * what the agent added since `load()`: the assistant reply, with the tools called during the
- * turn (from the trace). User messages are written by the panel when they are submitted, so
- * they are never duplicated here.
- */
-final class ConversationMessageStore implements MessageStoreInterface, ManagedStoreInterface
+final class ConversationMessageStore implements MessageStoreInterface
 {
-    /** @var array<string, true> ids of the platform messages handed out by load() */
-    private array $loaded = [];
-
+    /** @param RepositoryInterface<ConversationInterface> $conversationRepository */
     public function __construct(
-        private readonly ConversationInterface $conversation,
+        private readonly RepositoryInterface $conversationRepository,
+        private readonly ChatTurnContextInterface $context,
         private readonly MessageFactoryInterface $messageFactory,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ToolCallTraceInterface $trace,
     ) {
     }
 
-    public function setup(array $options = []): void
+    public function load(AbstractUid&TimeBasedUidInterface $id): MessageBag
     {
-        // The schema is managed by the plugin's Doctrine migrations.
-    }
-
-    public function drop(): void
-    {
-        foreach ($this->conversation->getMessages() as $message) {
-            $this->entityManager->remove($message);
-        }
-        $this->conversation->getMessages()->clear();
-        $this->entityManager->flush();
-        $this->loaded = [];
-    }
-
-    public function load(): MessageBag
-    {
-        $messages = [];
-        $this->loaded = [];
-        foreach ($this->conversation->getMessages() as $message) {
-            $mapped = $this->toPlatformMessage($message);
-            if (null !== $mapped) {
-                $messages[] = $mapped;
-                $this->loaded[$mapped->getId()->toRfc4122()] = true;
-            }
-        }
-
-        return new MessageBag(...$messages);
+        return MessageBag::forId($id, ...array_map(self::toPlatformMessage(...), $this->get($id)->getMessages()->toArray()));
     }
 
     public function save(MessageBag $messages): void
     {
-        // Processors may prepend to the bag (system prompt), so new messages are told apart by id, not position.
-        foreach ($messages->getMessages() as $message) {
-            if (!$message instanceof AssistantMessage || isset($this->loaded[$message->getId()->toRfc4122()])) {
-                continue;
+        $conversation = $this->get($messages->getId());
+        $ids = array_map(static fn (MessageInterface $message): string => $message->getId()->toRfc4122(), $messages->getMessages());
+        $stored = [];
+        $continued = [];
+        foreach ($conversation->getMessages() as $message) {
+            $stored[$message->getUuid()->toRfc4122()] = true;
+            if (MessageRoles::ROLE_NOTICE !== $message->getRole()) {
+                $continued[] = $message->getUuid()->toRfc4122();
             }
-            $this->loaded[$message->getId()->toRfc4122()] = true;
-
-            $text = $message->asText();
-            $entity = $this->messageFactory->createForConversation($this->conversation, MessageRoles::ROLE_ASSISTANT, null !== $text && '' !== $text ? $text : '(no answer)');
-            $entity->setToolCalls($this->trace->drain());
+        }
+        if ($continued !== array_values(array_intersect($ids, $continued))) {
+            throw ConflictException::forMessages($messages);
         }
 
+        $new = 0;
+        $toolCalls = [];
+        foreach ($messages->getMessages() as $message) {
+            if (!$message instanceof AssistantMessage) {
+                continue;
+            }
+            $toolCalls = [...$toolCalls, ...array_map(static fn (ToolCall $call): array => ['name' => $call->getName(), 'arguments' => $call->getArguments()], $message->getToolCalls())];
+            $text = (string) $message->asText();
+            if ('' === $text && $message->hasToolCalls()) {
+                continue;
+            }
+            if (!isset($stored[$message->getId()->toRfc4122()])) {
+                $reply = $this->messageFactory->createForConversation($conversation, MessageRoles::ROLE_ASSISTANT, '' !== $text ? $text : '(no answer)');
+                $reply->setUuid(UuidV7::fromString($message->getId()->toRfc4122()));
+                $reply->setToolCalls($toolCalls);
+                ++$new;
+            }
+            $toolCalls = [];
+        }
+
+        if ($new > 0) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function delete(AbstractUid&TimeBasedUidInterface $id): void
+    {
+        $this->entityManager->remove($this->get($id));
         $this->entityManager->flush();
     }
 
-    private function toPlatformMessage(MessageEntityInterface $message): ?MessageInterface
+    private function get(AbstractUid&TimeBasedUidInterface $id): ConversationInterface
     {
-        return match ($message->getRole()) {
-            MessageRoles::ROLE_USER => Message::ofUser($message->getContent()),
+        $conversation = $this->context->getConversation();
+        if (null !== $conversation && $conversation->getUuid()->equals($id)) {
+            return $conversation;
+        }
+
+        return $this->conversationRepository->findOneBy(['uuid' => $id])
+            ?? throw new RuntimeException(sprintf('There is no conversation "%s".', $id));
+    }
+
+    private static function toPlatformMessage(MessageEntityInterface $message): MessageInterface
+    {
+        $platformMessage = match ($message->getRole()) {
             MessageRoles::ROLE_ASSISTANT => Message::ofAssistant($message->getContent()),
-            default => null,
+            MessageRoles::ROLE_NOTICE => Message::ofUser(SystemNotices::prompt([$message->getContent()])),
+            default => Message::ofUser($message->getContent()),
         };
+
+        return $platformMessage->withId($message->getUuid());
     }
 }

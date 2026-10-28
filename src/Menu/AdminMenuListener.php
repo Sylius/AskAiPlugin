@@ -15,7 +15,6 @@ namespace Sylius\AiAssistantPlugin\Menu;
 
 use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
 
-/** Adds the "AI assistant" section (conversations, agent actions) to the admin menu, before Configuration. */
 final class AdminMenuListener
 {
     public const SECTION = 'sylius_ai_assistant';

@@ -102,12 +102,7 @@ final class ChatPanelComponent
         return $conversation;
     }
 
-    /**
-     * Messages and actions interleaved by creation time, so a proposal card shows up
-     * right after the assistant message that announced it.
-     *
-     * @return list<MessageInterface|AgentActionInterface>
-     */
+    /** @return list<MessageInterface|AgentActionInterface> */
     public function getTimeline(): array
     {
         $conversation = $this->getConversation();
@@ -126,10 +121,6 @@ final class ChatPanelComponent
         $this->open = !$this->open;
     }
 
-    /**
-     * Polling target while a turn runs: re-renders, and performs a navigation the agent asked
-     * for (consumed here so a reload does not repeat it).
-     */
     #[LiveAction]
     public function refresh(): void
     {
@@ -142,7 +133,6 @@ final class ChatPanelComponent
         $conversation->setPendingNavigation(null);
         $this->entityManager->flush();
 
-        // Already there (e.g. the next step of a chain on the same product): no reload.
         $referer = (string) $this->requestStack->getCurrentRequest()?->headers->get('referer');
         if ('' !== $referer && self::samePage($referer, $url)) {
             return;
@@ -172,11 +162,6 @@ final class ChatPanelComponent
         $this->messageBus->dispatch(new RunAgentTurn($conversation->getId()));
     }
 
-    /**
-     * Stops waiting for a turn that is not coming back (worker died, CLI hung): the
-     * conversation is usable again. A turn still running in the worker is not killed; if it
-     * finishes later its reply simply shows up.
-     */
     #[LiveAction]
     public function cancel(): void
     {
@@ -251,10 +236,6 @@ final class ChatPanelComponent
         return $action;
     }
 
-    /**
-     * The administrator the panel works for. Every action goes through here, so an administrator without
-     * the configured role (the hook template checks the same one) gets a denial, not a half-done turn.
-     */
     private function getAdminUser(): AdminUserInterface
     {
         if (!$this->security->isGranted($this->accessRole)) {

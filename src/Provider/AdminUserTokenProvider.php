@@ -20,11 +20,6 @@ use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
-/**
- * Decorates the Admin MCP token provider: inside a chat turn, or while executing an approved
- * action, the Admin API JWT is minted for that administrator; every other case (OAuth
- * clients, credentials) falls through.
- */
 final class AdminUserTokenProvider implements AdminUserTokenProviderInterface
 {
     private ?AdminUserInterface $actingAs = null;

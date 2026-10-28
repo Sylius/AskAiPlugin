@@ -16,7 +16,6 @@ namespace Tests\Sylius\AiAssistantPlugin\Unit\Translations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
-/** Every locale file ships the same keys as the English one, and the templates use only keys that exist. */
 final class TranslationFilesTest extends TestCase
 {
     private const DIR = __DIR__ . '/../../../translations';
@@ -45,7 +44,7 @@ final class TranslationFilesTest extends TestCase
         self::assertSame([], array_values(array_diff(array_unique($used), $keys)), 'Keys used in templates but missing from messages.en.yaml');
     }
 
-    /** @return list<string> dotted keys, sorted */
+    /** @return list<string> */
     private function keys(string $locale): array
     {
         /** @var array<string, mixed> $tree */

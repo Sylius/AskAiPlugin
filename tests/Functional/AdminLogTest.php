@@ -23,7 +23,6 @@ use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-/** The read-only chat log in the admin: conversation and agent action grids and pages. */
 final class AdminLogTest extends WebTestCase
 {
     use AdministratorTrait;

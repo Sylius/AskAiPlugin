@@ -99,8 +99,6 @@ final class CollectToolsPassTest extends TestCase
         $container->setParameter('sylius_ai_assistant.tools.write_prefixes', $writePrefixes);
         $container->setParameter('sylius_ai_assistant.tools.exclude', $exclude);
 
-        // As symfony/ai-bundle defines them: the toolbox is a child of the abstract one, which holds every
-        // "ai.tool" tagged service; the child's own argument is the explicit list from ai.yaml, when there is one.
         $container->setDefinition('ai.toolbox.abstract', (new Definition(\stdClass::class))->setAbstract(true)->setArguments([new TaggedIteratorArgument('ai.tool')]));
         $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE, new ChildDefinition('ai.toolbox.abstract'));
         $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE . '.memory_factory', new Definition(\stdClass::class));
@@ -112,7 +110,7 @@ final class CollectToolsPassTest extends TestCase
         return $container;
     }
 
-    /** @return list<string> the tool names registered with the memory factory */
+    /** @return list<string> */
     private function registeredAdminMcpTools(ContainerBuilder $container): array
     {
         $names = [];
@@ -124,7 +122,7 @@ final class CollectToolsPassTest extends TestCase
         return $names;
     }
 
-    /** @return list<string> the service ids in the toolbox */
+    /** @return list<string> */
     private function toolbox(ContainerBuilder $container): array
     {
         $tools = $container->getDefinition(CollectToolsPass::TOOLBOX_SERVICE)->getArgument(0);

@@ -115,6 +115,12 @@ final class ConfigurationTest extends TestCase
         $this->process(['prompt' => ['time_zone' => 'Mars/Olympus']]);
     }
 
+    public function testTheOutputBudgetIsConfigurable(): void
+    {
+        self::assertSame(8192, $this->process([])['max_output_tokens']);
+        self::assertSame(16000, $this->process(['max_output_tokens' => 16000])['max_output_tokens']);
+    }
+
     public function testThePanelIsForApiAccessByDefault(): void
     {
         self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);

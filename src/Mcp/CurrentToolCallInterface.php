@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\Mcp;
 
-/** Which tool is executing right now, so a proposed write can be labelled with it. */
 interface CurrentToolCallInterface
 {
     /** @param array<string, mixed>|null $arguments */

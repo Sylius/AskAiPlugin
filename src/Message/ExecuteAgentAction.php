@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\Message;
 
-/** Dispatched when an administrator approves a proposed action. */
 final class ExecuteAgentAction
 {
     public function __construct(

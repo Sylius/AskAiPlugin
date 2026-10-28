@@ -1,5 +1,3 @@
-# The read-only chat log in the admin: conversations and the agent's proposed actions (audit log).
-# Loaded by the extension's prepend(), see SyliusAiAssistantExtension.
 sylius_grid:
     grids:
         sylius_ai_assistant_admin_conversation:

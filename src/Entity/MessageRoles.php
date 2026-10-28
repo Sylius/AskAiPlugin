@@ -19,7 +19,6 @@ final class MessageRoles
 
     public const ROLE_ASSISTANT = 'assistant';
 
-    /** Written by the panel (approval outcomes, failures); shown to the administrator and folded into the next prompt, never model-authored. */
     public const ROLE_NOTICE = 'notice';
 
     private function __construct()

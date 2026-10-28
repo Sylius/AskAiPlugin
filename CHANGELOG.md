@@ -14,6 +14,7 @@ and the Symfony AI components.
   replayed as the approving administrator.
 - Navigation: the agent opens admin pages (show, edit, list with grid search) instead of pasting data.
 - The trace of the tools called under each reply.
+- The agent continues and saves the conversation through its message store (`message_store` of the agent config, backed by the entities; a conversation has a uuid for it).
 - Entities are Sylius resources (interfaces, XML mapping, `sylius_ai_assistant.resources`), every service has an id and an interface.
 - A failed turn ends in the `failed` state with a notice; a stuck turn can be cancelled from the panel.
 - The system prompt is a text template (`config/prompts/system_prompt.txt`; `{now}`, `{pages}` and `{store_instructions}` rendered by Symfony AI); `prompt.file` of the agent points at your own copy.

@@ -16,12 +16,10 @@ namespace Sylius\AiAssistantPlugin\Agent\Toolbox;
 use Sylius\AiAssistantPlugin\Mcp\CurrentToolCallInterface;
 use Symfony\AI\Agent\Toolbox\Event\ToolCallRequested;
 
-/** When the agent calls a tool: label the write it may propose and add the call to the turn's trace. */
 final class ToolCallListener
 {
     public function __construct(
         private readonly CurrentToolCallInterface $currentToolCall,
-        private readonly ToolCallTraceInterface $trace,
     ) {
     }
 
@@ -30,6 +28,5 @@ final class ToolCallListener
         $call = $event->getToolCall();
 
         $this->currentToolCall->set($call->getName(), $call->getArguments());
-        $this->trace->record($call->getId(), $call->getName(), $call->getArguments());
     }
 }

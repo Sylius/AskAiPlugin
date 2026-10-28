@@ -20,7 +20,6 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 
-/** The open chat panel, put together from the `sylius_ai_assistant.chat_panel` twig hooks. */
 final class ChatPanelTest extends WebTestCase
 {
     use AdministratorTrait;

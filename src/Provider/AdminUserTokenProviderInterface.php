@@ -16,9 +16,7 @@ namespace Sylius\AiAssistantPlugin\Provider;
 use Sylius\AdminMcpServerPlugin\Provider\TokenProviderInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
 
-/** An Admin MCP token provider that can mint the Admin API token of a given administrator. */
 interface AdminUserTokenProviderInterface extends TokenProviderInterface
 {
-    /** Scope the following API calls to this administrator (null resets). */
     public function actAs(?AdminUserInterface $admin): void;
 }

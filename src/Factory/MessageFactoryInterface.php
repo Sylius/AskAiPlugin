@@ -22,6 +22,5 @@ use Sylius\Resource\Factory\FactoryInterface;
  */
 interface MessageFactoryInterface extends FactoryInterface
 {
-    /** A message of the conversation, added to it; $role is one of MessageRoles::ROLE_*. */
     public function createForConversation(ConversationInterface $conversation, string $role, string $content): MessageInterface;
 }

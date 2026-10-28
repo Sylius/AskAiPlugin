@@ -18,10 +18,6 @@ use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
 use Sylius\AiAssistantPlugin\Entity\AgentActionStates;
 use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProviderInterface;
 
-/**
- * Replays an approved action against the Admin API as the administrator who approved it.
- * Runs outside a chat turn, so the proposing client passes the call straight through.
- */
 final class AgentActionExecutor implements AgentActionExecutorInterface
 {
     public function __construct(
