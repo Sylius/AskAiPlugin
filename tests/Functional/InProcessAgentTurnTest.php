@@ -27,7 +27,6 @@ use Symfony\AI\Platform\Result\ResultInterface;
 use Symfony\AI\Platform\Result\TextResult;
 use Symfony\AI\Platform\Result\ToolCall;
 use Symfony\AI\Platform\Result\ToolCallResult;
-use Symfony\AI\Platform\Tool\Tool;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
 
@@ -59,7 +58,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         $templateVars = [];
         $platform->setScript(static function (Model $model, array|string|object $input, array $options) use (&$calls, &$exposedTools, &$templateVars): ResultInterface {
             ++$calls;
-            $exposedTools = array_map(static fn (Tool $tool): string => $tool->getName(), array_filter($options['tools'] ?? [], static fn (mixed $t): bool => $t instanceof Tool));
+            $exposedTools = array_map(static fn (array $tool): string => $tool['function']['name'], $options['tools'] ?? []);
             $templateVars = $options['template_vars'] ?? [];
 
             if (1 === $calls) {
