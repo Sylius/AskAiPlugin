@@ -22,14 +22,18 @@ export async function openPanel({ newConversation = true } = {}) {
     await page.waitForURL('**/admin/**');
     await page.click('.ai-assistant__toggle');
     await page.waitForSelector('.ai-assistant__panel');
-    if (newConversation) {
-        await page.click('.ai-assistant__panel button[data-live-action-param="startConversation"]');
-        await page.waitForFunction(() => document.querySelector('.ai-assistant__messages')?.innerText.includes('What would you like to do?'));
-    }
+    // The id of the conversation the panel shows, from the live component's props: null before the first one.
+    const conversationId = () => page.evaluate(() => JSON.parse(document.querySelector('.ai-assistant').dataset.livePropsValue).conversationId);
     let shot = 0;
     const api = {
         page,
         browser,
+        /** Starts a new conversation and waits until the panel shows it (not its text: the intro reads the same before and after). */
+        newConversation: async () => {
+            const before = await conversationId();
+            await page.click('.ai-assistant__panel button[data-live-action-param="startConversation"]');
+            await page.waitForFunction((before) => JSON.parse(document.querySelector('.ai-assistant').dataset.livePropsValue).conversationId !== before, before);
+        },
         snap: async (name) => {
             await page.screenshot({ path: `${SHOTS}${String(++shot).padStart(2, '0')}-${name}.png` });
         },
@@ -57,15 +61,21 @@ export async function openPanel({ newConversation = true } = {}) {
         approveLast: async (expectUrl = null) => {
             const approve = page.locator('.ai-assistant__action button[data-live-action-param="approve"]').last();
             if (!(await approve.count())) throw new Error('no proposal card to approve');
+            const id = await approve.locator('xpath=ancestor::*[@data-action-id]').getAttribute('data-action-id');
             await approve.click();
             if (expectUrl) {
                 try { await page.waitForURL(expectUrl, { timeout: 240000 }); } catch { log('!! after approve did NOT navigate; at', page.url()); }
                 await page.waitForSelector('.ai-assistant__panel');
             }
+            // Execution runs in the worker: wait for this card (not the last one: the follow-up turn may propose another) to leave proposed (warning) / approved (info).
+            await page.waitForFunction((id) => { const badge = document.querySelector(`.ai-assistant__action[data-action-id="${id}"] .badge`); return badge && !badge.matches('.bg-warning-lt, .bg-info-lt'); }, id, { timeout: 240000 });
             await api.idle();
             log('after approve | url:', page.url().replace(BASE, ''), '| follow-up:', JSON.stringify((await api.lastReply()).slice(0, 140)));
         },
         close: () => browser.close(),
     };
+    if (newConversation) {
+        await api.newConversation();
+    }
     return api;
 }

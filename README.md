@@ -187,6 +187,7 @@ sylius_ai_assistant:
     prompt:
         additional_instructions: ~  # rules of the store appended to the system prompt, see The agent
     poll_interval: 2000             # ms, how often the panel polls during a turn
+    suggestions: [ ... ]            # the questions offered on an empty conversation, see The chat panel
     navigation:
         pages: { ... }              # the admin pages the agent may open, see Navigation
     resources:                      # Sylius resources: conversation, message, agent_action
@@ -378,6 +379,7 @@ fork and no copy of a service definition is needed for:
 | A tool of your own                                        | `#[AsTool]` + the `sylius_ai_assistant.tool` tag, or `tools:` in `ai.yaml` ([Your own tools](#your-own-tools)) |
 | A resource of your own the agent may open                 | `sylius_ai_assistant.navigation.pages` ([Navigation](#navigation))                           |
 | Who sees and uses the panel                               | `sylius_ai_assistant.access.role`                                                            |
+| The store's own suggested questions                       | `sylius_ai_assistant.suggestions` ([The chat panel](#the-chat-panel))                        |
 | Something added to, removed from or reordered in the panel | the `sylius_ai_assistant.chat_panel.*` twig hooks ([The chat panel](#the-chat-panel))         |
 | Another look for a bubble, the action card, the log pages | `templates/bundles/SyliusAiAssistantPlugin/…` ([Models and services](#models-and-services)) |
 | Extra fields on the entities, another repository          | `sylius_ai_assistant.resources.<name>.classes` ([Models and services](#models-and-services)) |
@@ -417,8 +419,20 @@ The open panel renders the `sylius_ai_assistant.chat_panel` hook with the live c
 | `sylius_ai_assistant.chat_panel.body.empty_state` | `intro` (100), `suggestions` (0)                              |
 | `sylius_ai_assistant.chat_panel.footer`           | `composer` (0)                                                |
 
-So the usual `sylius_twig_hooks` configuration adds, replaces, reorders or disables a part, for
-example a notice above the composer or the store's own suggested questions:
+The suggested questions on an empty conversation are a list in the configuration, each a
+translation key or plain text; the list replaces the default one, so give the whole set, in
+order, and an empty list shows none:
+
+```yaml
+sylius_ai_assistant:
+    suggestions:
+        - app.ai_assistant.suggestion.unpaid_orders      # translated in your messages.<locale>.yaml
+        - Which coupons expire this month?               # or plain text, as is (a literal % is written %%)
+        - sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip   # one of the defaults kept
+```
+
+For anything else, the usual `sylius_twig_hooks` configuration adds, replaces, reorders or
+disables a part, for example a notice above the composer or suggestions rendered your own way:
 
 ```yaml
 sylius_twig_hooks:
@@ -433,8 +447,9 @@ sylius_twig_hooks:
 ```
 
 A suggestion is any element with `data-ai-assistant-suggestion="<the question>"`: clicking it
-sends the question. The composer's textarea keeps the `ai-assistant__input` class and the
-`draft` live model, which the keyboard handling and the browser tests rely on.
+sends the question; the configured list is `panel.suggestions` in the hook context.
+The composer's textarea keeps the `ai-assistant__input` class and the `draft` live model, which
+the keyboard handling and the browser tests rely on.
 
 ## The write gate
 

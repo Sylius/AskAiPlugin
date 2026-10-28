@@ -11,9 +11,11 @@ npm run clickthrough   # read question, write → proposal, approve, navigation,
 npm run navigation     # "show me…" requests open admin pages instead of listing data
 npm run approve-edit   # an approved change opens the edit page of what changed
 npm run scroll         # the timeline stays scrolled to the newest message (send, run, reply, reload, reopen)
+npm run suggestions  # the empty-state suggestions are offered and a click sends each one as the first message
 ```
 
 Environment: `BASE_URL` (default `http://127.0.0.1:8000`), `ADMIN_USERNAME`/`ADMIN_PASSWORD`
 (default `sylius`/`sylius`), `HEADED=1` to watch, `PLAYWRIGHT_CHROMIUM=<path>` to use a
 browser binary other than the one Playwright installed. The scripts rename the product
-`Ethereal_Drift_T_Shirt` from the default fixtures; reset its name afterwards if it matters.
+`Ethereal_Drift_T_Shirt` from the default fixtures and `suggestions` creates the customer group `vip`;
+reset them afterwards if it matters.

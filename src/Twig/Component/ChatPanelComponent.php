@@ -53,10 +53,14 @@ final class ChatPanelComponent
     #[LiveProp]
     public int $pollInterval;
 
+    /** @var list<string> */
+    public readonly array $suggestions;
+
     /**
      * @param RepositoryInterface<ConversationInterface> $conversationRepository
      * @param RepositoryInterface<AgentActionInterface> $actionRepository
      * @param FactoryInterface<ConversationInterface> $conversationFactory
+     * @param list<string> $suggestions
      */
     public function __construct(
         private readonly RepositoryInterface $conversationRepository,
@@ -69,9 +73,11 @@ final class ChatPanelComponent
         private readonly RequestStack $requestStack,
         private readonly ConversationTimelineInterface $timeline,
         int $pollInterval,
+        array $suggestions,
         private readonly string $accessRole,
     ) {
         $this->pollInterval = $pollInterval;
+        $this->suggestions = $suggestions;
     }
 
     public function mount(): void
