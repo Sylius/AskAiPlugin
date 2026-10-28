@@ -106,6 +106,15 @@ final class ConfigurationTest extends TestCase
         self::assertSame([], $config['suggestions'], 'A later file (when@test, a dev override) replaces the list instead of appending to it.');
     }
 
+    public function testTheStorePicksTheTimeZoneTodayIsCountedIn(): void
+    {
+        self::assertNull($this->process([])['prompt']['time_zone'], 'By default the PHP process decides.');
+        self::assertSame('Europe/Warsaw', $this->process(['prompt' => ['time_zone' => 'Europe/Warsaw']])['prompt']['time_zone']);
+
+        $this->expectException(InvalidConfigurationException::class);
+        $this->process(['prompt' => ['time_zone' => 'Mars/Olympus']]);
+    }
+
     public function testThePanelIsForApiAccessByDefault(): void
     {
         self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);
