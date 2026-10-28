@@ -89,6 +89,23 @@ final class ConfigurationTest extends TestCase
         self::assertSame("Answer in Polish.\n", $this->process(['prompt' => ['additional_instructions' => "Answer in Polish.\n"]])['prompt']['additional_instructions']);
     }
 
+    public function testTheStoreReplacesTheSuggestedQuestions(): void
+    {
+        self::assertSame([
+            'sylius_ai_assistant.ui.suggestion.what_are_the_latest_orders',
+            'sylius_ai_assistant.ui.suggestion.which_orders_are_waiting_to_be_shipped',
+            'sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip',
+        ], $this->process([])['suggestions']);
+
+        $config = $this->process(['suggestions' => ['app.ai_assistant.suggestion.unpaid_orders', 'Which coupons expire this month?']]);
+        self::assertSame(['app.ai_assistant.suggestion.unpaid_orders', 'Which coupons expire this month?'], $config['suggestions'], 'Keys and plain text mix; the list replaces the default one.');
+
+        self::assertSame([], $this->process(['suggestions' => []])['suggestions'], 'No suggestions at all is a choice.');
+
+        $config = $this->process(['suggestions' => ['app.ai_assistant.suggestion.unpaid_orders']], ['suggestions' => []]);
+        self::assertSame([], $config['suggestions'], 'A later file (when@test, a dev override) replaces the list instead of appending to it.');
+    }
+
     public function testThePanelIsForApiAccessByDefault(): void
     {
         self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);
@@ -124,12 +141,12 @@ final class ConfigurationTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param array<string, mixed> ...$configs
      *
      * @return array<string, mixed>
      */
-    private function process(array $config): array
+    private function process(array ...$configs): array
     {
-        return (new Processor())->processConfiguration(new Configuration(), [$config]);
+        return (new Processor())->processConfiguration(new Configuration(), $configs);
     }
 }

@@ -6,7 +6,8 @@
         "clickthrough": "node clickthrough.mjs",
         "navigation": "node navigation.mjs",
         "approve-edit": "node approve-edit.mjs",
-        "scroll": "node scroll.mjs"
+        "scroll": "node scroll.mjs",
+        "suggestions": "node suggestions.mjs"
     },
     "devDependencies": {
         "playwright": "^1.58.2"

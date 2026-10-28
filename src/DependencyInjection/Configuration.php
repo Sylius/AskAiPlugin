@@ -62,6 +62,16 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(2000)
                     ->info('How often (ms) the chat panel polls for new messages while a turn is running.')
                 ->end()
+                ->arrayNode('suggestions')
+                    ->performNoDeepMerging()
+                    ->info('The questions offered on an empty conversation, in order; each is a translation key or plain text. The list replaces the default one.')
+                    ->scalarPrototype()->cannotBeEmpty()->end()
+                    ->defaultValue([
+                        'sylius_ai_assistant.ui.suggestion.what_are_the_latest_orders',
+                        'sylius_ai_assistant.ui.suggestion.which_orders_are_waiting_to_be_shipped',
+                        'sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip',
+                    ])
+                ->end()
                 ->arrayNode('tools')
                     ->addDefaultsIfNotSet()
                     ->info('Which Admin MCP tools the agent gets: by name prefix, minus the excluded names.')

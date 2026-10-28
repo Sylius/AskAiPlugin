@@ -17,4 +17,5 @@ and the Symfony AI components.
 - Entities are Sylius resources (interfaces, XML mapping, `sylius_ai_assistant.resources`), every service has an id and an interface.
 - A failed turn ends in the `failed` state with a notice; a stuck turn can be cancelled from the panel.
 - The system prompt is a text template (`config/prompts/system_prompt.txt`, `{pages}` rendered by Symfony AI); `prompt.file` of the agent points at your own copy.
+- The suggested questions on an empty conversation come from `sylius_ai_assistant.suggestions` (translation keys or plain text).
 - The admin log: read-only grids of conversations and agent actions under the "AI assistant" menu section, with a conversation page replaying the chat and an action page with the audit details.
