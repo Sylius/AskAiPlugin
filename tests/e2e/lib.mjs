@@ -22,14 +22,18 @@ export async function openPanel({ newConversation = true } = {}) {
     await page.waitForURL('**/admin/**');
     await page.click('.ai-assistant__toggle');
     await page.waitForSelector('.ai-assistant__panel');
-    if (newConversation) {
-        await page.click('.ai-assistant__panel button[data-live-action-param="startConversation"]');
-        await page.waitForFunction(() => document.querySelector('.ai-assistant__messages')?.innerText.includes('What would you like to do?'));
-    }
+    // The id of the conversation the panel shows, from the live component's props: null before the first one.
+    const conversationId = () => page.evaluate(() => JSON.parse(document.querySelector('.ai-assistant').dataset.livePropsValue).conversationId);
     let shot = 0;
     const api = {
         page,
         browser,
+        /** Starts a new conversation and waits until the panel shows it (not its text: the intro reads the same before and after). */
+        newConversation: async () => {
+            const before = await conversationId();
+            await page.click('.ai-assistant__panel button[data-live-action-param="startConversation"]');
+            await page.waitForFunction((before) => JSON.parse(document.querySelector('.ai-assistant').dataset.livePropsValue).conversationId !== before, before);
+        },
         snap: async (name) => {
             await page.screenshot({ path: `${SHOTS}${String(++shot).padStart(2, '0')}-${name}.png` });
         },
@@ -62,10 +66,15 @@ export async function openPanel({ newConversation = true } = {}) {
                 try { await page.waitForURL(expectUrl, { timeout: 240000 }); } catch { log('!! after approve did NOT navigate; at', page.url()); }
                 await page.waitForSelector('.ai-assistant__panel');
             }
+            // Execution runs in the worker: wait for the card to leave proposed (warning) / approved (info) before the follow-up turn.
+            await page.waitForFunction(() => { const badge = [...document.querySelectorAll('.ai-assistant__action .badge')].at(-1); return badge && !badge.matches('.bg-warning-lt, .bg-info-lt'); }, null, { timeout: 240000 });
             await api.idle();
             log('after approve | url:', page.url().replace(BASE, ''), '| follow-up:', JSON.stringify((await api.lastReply()).slice(0, 140)));
         },
         close: () => browser.close(),
     };
+    if (newConversation) {
+        await api.newConversation();
+    }
     return api;
 }

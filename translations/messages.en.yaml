@@ -7,8 +7,8 @@ sylius_ai_assistant:
         what_would_you_like_to_do: What would you like to do?
         i_can_look_up_and_prepare_changes: I can look up orders, products and customers, and prepare changes for you to approve.
         suggestion:
-            show_todays_new_orders: "Show today's new orders"
-            which_products_are_out_of_stock: Which products are out of stock?
+            what_are_the_latest_orders: What are the latest orders?
+            create_a_customer_group_called_vip: Create a customer group called VIP
             which_orders_are_waiting_to_be_shipped: Which orders are waiting to be shipped?
         thinking: Thinking…
         cancel: Cancel
