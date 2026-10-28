@@ -21,6 +21,8 @@
         "symfony/ai-bundle": "^0.14",
         "symfony/ai-chat": "^0.14",
         "symfony/ai-platform": "^0.14",
+        "psr/clock": "^1.0",
+        "symfony/clock": "^7.4 || ^8.1",
         "symfony/http-foundation": "^7.4 || ^8.1",
         "symfony/messenger": "^7.4 || ^8.1",
         "symfony/ux-live-component": "^2.36 || ^3.0",

@@ -186,6 +186,7 @@ sylius_ai_assistant:
         role: ROLE_API_ACCESS       # who sees and uses the panel; a role of your own must imply ROLE_API_ACCESS
     prompt:
         additional_instructions: ~  # rules of the store appended to the system prompt, see The agent
+        time_zone: ~                # what "today" means to the agent, e.g. Europe/Warsaw; default: the worker's PHP time zone
     poll_interval: 2000             # ms, how often the panel polls during a turn
     suggestions: [ ... ]            # the questions offered on an empty conversation, see The chat panel
     navigation:
@@ -218,9 +219,12 @@ ai:
 ```
 
 The system prompt is [`config/prompts/system_prompt.txt`](config/prompts/system_prompt.txt), a
-Symfony AI string template: `{pages}` is rendered with the admin pages the agent may open and
-`{store_instructions}` with what the store adds (`AdminPagesInputProcessor` and
-`StoreInstructionsInputProcessor` set the template variables). A few rules of your own go in
+Symfony AI string template: `{now}` is rendered with today's date (weekday and time zone
+included, so "today" and "this week" mean something; `prompt.time_zone` picks the zone when the
+worker's PHP does not run in the store's), `{pages}` with the admin pages the agent may open and
+`{store_instructions}` with what the store adds (`CurrentDateInputProcessor`,
+`AdminPagesInputProcessor` and `StoreInstructionsInputProcessor` set the template variables).
+The file is sent to the model as it is, so it has no comments. A few rules of your own go in
 without touching the file:
 
 ```yaml

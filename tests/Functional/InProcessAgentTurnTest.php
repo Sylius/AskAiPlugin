@@ -80,6 +80,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         self::assertContains('open_admin_page', $exposedTools, "The assistant's own tool joins the Admin MCP tools.");
         self::assertStringContainsString('products (identifier: code)', $templateVars['pages'] ?? '', 'The prompt gets the pages the agent may open.');
         self::assertStringContainsString('Always answer in Polish.', $templateVars['store_instructions'] ?? '', 'The prompt gets the instructions of the store (test application config).');
+        self::assertMatchesRegularExpression('/^[A-Z][a-z]+day, \d{4}-\d{2}-\d{2} \([A-Za-z_\/]+\)$/', $templateVars['now'] ?? '', 'The prompt gets the current date.');
         self::assertSame('I proposed renaming the product; approve action #1 in the panel.', $reply->asText());
 
         /** @var list<AgentAction> $actions */

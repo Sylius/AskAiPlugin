@@ -18,6 +18,7 @@ use Sylius\AiAssistantPlugin\Agent\AgentActionExecutor;
 use Sylius\AiAssistantPlugin\Agent\AgentActionExecutorInterface;
 use Sylius\AiAssistantPlugin\Agent\ChatTurnContext;
 use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
+use Sylius\AiAssistantPlugin\Agent\CurrentDateInputProcessor;
 use Sylius\AiAssistantPlugin\Agent\Platform\PlatformCallLogger;
 use Sylius\AiAssistantPlugin\Agent\StoreInstructionsInputProcessor;
 use Sylius\AiAssistantPlugin\Agent\Toolbox\ToolCallListener;
@@ -119,7 +120,7 @@ return static function (ContainerConfigurator $container): void {
     $services->alias(ToolCallTraceInterface::class, 'sylius_ai_assistant.agent.tool_call_trace');
 
     // The agent is "ai.agent.sylius_ai_assistant" from symfony/ai-bundle (prepended by the extension); these
-    // processors are tagged for it. The system prompt is the bundle's own (prompt.file), {pages} is its template variable.
+    // processors are tagged for it. The system prompt is the bundle's own (prompt.file); {now}, {pages} and {store_instructions} are its template variables.
     $services->alias('sylius_ai_assistant.agent', CollectToolsPass::AGENT_SERVICE);
     $services->set('sylius_ai_assistant.agent.input_processor.admin_pages', AdminPagesInputProcessor::class)
         ->args([service('sylius_ai_assistant.navigation.admin_url_resolver')])
@@ -127,6 +128,10 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->set('sylius_ai_assistant.agent.input_processor.store_instructions', StoreInstructionsInputProcessor::class)
         ->args([param('sylius_ai_assistant.prompt.additional_instructions')])
+        ->tag('ai.agent.input_processor', ['agent' => CollectToolsPass::AGENT_SERVICE])
+    ;
+    $services->set('sylius_ai_assistant.agent.input_processor.current_date', CurrentDateInputProcessor::class)
+        ->args([service('clock'), param('sylius_ai_assistant.prompt.time_zone')])
         ->tag('ai.agent.input_processor', ['agent' => CollectToolsPass::AGENT_SERVICE])
     ;
 

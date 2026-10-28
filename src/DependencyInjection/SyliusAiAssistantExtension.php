@@ -35,6 +35,7 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
         $container->setParameter('sylius_ai_assistant.poll_interval', $config['poll_interval']);
         $container->setParameter('sylius_ai_assistant.suggestions', $config['suggestions']);
         $container->setParameter('sylius_ai_assistant.prompt.additional_instructions', $config['prompt']['additional_instructions']);
+        $container->setParameter('sylius_ai_assistant.prompt.time_zone', $config['prompt']['time_zone']);
         $container->setParameter('sylius_ai_assistant.tools.read_only_prefixes', $config['tools']['read_only_prefixes']);
         $container->setParameter('sylius_ai_assistant.tools.write_prefixes', $config['tools']['write_prefixes']);
         $container->setParameter('sylius_ai_assistant.tools.exclude', $config['tools']['exclude']);
