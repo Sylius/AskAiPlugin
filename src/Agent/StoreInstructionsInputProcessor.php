@@ -16,11 +16,6 @@ namespace Sylius\AiAssistantPlugin\Agent;
 use Symfony\AI\Agent\Input;
 use Symfony\AI\Agent\InputProcessorInterface;
 
-/**
- * Feeds the system prompt template its {store_instructions} variable: what the store adds to the prompt
- * (sylius_ai_assistant.prompt.additional_instructions) without copying the prompt file, as a section of
- * its own, or nothing when there is nothing to add.
- */
 final class StoreInstructionsInputProcessor implements InputProcessorInterface
 {
     public const VARIABLE = 'store_instructions';

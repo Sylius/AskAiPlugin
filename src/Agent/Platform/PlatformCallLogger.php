@@ -20,10 +20,6 @@ use Symfony\AI\Platform\Message\MessageBag;
 use Symfony\AI\Platform\Result\TextResult;
 use Symfony\AI\Platform\Result\ToolCallResult;
 
-/**
- * Logs each model call of the in-process platforms (debug level, channel sylius_ai_assistant):
- * what was sent (model, messages, tools) and what came back (text or tool calls, stop reason).
- */
 final class PlatformCallLogger
 {
     public function __construct(private readonly LoggerInterface $logger)

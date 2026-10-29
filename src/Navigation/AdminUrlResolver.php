@@ -18,13 +18,7 @@ use Sylius\Resource\Model\ResourceInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * Maps an Admin API resource to the admin pages about it: the page of one resource (show,
- * or edit) and the list page, optionally filtered by the grid's search. The map is a
- * whitelist: the agent can only send the administrator to pages listed here.
- *
- * @phpstan-type PageSpec array{repository: string, field: string, show?: string, edit: string, index?: string, search?: string, parent?: array{param: string, path: string}}
- */
+/** @phpstan-type PageSpec array{repository: string, field: string, show?: string, edit: string, index?: string, search?: string, parent?: array{param: string, path: string}} */
 final class AdminUrlResolver implements AdminUrlResolverInterface
 {
     /** @param array<string, PageSpec> $pages keyed by the Admin API path segment, e.g. "products" */

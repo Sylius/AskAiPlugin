@@ -1,5 +1,3 @@
-# Import from the application's routing (config/routes/sylius_ai_assistant.yaml):
-# the read-only admin pages of the chat log (conversations and agent actions).
 sylius_ai_assistant_admin:
     resource: 'routes/admin.yaml'
     prefix: '/%sylius_admin.path_name%/ai-assistant'

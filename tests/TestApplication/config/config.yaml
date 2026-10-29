@@ -2,10 +2,9 @@ imports:
     - { resource: "@SyliusAdminMcpServerPlugin/config/config.yaml" }
     - { resource: "@SyliusAiAssistantPlugin/config/config.yaml" }
 
-# The application adds a page of its own to the agent's navigation and switches a default one off.
 sylius_ai_assistant:
     prompt:
-        additional_instructions: 'Always answer in Polish.'
+        additional_instructions: 'Our product codes look like Ethereal_Drift_T_Shirt.'
     navigation:
         pages:
             test-products: { repository: sylius.repository.product, field: code, show: sylius_admin_product_show, edit: sylius_admin_product_update, index: sylius_admin_product_index, search: search }
@@ -49,9 +48,6 @@ when@test:
                 platform: sylius_ai_assistant_test.platform
                 model: scripted
 
-# sylius/test-application's own when@prod wires the Doctrine caches through
-# Symfony\Component\Cache\DoctrineProvider, gone since Symfony 6; DoctrineBundle 2 takes the
-# PSR-6 pools directly, so the two provider services become aliases of the pools.
 when@prod:
     services:
         doctrine.result_cache_provider: '@doctrine.result_cache_pool'

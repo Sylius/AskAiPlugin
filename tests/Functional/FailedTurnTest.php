@@ -24,7 +24,6 @@ use Sylius\AiAssistantPlugin\MessageHandler\RunAgentTurnHandler;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
 
-/** A turn that blows up (any throwable, not only runtime exceptions) leaves the conversation failed, never running. */
 final class FailedTurnTest extends KernelTestCase
 {
     use AdministratorTrait;

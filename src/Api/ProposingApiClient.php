@@ -21,12 +21,6 @@ use Sylius\AiAssistantPlugin\Factory\AgentActionFactoryInterface;
 use Sylius\AiAssistantPlugin\Mcp\CurrentToolCallInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
-/**
- * The write gate. Inside a chat turn every write the tools attempt against the Admin API
- * is recorded as a proposed AgentAction instead of being sent; the tool (and so the
- * model) gets a JSON notice to relay to the administrator. Reads pass through, as does
- * everything outside a chat turn (OAuth clients, the action executor).
- */
 final class ProposingApiClient implements ApiClientInterface
 {
     /** @param RepositoryInterface<ConversationInterface> $conversationRepository */
@@ -94,7 +88,6 @@ final class ProposingApiClient implements ApiClientInterface
             try {
                 $action->setSnapshotBefore($this->inner->get($path));
             } catch (\Throwable) {
-                // The diff is a convenience; a missing snapshot must not block the proposal.
             }
         }
 

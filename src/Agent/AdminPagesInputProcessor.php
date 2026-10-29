@@ -17,10 +17,6 @@ use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
 use Symfony\AI\Agent\Input;
 use Symfony\AI\Agent\InputProcessorInterface;
 
-/**
- * Feeds the system prompt template its {pages} variable: the admin pages the agent may open, one per line.
- * The Symfony AI template renderer substitutes it on the platform invocation.
- */
 final class AdminPagesInputProcessor implements InputProcessorInterface
 {
     public const VARIABLE = 'pages';

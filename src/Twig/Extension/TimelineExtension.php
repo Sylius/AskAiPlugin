@@ -17,7 +17,6 @@ use Sylius\AiAssistantPlugin\Chat\ConversationTimelineInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-/** `sylius_ai_assistant_timeline(conversation)` for the conversation page of the admin log. */
 final class TimelineExtension extends AbstractExtension
 {
     public function __construct(

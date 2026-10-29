@@ -16,16 +16,20 @@ namespace Sylius\AiAssistantPlugin\Entity;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Model\ResourceInterface;
+use Symfony\Component\Uid\UuidV7;
 
 interface ConversationInterface extends ResourceInterface
 {
     public function getId(): ?int;
 
+    public function getUuid(): UuidV7;
+
+    public function setUuid(UuidV7 $uuid): void;
+
     public function getAdminUser(): ?AdminUserInterface;
 
     public function setAdminUser(?AdminUserInterface $adminUser): void;
 
-    /** Admin URL the panel should navigate to on its next refresh (set by the agent). */
     public function getPendingNavigation(): ?string;
 
     public function setPendingNavigation(?string $url): void;
@@ -34,7 +38,6 @@ interface ConversationInterface extends ResourceInterface
 
     public function getUpdatedAt(): ?\DateTimeImmutable;
 
-    /** One of ConversationStates::STATE_*. */
     public function getState(): string;
 
     public function isRunning(): bool;

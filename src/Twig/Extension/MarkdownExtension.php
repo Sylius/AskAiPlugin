@@ -21,11 +21,6 @@ use Twig\Extension\AbstractExtension;
 use Twig\Markup;
 use Twig\TwigFilter;
 
-/**
- * Renders the assistant's markdown in the chat panel. Raw HTML in the model's output is
- * escaped and unsafe links are dropped: the content came through tool results the store's
- * data can influence.
- */
 final class MarkdownExtension extends AbstractExtension
 {
     private ?MarkdownConverter $converter = null;

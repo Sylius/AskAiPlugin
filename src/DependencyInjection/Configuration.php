@@ -70,6 +70,11 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(2000)
                     ->info('How often (ms) the chat panel polls for new messages while a turn is running.')
                 ->end()
+                ->integerNode('max_output_tokens')
+                    ->defaultValue(8192)
+                    ->min(1)
+                    ->info('The output token budget of one answer of the default model; a proposed write carries the whole resource.')
+                ->end()
                 ->arrayNode('suggestions')
                     ->performNoDeepMerging()
                     ->info('The questions offered on an empty conversation, in order; each is a translation key or plain text. The list replaces the default one.')
@@ -110,7 +115,6 @@ final class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    /** The admin pages the agent may open; the defaults are in config/config.yaml. */
     private function addNavigationSection(ArrayNodeDefinition $node): void
     {
         $node

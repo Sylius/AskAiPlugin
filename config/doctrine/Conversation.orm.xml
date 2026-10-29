@@ -21,6 +21,7 @@
             <generator strategy="AUTO" />
         </id>
 
+        <field name="uuid" column="uuid" type="uuid" unique="true" />
         <field name="state" column="state" type="string" length="16" />
         <field name="pendingNavigation" column="pending_navigation" type="string" length="1024" nullable="true" />
         <field name="createdAt" column="created_at" type="datetime_immutable" />

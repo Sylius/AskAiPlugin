@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\Mcp;
 
-/** Remembers which tool is executing, so a proposed write can be labelled with it; set by the toolbox listener. */
 final class CurrentToolCall implements CurrentToolCallInterface
 {
     private ?string $name = null;

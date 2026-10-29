@@ -18,10 +18,6 @@ use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
 use Sylius\AiAssistantPlugin\Entity\MessageInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
-/**
- * Messages and agent actions merged by creation time, so an action card shows up right after
- * the assistant message that announced it. Used by the chat panel and the admin log.
- */
 final class ConversationTimeline implements ConversationTimelineInterface
 {
     /** @param RepositoryInterface<AgentActionInterface> $actionRepository */

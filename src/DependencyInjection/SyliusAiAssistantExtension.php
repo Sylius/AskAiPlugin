@@ -56,12 +56,8 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
 
     public function prepend(ContainerBuilder $container): void
     {
-        // Resources (and so the %sylius_ai_assistant.model.*.class% parameters) and the admin grids
-        // are registered here, not in load(): SyliusGridBundle resolves its configuration before this
-        // extension loads, and the grids reference those parameters.
         $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
         $this->registerResources('sylius_ai_assistant', $config['driver'], $config['resources'], $container);
-        // The twig global of config.yaml reads it, and TwigBundle's configuration is merged before this extension loads.
         $container->setParameter('sylius_ai_assistant.access.role', $config['access']['role']);
         (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config')))->load('grids.yaml');
 
@@ -74,10 +70,6 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
             ],
         ]);
 
-        // The agent and its platform are symfony/ai-bundle's: the application overrides any of this under "ai"
-        // (model, prompt file, max_tool_calls, http_client of the platform, …). Out of the box it is the Anthropic
-        // API with ANTHROPIC_API_KEY. The toolbox the bundle builds is replaced by the Admin MCP tools in
-        // CollectToolsPass; the plugin's processors are tagged for this agent in services.php.
         $container->prependExtensionConfig('ai', [
             'platform' => [
                 'anthropic' => [
@@ -87,11 +79,11 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
             'agent' => [
                 CollectToolsPass::AGENT_NAME => [
                     'platform' => 'ai.platform.anthropic',
-                    'model' => 'claude-haiku-4-5',
+                    'model' => 'claude-haiku-4-5?max_output_tokens=' . $config['max_output_tokens'],
                     'prompt' => ['file' => Configuration::DEFAULT_SYSTEM_PROMPT],
                     'tools' => true,
                     'max_tool_calls' => 50,
-                    'exclude_tool_messages' => true,
+                    'message_store' => 'sylius_ai_assistant.chat.message_store',
                     'fault_tolerant_toolbox' => false,
                 ],
             ],
@@ -116,7 +108,6 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
         ];
     }
 
-    /** The models are mapped in config/doctrine (XML, mapped superclasses the resource bundle turns into entities). */
     private function prependDoctrineMappings(ContainerBuilder $container): void
     {
         $config = array_merge(...$container->getExtensionConfig('doctrine'));

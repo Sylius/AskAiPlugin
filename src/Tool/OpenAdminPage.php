@@ -20,13 +20,6 @@ use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 
-/**
- * Lets the agent take the administrator to a resource's admin page. Nothing is modified;
- * the chat panel performs the navigation on its next refresh.
- *
- * The assistant's own tool (tagged "sylius_ai_assistant.tool"), not an Admin MCP tool: it only makes
- * sense inside a chat turn, so it is not served by the MCP server.
- */
 #[AsTool(
     name: 'open_admin_page',
     description: 'open_admin_page(resource, identifier?, page?, search?) → opens an admin page in the administrator\'s browser; this is how you SHOW things (the administrator sees the page at once, do not repeat its content in the chat). `resource` is the Admin API collection name (products, orders, customers, customer-groups, promotions, taxons, …). `identifier` is what the API uses for one resource (product/promotion/taxon code, order tokenValue, customer id); leave it empty to open the list page. `page` is "show" (default), "edit" (the edit form) or "list". `search` filters the list page (e.g. part of a product name, an order number). Nothing is changed by this tool.',

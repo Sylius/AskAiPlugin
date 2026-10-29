@@ -17,7 +17,6 @@ use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
 use Sylius\AiAssistantPlugin\Entity\MessageInterface;
 
-/** What happened in a conversation, in order: messages and the actions the agent proposed. */
 interface ConversationTimelineInterface
 {
     /** @return list<MessageInterface|AgentActionInterface> */

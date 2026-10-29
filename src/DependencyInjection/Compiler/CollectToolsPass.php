@@ -22,18 +22,6 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
 use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * Gives the agent its toolbox: the Admin MCP tools whose names match the configured prefixes and are not
- * excluded by name, called in-process, on top of whatever symfony/ai-bundle already gave it.
- *
- * The agent and its toolbox are symfony/ai-bundle's ("ai.agent.sylius_ai_assistant", prepended by the
- * extension). The bundle's toolbox holds either every service tagged "ai.tool" or the explicit list under
- * "tools" in ai.yaml; both are kept. On top of them the pass adds the services tagged
- * "sylius_ai_assistant.tool" (the plugin's own tools and the application's, `#[AsTool]` classes meant for
- * this agent only) and the Admin MCP tools. The bundle builds each toolbox with a MemoryToolFactory, the
- * same way it registers tools listed explicitly with a name and a description; the pass feeds that factory
- * the name and the description of each `#[McpTool]`.
- */
 final class CollectToolsPass implements CompilerPassInterface
 {
     public const AGENT_NAME = 'sylius_ai_assistant';
@@ -70,10 +58,6 @@ final class CollectToolsPass implements CompilerPassInterface
         $toolbox->replaceArgument(0, array_values($tools));
     }
 
-    /**
-     * The toolbox is a child of "ai.toolbox.abstract": the explicit list from ai.yaml is its own argument, the
-     * tagged iterator of the default case is the parent's.
-     */
     private function currentTools(ContainerBuilder $container, Definition $toolbox): mixed
     {
         try {
@@ -88,11 +72,7 @@ final class CollectToolsPass implements CompilerPassInterface
         return null;
     }
 
-    /**
-     * What the bundle put in the toolbox: the "ai.tool" tagged services, or the explicit list from ai.yaml.
-     *
-     * @return list<Reference>
-     */
+    /** @return list<Reference> */
     private function bundleTools(ContainerBuilder $container, mixed $argument): array
     {
         if ($argument instanceof TaggedIteratorArgument) {
@@ -105,11 +85,7 @@ final class CollectToolsPass implements CompilerPassInterface
         return \is_array($argument) ? array_values(array_filter($argument, static fn (mixed $tool): bool => $tool instanceof Reference)) : [];
     }
 
-    /**
-     * The Admin MCP tools matching the prefixes and not excluded, registered with the memory factory.
-     *
-     * @return list<string> service ids, sorted by tool name
-     */
+    /** @return list<string> */
     private function adminMcpTools(ContainerBuilder $container): array
     {
         /** @var list<string> $prefixes */

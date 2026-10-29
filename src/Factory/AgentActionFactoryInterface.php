@@ -23,8 +23,6 @@ use Sylius\Resource\Factory\FactoryInterface;
 interface AgentActionFactoryInterface extends FactoryInterface
 {
     /**
-     * A write the agent attempted in the conversation (Admin API call + the tool that made it), proposed for approval.
-     *
      * @param array<string, mixed>|null $body
      * @param array<string, mixed>|null $toolArguments
      */

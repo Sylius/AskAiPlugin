@@ -15,12 +15,6 @@ namespace Sylius\AiAssistantPlugin\Agent;
 
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
 
-/**
- * Identity of the chat turn this process serves: which administrator the agent acts as and
- * which conversation collects its proposed actions. Entered by ConversationChat for the
- * duration of a turn; empty everywhere else (web, external MCP clients), which keeps the
- * Admin MCP plugin's own behaviour untouched.
- */
 final class ChatTurnContext implements ChatTurnContextInterface
 {
     private ?ConversationInterface $conversation = null;

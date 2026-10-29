@@ -15,10 +15,6 @@ namespace Sylius\AiAssistantPlugin\Agent;
 
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
 
-/**
- * Identity of the chat turn this process serves: which administrator the agent acts as and
- * which conversation collects its proposed actions. Empty outside a chat turn.
- */
 interface ChatTurnContextInterface
 {
     public function enter(ConversationInterface $conversation): void;

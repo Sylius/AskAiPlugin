@@ -15,7 +15,6 @@ namespace Sylius\AiAssistantPlugin\Agent;
 
 use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
 
-/** Replays an approved action against the Admin API and records the outcome on it. */
 interface AgentActionExecutorInterface
 {
     public function execute(AgentActionInterface $action): void;

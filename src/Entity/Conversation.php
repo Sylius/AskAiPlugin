@@ -16,10 +16,13 @@ namespace Sylius\AiAssistantPlugin\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\AdminUserInterface;
+use Symfony\Component\Uid\UuidV7;
 
 class Conversation implements ConversationInterface
 {
     protected ?int $id = null;
+
+    protected UuidV7 $uuid;
 
     protected ?AdminUserInterface $adminUser = null;
 
@@ -36,6 +39,7 @@ class Conversation implements ConversationInterface
 
     public function __construct()
     {
+        $this->uuid = new UuidV7();
         $this->messages = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -43,6 +47,16 @@ class Conversation implements ConversationInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): UuidV7
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(UuidV7 $uuid): void
+    {
+        $this->uuid = $uuid;
     }
 
     public function getAdminUser(): ?AdminUserInterface
@@ -112,7 +126,6 @@ class Conversation implements ConversationInterface
         }
     }
 
-    /** Doctrine preUpdate lifecycle callback (see the mapping). */
     public function touch(): void
     {
         $this->updatedAt = new \DateTimeImmutable();

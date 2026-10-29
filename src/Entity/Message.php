@@ -13,9 +13,13 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\Entity;
 
+use Symfony\Component\Uid\UuidV7;
+
 class Message implements MessageInterface
 {
     protected ?int $id = null;
+
+    protected UuidV7 $uuid;
 
     protected ?ConversationInterface $conversation = null;
 
@@ -30,12 +34,23 @@ class Message implements MessageInterface
 
     public function __construct()
     {
+        $this->uuid = new UuidV7();
         $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): UuidV7
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(UuidV7 $uuid): void
+    {
+        $this->uuid = $uuid;
     }
 
     public function getConversation(): ?ConversationInterface
