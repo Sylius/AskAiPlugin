@@ -42,7 +42,14 @@ There is no Flex recipe yet; the steps are manual.
 
 ### Step 1 - Add the plugin via Composer
 
+The plugin runs on Symfony AI, which has no stable release yet (`symfony/ai-*` are `1.0@beta`), so
+a project with the default `minimum-stability: stable` of Sylius-Standard refuses to install it.
+Allow beta packages first; `prefer-stable` (already set in Sylius-Standard) keeps everything
+else on stable versions:
+
 ```bash
+composer config minimum-stability beta
+composer config prefer-stable true
 composer require sylius/ask-ai-plugin
 ```
 
@@ -120,6 +127,19 @@ Then import the routes of the admin log (read-only pages listing conversations a
 sylius_ask_ai:
     resource: "@SyliusAskAiPlugin/config/routes.yaml"
 ```
+
+Finally clear the cache, twice:
+
+```bash
+php bin/console cache:clear
+php bin/console cache:clear
+```
+
+The first run rebuilds the container while booting and, as Symfony then considers the cache
+fresh, only re-runs the optional warmers in place: the translation catalogues built before the
+plugin was installed stay, and the panel shows raw `sylius_ask_ai.ui.*` keys. The second run
+finds a fresh container, warms up from scratch and picks up the plugin's translations.
+(Removing `var/cache` before a single `cache:clear` works as well.)
 
 ### Step 4 - Run database migrations
 
