@@ -43,7 +43,6 @@ use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolver;
 use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProvider;
 use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProviderInterface;
-use Sylius\AiAssistantPlugin\Repository\ConversationRepositoryInterface;
 use Sylius\AiAssistantPlugin\Tool\OpenAdminPage;
 use Sylius\AiAssistantPlugin\Twig\Component\ChatPanelComponent;
 use Sylius\AiAssistantPlugin\Twig\Extension\MarkdownExtension;
@@ -67,12 +66,9 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(AgentActionFactoryInterface::class, 'sylius_ai_assistant.factory.agent_action');
 
-    $services->alias(ConversationRepositoryInterface::class, 'sylius_ai_assistant.repository.conversation');
-
     $services->set('sylius_ai_assistant.controller.admin.resume_conversation', ResumeConversationAction::class)
         ->args([
             service('sylius_ai_assistant.repository.conversation'),
-            service('doctrine.orm.entity_manager'),
             service('security.helper'),
             service('security.csrf.token_manager'),
             service('router'),

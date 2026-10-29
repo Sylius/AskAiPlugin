@@ -38,8 +38,6 @@ interface ConversationInterface extends ResourceInterface
 
     public function getUpdatedAt(): ?\DateTimeImmutable;
 
-    public function touch(): void;
-
     public function getState(): string;
 
     public function isRunning(): bool;

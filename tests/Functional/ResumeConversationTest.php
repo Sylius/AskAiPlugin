@@ -13,18 +13,19 @@ declare(strict_types=1);
 
 namespace Tests\Sylius\AiAssistantPlugin\Functional;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\Message;
 use Sylius\AiAssistantPlugin\Entity\MessageRoles;
+use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
 use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
+use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 
 final class ResumeConversationTest extends WebTestCase
 {
     use AdministratorTrait;
+    use InteractsWithLiveComponents;
 
     private KernelBrowser $client;
 
@@ -40,8 +41,8 @@ final class ResumeConversationTest extends WebTestCase
         $this->admin = $this->createAdministrator('resume-test');
         $this->client->loginUser($this->admin, 'admin');
 
-        $this->older = $this->createConversation($this->admin, 'Which orders are waiting to be shipped?', '-2 hours');
-        $this->newer = $this->createConversation($this->admin, 'What are the latest orders?', '-1 hour');
+        $this->older = $this->createConversation($this->admin, 'Which orders are waiting to be shipped?');
+        $this->newer = $this->createConversation($this->admin, 'What are the latest orders?');
     }
 
     public function testThePanelShowsTheNewestConversationUntilAnOlderOneIsResumed(): void
@@ -49,8 +50,7 @@ final class ResumeConversationTest extends WebTestCase
         $this->client->request('GET', '/admin/ai-assistant/conversations');
         self::assertSame($this->newer->getId(), $this->panelConversationId());
 
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $this->older->getId()));
-        $this->client->submitForm('Resume');
+        $this->resume($this->older);
 
         self::assertResponseRedirects(sprintf('/admin/ai-assistant/conversations/%d', $this->older->getId()));
         self::assertSame('1', $this->client->getCookieJar()->get('sylius_ai_assistant_open')?->getValue());
@@ -72,15 +72,17 @@ final class ResumeConversationTest extends WebTestCase
         self::assertSame($this->older->getId(), $this->panelConversationId());
     }
 
-    public function testANewConversationTakesOverFromAResumedOne(): void
+    public function testANewChatTakesOverFromAResumedConversation(): void
     {
         $this->resume($this->older);
-        $fresh = $this->createConversation($this->admin, null);
-        $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));
+        $panel = $this->createLiveComponent('sylius_ai_assistant:panel', [], $this->client)->call('startConversation');
+        $fresh = $panel->component()->conversationId;
+        self::assertNotSame($this->older->getId(), $fresh);
 
+        $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));
         $this->client->request('GET', '/admin/');
 
-        self::assertSame($fresh->getId(), $this->panelConversationId());
+        self::assertSame($fresh, $this->panelConversationId());
     }
 
     public function testTheGridOffersToResumeOnlyTheAdministratorsOwnConversations(): void
@@ -108,7 +110,7 @@ final class ResumeConversationTest extends WebTestCase
         $other = $this->createAdministrator('resume-other');
         $foreign = $this->createConversation($other, 'Create a customer group called VIP');
 
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $foreign->getId()), ['_csrf_token' => $this->csrfToken($foreign)]);
+        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $foreign->getId()));
 
         self::assertResponseStatusCodeSame(404);
     }
@@ -122,25 +124,18 @@ final class ResumeConversationTest extends WebTestCase
 
     public function testResumingWithoutARefererLandsOnTheDashboard(): void
     {
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => $this->csrfToken($this->older)]);
+        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $this->older->getId()));
+        $token = (string) $this->client->getCrawler()->filter('form[action$="/resume"] input[name="_csrf_token"]')->attr('value');
+
+        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => $token], [], ['HTTP_REFERER' => '']);
 
         self::assertResponseRedirects('/admin/');
     }
 
     private function resume(Conversation $conversation): void
     {
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $conversation->getId()), ['_csrf_token' => $this->csrfToken($conversation)]);
-        self::assertResponseRedirects();
-    }
-
-    private function csrfToken(Conversation $conversation): string
-    {
-        $this->client->request('GET', '/admin/');
-        $session = $this->client->getRequest()->getSession();
-        $session->set('_csrf/' . $conversation->getId(), 'test-token');
-        $session->save();
-
-        return 'test-token';
+        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $conversation->getId()));
+        $this->client->submitForm('Resume');
     }
 
     private function panelConversationId(): ?int
@@ -150,31 +145,16 @@ final class ResumeConversationTest extends WebTestCase
         return $props['conversationId'];
     }
 
-    private function createConversation(AdminUser $admin, ?string $question, string $createdAt = 'now'): Conversation
+    private function createConversation(AdminUser $admin, string $question): Conversation
     {
         $conversation = new Conversation();
         $conversation->setAdminUser($this->entityManager()->find(AdminUser::class, $admin->getId()));
-        if (null !== $question) {
-            $message = new Message();
-            $message->setRole(MessageRoles::ROLE_USER);
-            $message->setContent($question);
-            $message->setConversation($conversation);
-            $conversation->addMessage($message);
-        }
+        /** @var MessageFactoryInterface $messages */
+        $messages = self::getContainer()->get('sylius_ai_assistant.factory.message');
+        $messages->createForConversation($conversation, MessageRoles::ROLE_USER, $question);
         $this->entityManager()->persist($conversation);
         $this->entityManager()->flush();
-        $this->entityManager()->createQuery('UPDATE Sylius\\AiAssistantPlugin\\Entity\\Conversation c SET c.createdAt = :createdAt WHERE c.id = :id')
-            ->execute(['createdAt' => new \DateTimeImmutable($createdAt), 'id' => $conversation->getId()]);
-        $this->entityManager()->refresh($conversation);
 
         return $conversation;
-    }
-
-    private function entityManager(): EntityManagerInterface
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get('doctrine.orm.entity_manager');
-
-        return $em;
     }
 }

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\Controller\Admin;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Repository\ConversationRepositoryInterface;
+use Sylius\AiAssistantPlugin\Twig\Component\ChatPanelComponent;
+use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,12 +29,9 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class ResumeConversationAction
 {
-    public const OPEN_COOKIE = 'sylius_ai_assistant_open';
-
-    /** @param ConversationRepositoryInterface<ConversationInterface> $conversationRepository */
+    /** @param RepositoryInterface<ConversationInterface> $conversationRepository */
     public function __construct(
-        private readonly ConversationRepositoryInterface $conversationRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly RepositoryInterface $conversationRepository,
         private readonly Security $security,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RouterInterface $router,
@@ -57,24 +54,11 @@ final class ResumeConversationAction
             throw new AccessDeniedHttpException('Invalid CSRF token.');
         }
 
-        $conversation->touch();
-        $this->entityManager->flush();
+        $request->getSession()->set(ChatPanelComponent::SESSION_CONVERSATION, $id);
 
-        $response = new RedirectResponse($this->targetOf($request));
-        $response->headers->setCookie(Cookie::create(self::OPEN_COOKIE, '1', httpOnly: false));
+        $response = new RedirectResponse((string) $request->headers->get('referer') ?: $this->router->generate('sylius_admin_dashboard'));
+        $response->headers->setCookie(Cookie::create('sylius_ai_assistant_open', '1', httpOnly: false));
 
         return $response;
-    }
-
-    private function targetOf(Request $request): string
-    {
-        $referer = (string) $request->headers->get('referer');
-        $host = parse_url($referer, \PHP_URL_HOST);
-
-        if ('' !== $referer && (null === $host || $host === $request->getHost())) {
-            return $referer;
-        }
-
-        return $this->router->generate('sylius_admin_dashboard');
     }
 }

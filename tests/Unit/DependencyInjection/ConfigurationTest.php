@@ -15,7 +15,6 @@ namespace Tests\Sylius\AiAssistantPlugin\Unit\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use Sylius\AiAssistantPlugin\DependencyInjection\Configuration;
-use Sylius\AiAssistantPlugin\Doctrine\ORM\ConversationRepository;
 use Sylius\AiAssistantPlugin\Entity\AgentAction;
 use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
 use Sylius\AiAssistantPlugin\Entity\Conversation;
@@ -38,20 +37,16 @@ final class ConfigurationTest extends TestCase
         self::assertSame(['conversation', 'message', 'agent_action'], array_keys($config['resources']));
 
         foreach ([
-            'conversation' => [Conversation::class, ConversationInterface::class, ConversationRepository::class],
-            'message' => [Message::class, MessageInterface::class, null],
-            'agent_action' => [AgentAction::class, AgentActionInterface::class, null],
-        ] as $resource => [$model, $interface, $repository]) {
+            'conversation' => [Conversation::class, ConversationInterface::class],
+            'message' => [Message::class, MessageInterface::class],
+            'agent_action' => [AgentAction::class, AgentActionInterface::class],
+        ] as $resource => [$model, $interface]) {
             $classes = $config['resources'][$resource]['classes'];
             self::assertSame($model, $classes['model']);
             self::assertSame($interface, $classes['interface']);
             self::assertSame(ResourceController::class, $classes['controller']);
             self::assertSame(Factory::class, $classes['factory']);
-            if (null === $repository) {
-                self::assertArrayNotHasKey('repository', $classes, 'The resource bundle picks its default repository.');
-            } else {
-                self::assertSame($repository, $classes['repository']);
-            }
+            self::assertArrayNotHasKey('repository', $classes, 'The resource bundle picks its default repository.');
         }
     }
 

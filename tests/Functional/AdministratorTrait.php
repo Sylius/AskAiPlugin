@@ -31,11 +31,17 @@ trait AdministratorTrait
             $admin->addRole($role);
         }
 
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get('doctrine.orm.entity_manager');
-        $em->persist($admin);
-        $em->flush();
+        $this->entityManager()->persist($admin);
+        $this->entityManager()->flush();
 
         return $admin;
+    }
+
+    private function entityManager(): EntityManagerInterface
+    {
+        /** @var EntityManagerInterface $em */
+        $em = self::getContainer()->get('doctrine.orm.entity_manager');
+
+        return $em;
     }
 }

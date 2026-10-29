@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\AiAssistantPlugin\DependencyInjection;
 
-use Sylius\AiAssistantPlugin\Doctrine\ORM\ConversationRepository;
 use Sylius\AiAssistantPlugin\Entity\AgentAction;
 use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
 use Sylius\AiAssistantPlugin\Entity\Conversation;
@@ -161,7 +160,7 @@ final class Configuration implements ConfigurationInterface
                     ->children()
         ;
 
-        $this->addResource($resources, 'conversation', Conversation::class, ConversationInterface::class, ConversationRepository::class);
+        $this->addResource($resources, 'conversation', Conversation::class, ConversationInterface::class);
         $this->addResource($resources, 'message', Message::class, MessageInterface::class);
         $this->addResource($resources, 'agent_action', AgentAction::class, AgentActionInterface::class);
 
@@ -171,11 +170,10 @@ final class Configuration implements ConfigurationInterface
     /**
      * @param class-string $model
      * @param class-string $interface
-     * @param class-string|null $repository
      */
-    private function addResource(NodeBuilder $resources, string $name, string $model, string $interface, ?string $repository = null): void
+    private function addResource(NodeBuilder $resources, string $name, string $model, string $interface): void
     {
-        $classes = $resources
+        $resources
             ->arrayNode($name)
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -186,12 +184,12 @@ final class Configuration implements ConfigurationInterface
                             ->scalarNode('model')->defaultValue($model)->cannotBeEmpty()->end()
                             ->scalarNode('interface')->defaultValue($interface)->cannotBeEmpty()->end()
                             ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
+                            ->scalarNode('repository')->cannotBeEmpty()->end()
                             ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
         ;
-        $repositoryNode = $classes->scalarNode('repository')->cannotBeEmpty();
-        if (null !== $repository) {
-            $repositoryNode->defaultValue($repository);
-        }
-        $repositoryNode->end()->end()->end()->end()->end();
     }
 }
