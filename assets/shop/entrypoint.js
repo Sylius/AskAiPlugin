@@ -1,1 +1,1 @@
-// AI assistant plugin — no shop assets
+// Ask AI plugin — no shop assets

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Twig\Extension;
+namespace Sylius\AskAiPlugin\Twig\Extension;
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -28,7 +28,7 @@ final class MarkdownExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('sylius_ai_assistant_markdown', $this->render(...)),
+            new TwigFilter('sylius_ask_ai_markdown', $this->render(...)),
         ];
     }
 

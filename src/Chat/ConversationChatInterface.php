@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Chat;
+namespace Sylius\AskAiPlugin\Chat;
 
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
 
 interface ConversationChatInterface
 {

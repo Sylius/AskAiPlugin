@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Unit\Agent;
+namespace Tests\Sylius\AskAiPlugin\Unit\Agent;
 
 use PHPUnit\Framework\TestCase;
-use Sylius\AiAssistantPlugin\Agent\AdminPagesInputProcessor;
-use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
+use Sylius\AskAiPlugin\Agent\AdminPagesInputProcessor;
+use Sylius\AskAiPlugin\Navigation\AdminUrlResolverInterface;
 use Symfony\AI\Agent\Input;
 use Symfony\AI\Platform\Message\MessageBag;
 

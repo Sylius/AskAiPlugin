@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Unit\DependencyInjection\Compiler;
+namespace Tests\Sylius\AskAiPlugin\Unit\DependencyInjection\Compiler;
 
 use Mcp\Capability\Attribute\McpTool;
 use PHPUnit\Framework\TestCase;
-use Sylius\AiAssistantPlugin\DependencyInjection\Compiler\CollectToolsPass;
+use Sylius\AskAiPlugin\DependencyInjection\Compiler\CollectToolsPass;
 use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -95,9 +95,9 @@ final class CollectToolsPassTest extends TestCase
     private function container(array $readOnlyPrefixes, array $writePrefixes, array $exclude): ContainerBuilder
     {
         $container = new ContainerBuilder();
-        $container->setParameter('sylius_ai_assistant.tools.read_only_prefixes', $readOnlyPrefixes);
-        $container->setParameter('sylius_ai_assistant.tools.write_prefixes', $writePrefixes);
-        $container->setParameter('sylius_ai_assistant.tools.exclude', $exclude);
+        $container->setParameter('sylius_ask_ai.tools.read_only_prefixes', $readOnlyPrefixes);
+        $container->setParameter('sylius_ask_ai.tools.write_prefixes', $writePrefixes);
+        $container->setParameter('sylius_ask_ai.tools.exclude', $exclude);
 
         $container->setDefinition('ai.toolbox.abstract', (new Definition(\stdClass::class))->setAbstract(true)->setArguments([new TaggedIteratorArgument('ai.tool')]));
         $container->setDefinition(CollectToolsPass::TOOLBOX_SERVICE, new ChildDefinition('ai.toolbox.abstract'));

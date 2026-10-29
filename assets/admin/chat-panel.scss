@@ -1,5 +1,5 @@
-// The AI assistant panel, fixed to the bottom right corner of the admin.
-.ai-assistant {
+// The Ask AI panel, fixed to the bottom right corner of the admin.
+.ask-ai {
     position: fixed;
     right: 1.5rem;
     bottom: 3.5rem;
@@ -45,7 +45,7 @@
 
     &__panel &__message,
     &__panel &__action {
-        animation: ai-assistant-in .25s ease-out both;
+        animation: ask-ai-in .25s ease-out both;
     }
 
     &__composer:focus-within {
@@ -94,7 +94,7 @@
             height: .4375rem;
             border-radius: 50%;
             background: var(--tblr-secondary, #6c7a91);
-            animation: ai-assistant-typing 1.2s infinite ease-in-out;
+            animation: ask-ai-typing 1.2s infinite ease-in-out;
 
             &:nth-child(2) {
                 animation-delay: .15s;
@@ -179,14 +179,14 @@
     }
 }
 
-@keyframes ai-assistant-in {
+@keyframes ask-ai-in {
     from {
         opacity: 0;
         transform: translateY(.375rem);
     }
 }
 
-@keyframes ai-assistant-typing {
+@keyframes ask-ai-typing {
     0%, 60%, 100% {
         opacity: .45;
         transform: none;
@@ -199,9 +199,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .ai-assistant__panel .ai-assistant__message,
-    .ai-assistant__panel .ai-assistant__action,
-    .ai-assistant__typing span {
+    .ask-ai__panel .ask-ai__message,
+    .ask-ai__panel .ask-ai__action,
+    .ask-ai__typing span {
         animation: none;
     }
 }

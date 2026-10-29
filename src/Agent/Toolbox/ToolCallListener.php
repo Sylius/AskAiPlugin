@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Agent\Toolbox;
+namespace Sylius\AskAiPlugin\Agent\Toolbox;
 
-use Sylius\AiAssistantPlugin\Mcp\CurrentToolCallInterface;
+use Sylius\AskAiPlugin\Mcp\CurrentToolCallInterface;
 use Symfony\AI\Agent\Toolbox\Event\ToolCallRequested;
 
 final class ToolCallListener

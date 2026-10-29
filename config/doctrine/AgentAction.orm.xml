@@ -16,7 +16,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Sylius\AiAssistantPlugin\Entity\AgentAction" table="sylius_ai_assistant_agent_action">
+    <mapped-superclass name="Sylius\AskAiPlugin\Entity\AgentAction" table="sylius_ask_ai_agent_action">
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
@@ -32,7 +32,7 @@
         <field name="decidedAt" column="decided_at" type="datetime_immutable" nullable="true" />
         <field name="createdAt" column="created_at" type="datetime_immutable" />
 
-        <many-to-one field="conversation" target-entity="Sylius\AiAssistantPlugin\Entity\ConversationInterface">
+        <many-to-one field="conversation" target-entity="Sylius\AskAiPlugin\Entity\ConversationInterface">
             <join-column name="conversation_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
         </many-to-one>
 

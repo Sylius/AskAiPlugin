@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -24,10 +24,10 @@ final class ChatPanelAccessTest extends WebTestCase
         $client = self::createClient();
         $client->loginUser($this->createAdministrator('access-test'), 'admin');
 
-        $client->request('GET', '/admin/ai-assistant/conversations');
+        $client->request('GET', '/admin/ask-ai/conversations');
 
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('sylius_ai_assistant:panel', (string) $client->getResponse()->getContent());
+        self::assertStringContainsString('sylius_ask_ai:panel', (string) $client->getResponse()->getContent());
     }
 
     public function testThePanelIsNotThereWithoutTheRole(): void
@@ -35,9 +35,9 @@ final class ChatPanelAccessTest extends WebTestCase
         $client = self::createClient();
         $client->loginUser($this->createAdministrator('access-test', []), 'admin');
 
-        $client->request('GET', '/admin/ai-assistant/conversations');
+        $client->request('GET', '/admin/ask-ai/conversations');
 
         self::assertResponseIsSuccessful();
-        self::assertStringNotContainsString('sylius_ai_assistant:panel', (string) $client->getResponse()->getContent());
+        self::assertStringNotContainsString('sylius_ask_ai:panel', (string) $client->getResponse()->getContent());
     }
 }

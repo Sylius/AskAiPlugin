@@ -16,5 +16,5 @@ return [
     Symfony\AI\AiBundle\AiBundle::class => ['all' => true],
     Symfony\AI\McpBundle\McpBundle::class => ['all' => true],
     Sylius\AdminMcpServerPlugin\SyliusAdminMcpServerPlugin::class => ['all' => true],
-    Sylius\AiAssistantPlugin\SyliusAiAssistantPlugin::class => ['all' => true],
+    Sylius\AskAiPlugin\SyliusAskAiPlugin::class => ['all' => true],
 ];

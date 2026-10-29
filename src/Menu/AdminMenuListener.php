@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Menu;
+namespace Sylius\AskAiPlugin\Menu;
 
 use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
 
 final class AdminMenuListener
 {
-    public const SECTION = 'sylius_ai_assistant';
+    public const SECTION = 'sylius_ask_ai';
 
     public function __invoke(MenuBuilderEvent $event): void
     {
@@ -25,21 +25,21 @@ final class AdminMenuListener
 
         $section = $menu
             ->addChild(self::SECTION)
-            ->setLabel('sylius_ai_assistant.ui.ai_assistant')
+            ->setLabel('sylius_ask_ai.ui.ask_ai')
             ->setLabelAttribute('icon', 'tabler:message-chatbot')
         ;
         $section
-            ->addChild('conversations', ['route' => 'sylius_ai_assistant_admin_conversation_index', 'extras' => ['routes' => [
-                ['route' => 'sylius_ai_assistant_admin_conversation_show'],
+            ->addChild('conversations', ['route' => 'sylius_ask_ai_admin_conversation_index', 'extras' => ['routes' => [
+                ['route' => 'sylius_ask_ai_admin_conversation_show'],
             ]]])
-            ->setLabel('sylius_ai_assistant.ui.conversations')
+            ->setLabel('sylius_ask_ai.ui.conversations')
             ->setLabelAttribute('icon', 'tabler:messages')
         ;
         $section
-            ->addChild('agent_actions', ['route' => 'sylius_ai_assistant_admin_agent_action_index', 'extras' => ['routes' => [
-                ['route' => 'sylius_ai_assistant_admin_agent_action_show'],
+            ->addChild('agent_actions', ['route' => 'sylius_ask_ai_admin_agent_action_index', 'extras' => ['routes' => [
+                ['route' => 'sylius_ask_ai_admin_agent_action_show'],
             ]]])
-            ->setLabel('sylius_ai_assistant.ui.agent_actions')
+            ->setLabel('sylius_ask_ai.ui.agent_actions')
             ->setLabelAttribute('icon', 'tabler:checklist')
         ;
 

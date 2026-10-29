@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\DependencyInjection\Compiler;
+namespace Sylius\AskAiPlugin\DependencyInjection\Compiler;
 
 use Mcp\Capability\Attribute\McpTool;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
@@ -24,13 +24,13 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class CollectToolsPass implements CompilerPassInterface
 {
-    public const AGENT_NAME = 'sylius_ai_assistant';
+    public const AGENT_NAME = 'sylius_ask_ai';
 
     public const AGENT_SERVICE = 'ai.agent.' . self::AGENT_NAME;
 
     public const TOOLBOX_SERVICE = 'ai.toolbox.' . self::AGENT_NAME;
 
-    public const TOOL_TAG = 'sylius_ai_assistant.tool';
+    public const TOOL_TAG = 'sylius_ask_ai.tool';
 
     private const TOOL_FACTORY_SERVICE = self::TOOLBOX_SERVICE . '.memory_factory';
 
@@ -90,11 +90,11 @@ final class CollectToolsPass implements CompilerPassInterface
     {
         /** @var list<string> $prefixes */
         $prefixes = array_merge(
-            $container->getParameter('sylius_ai_assistant.tools.read_only_prefixes'),
-            $container->getParameter('sylius_ai_assistant.tools.write_prefixes'),
+            $container->getParameter('sylius_ask_ai.tools.read_only_prefixes'),
+            $container->getParameter('sylius_ask_ai.tools.write_prefixes'),
         );
         /** @var list<string> $excluded */
-        $excluded = $container->getParameter('sylius_ai_assistant.tools.exclude');
+        $excluded = $container->getParameter('sylius_ask_ai.tools.exclude');
 
         $factory = $container->getDefinition(self::TOOL_FACTORY_SERVICE);
 

@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Factory;
+namespace Sylius\AskAiPlugin\Factory;
 
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
 use Sylius\Resource\Factory\FactoryInterface;
 
 final class AgentActionFactory implements AgentActionFactoryInterface

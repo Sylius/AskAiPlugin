@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\DependencyInjection;
+namespace Sylius\AskAiPlugin\DependencyInjection;
 
-use Sylius\AiAssistantPlugin\Entity\AgentAction;
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\Message;
-use Sylius\AiAssistantPlugin\Entity\MessageInterface;
+use Sylius\AskAiPlugin\Entity\AgentAction;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\Message;
+use Sylius\AskAiPlugin\Entity\MessageInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Sylius\Resource\Factory\Factory;
@@ -33,7 +33,7 @@ final class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('sylius_ai_assistant');
+        $treeBuilder = new TreeBuilder('sylius_ask_ai');
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
@@ -80,9 +80,9 @@ final class Configuration implements ConfigurationInterface
                     ->info('The questions offered on an empty conversation, in order; each is a translation key or plain text. The list replaces the default one.')
                     ->scalarPrototype()->cannotBeEmpty()->end()
                     ->defaultValue([
-                        'sylius_ai_assistant.ui.suggestion.what_are_the_latest_orders',
-                        'sylius_ai_assistant.ui.suggestion.which_orders_are_waiting_to_be_shipped',
-                        'sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip',
+                        'sylius_ask_ai.ui.suggestion.what_are_the_latest_orders',
+                        'sylius_ask_ai.ui.suggestion.which_orders_are_waiting_to_be_shipped',
+                        'sylius_ask_ai.ui.suggestion.create_a_customer_group_called_vip',
                     ])
                 ->end()
                 ->arrayNode('tools')

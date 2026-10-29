@@ -8,13 +8,13 @@
     </a>
 </p>
 
-<h1 align="center">Sylius AI Assistant Plugin</h1>
+<h1 align="center">Sylius Ask AI Plugin</h1>
 
-<p align="center">AI assistant panel inside the Sylius admin, working the store through the Admin MCP tools with human approval of every write.</p>
+<p align="center">Ask AI panel inside the Sylius admin, working the store through the Admin MCP tools with human approval of every write.</p>
 
 ## About
 
-AI assistant panel inside the Sylius admin. The assistant works the store through the
+Ask AI panel inside the Sylius admin. The assistant works the store through the
 tools of [`sylius/admin-mcp-server-plugin`](https://github.com/Sylius/AdminMcpServerPlugin)
 as the logged-in administrator; write actions are proposed and need human approval.
 
@@ -43,7 +43,7 @@ There is no Flex recipe yet; the steps are manual.
 ### Step 1 - Add the plugin via Composer
 
 ```bash
-composer require sylius/ai-assistant-plugin
+composer require sylius/ask-ai-plugin
 ```
 
 The Admin MCP plugin comes with it as a dependency. If it was not installed before, follow
@@ -64,7 +64,7 @@ With Symfony Flex active (the default in Sylius-Standard) two things happen duri
 
 - Flex registers the plugin's bundle in `config/bundles.php` but, as there is no recipe, does not
   import its configuration, so the `cache:clear` that runs at the end of `composer require` fails
-  with `bus "sylius_ai_assistant.command_bus" ... does not exist`. This is expected: the error goes
+  with `bus "sylius_ask_ai.command_bus" ... does not exist`. This is expected: the error goes
   away after Step 3.
 
 ### Step 2 - Register the bundle
@@ -78,7 +78,7 @@ return [
     Symfony\AI\AiBundle\AiBundle::class => ['all' => true],
     Symfony\AI\McpBundle\McpBundle::class => ['all' => true],
     Sylius\AdminMcpServerPlugin\SyliusAdminMcpServerPlugin::class => ['all' => true],
-    Sylius\AiAssistantPlugin\SyliusAiAssistantPlugin::class => ['all' => true],
+    Sylius\AskAiPlugin\SyliusAskAiPlugin::class => ['all' => true],
 ];
 ```
 
@@ -89,13 +89,13 @@ needed to start.
 ### Step 3 - Import the configuration
 
 ```yaml
-# config/packages/sylius_ai_assistant.yaml
+# config/packages/sylius_ask_ai.yaml
 imports:
-    - { resource: "@SyliusAiAssistantPlugin/config/config.yaml" }
+    - { resource: "@SyliusAskAiPlugin/config/config.yaml" }
 ```
 
-This registers the resources, the Messenger bus and transport (`sylius_ai_assistant`, on
-Doctrine by default; override with `SYLIUS_AI_ASSISTANT_TRANSPORT_DSN`) and the twig hook
+This registers the resources, the Messenger bus and transport (`sylius_ask_ai`, on
+Doctrine by default; override with `SYLIUS_ASK_AI_TRANSPORT_DSN`) and the twig hook
 that renders the panel in the admin layout.
 
 The panel's styles and behaviour ship in `assets/admin/entrypoint.js`. Import it from your admin
@@ -103,11 +103,11 @@ entrypoint and rebuild the admin assets:
 
 ```js
 // assets/admin/entrypoint.js
-import '@vendor/sylius/ai-assistant-plugin/assets/admin/entrypoint';
+import '@vendor/sylius/ask-ai-plugin/assets/admin/entrypoint';
 ```
 
 (`@vendor` is the alias Sylius-Standard's Webpack configuration defines; a relative
-`../../vendor/sylius/ai-assistant-plugin/assets/admin/entrypoint.js` works too.)
+`../../vendor/sylius/ask-ai-plugin/assets/admin/entrypoint.js` works too.)
 
 ```bash
 yarn encore prod
@@ -116,9 +116,9 @@ yarn encore prod
 Then import the routes of the admin log (read-only pages listing conversations and agent actions):
 
 ```yaml
-# config/routes/sylius_ai_assistant.yaml
-sylius_ai_assistant:
-    resource: "@SyliusAiAssistantPlugin/config/routes.yaml"
+# config/routes/sylius_ask_ai.yaml
+sylius_ask_ai:
+    resource: "@SyliusAskAiPlugin/config/routes.yaml"
 ```
 
 ### Step 4 - Run database migrations
@@ -130,7 +130,7 @@ php bin/console doctrine:migrations:migrate -n
 ### Step 5 - Run the worker
 
 ```bash
-php bin/console messenger:consume sylius_ai_assistant
+php bin/console messenger:consume sylius_ask_ai
 ```
 
 In production keep it under a process manager (Supervisor, systemd) like any other Messenger
@@ -141,7 +141,7 @@ needs `ANTHROPIC_API_KEY` in its environment.
 
 The agent calls the Admin API as the administrator who is chatting, so that administrator
 needs `ROLE_API_ACCESS`. The panel then appears on every admin page, for the administrators
-with that role only (`sylius_ai_assistant.access.role` names another role when the assistant
+with that role only (`sylius_ask_ai.access.role` names another role when the assistant
 should be narrower than the API, see Configuration).
 
 ## Demo in Docker
@@ -164,7 +164,7 @@ of building and serves the domain over HTTPS (Caddy obtains the certificate):
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 \
-    -t ghcr.io/mpysiak/sylius-ai-assistant-demo:latest --push .
+    -t ghcr.io/mpysiak/sylius-ask-ai-demo:latest --push .
 
 # on the server, with DNS pointing at it and ports 80/443 open
 SERVER_NAME=demo.example.com ANTHROPIC_API_KEY=sk-ant-... APP_SECRET=$(openssl rand -hex 16) \
@@ -173,11 +173,11 @@ SERVER_NAME=demo.example.com ANTHROPIC_API_KEY=sk-ant-... APP_SECRET=$(openssl r
 
 ## Configuration
 
-Everything lives under `sylius_ai_assistant` (`bin/console config:dump-reference
-sylius_ai_assistant` prints the full tree):
+Everything lives under `sylius_ask_ai` (`bin/console config:dump-reference
+sylius_ask_ai` prints the full tree):
 
 ```yaml
-sylius_ai_assistant:
+sylius_ask_ai:
     tools:                          # which Admin MCP tools the agent gets, by name prefix
         read_only_prefixes: [list_, get_, search_, count_, open_]
         write_prefixes: [create_, update_, add_, remove_, set_, archive_, restore_, resend_, cancel_, ship_, complete_, accept_, reject_, generate_]
@@ -200,7 +200,7 @@ sylius_ai_assistant:
 
 ### The agent
 
-The agent is `ai.agent.sylius_ai_assistant`, defined by `symfony/ai-bundle` from
+The agent is `ai.agent.sylius_ask_ai`, defined by `symfony/ai-bundle` from
 configuration the plugin prepends; the plugin only adds the Admin MCP tools to its toolbox and
 tags its processors for it. So the agent is configured where every Symfony AI agent is, and the
 application overrides any of it:
@@ -209,13 +209,13 @@ application overrides any of it:
 # config/packages/ai.yaml
 ai:
     agent:
-        sylius_ai_assistant:
+        sylius_ask_ai:
             platform: ai.platform.anthropic       # any PlatformInterface service id
-            model: 'claude-haiku-4-5?max_output_tokens=8192'   # the default model and its output budget (sylius_ai_assistant.max_output_tokens)
+            model: 'claude-haiku-4-5?max_output_tokens=8192'   # the default model and its output budget (sylius_ask_ai.max_output_tokens)
             prompt:
                 file: '%kernel.project_dir%/config/ai/system_prompt.txt'
             max_tool_calls: 50
-            message_store: sylius_ai_assistant.chat.message_store   # the conversation entities; the reply keeps the tools it called
+            message_store: sylius_ask_ai.chat.message_store   # the conversation entities; the reply keeps the tools it called
             fault_tolerant_toolbox: false
 ```
 
@@ -229,7 +229,7 @@ The file is sent to the model as it is, so it has no comments. A few rules of yo
 without touching the file:
 
 ```yaml
-sylius_ai_assistant:
+sylius_ask_ai:
     prompt:
         additional_instructions: |
             Always answer in Polish.
@@ -244,14 +244,14 @@ bundle (`include_tools`, translation) work as documented in the
 
 ## The admin log
 
-The "AI assistant" section of the admin menu lists every conversation (`/admin/ai-assistant/conversations`,
+The "Ask AI" section of the admin menu lists every conversation (`/admin/ask-ai/conversations`,
 with the first question as its topic, the administrator, state and dates) and every action the agent
-proposed (`/admin/ai-assistant/agent-actions`: tool, request, state, who decided and when). A conversation's
+proposed (`/admin/ask-ai/agent-actions`: tool, request, state, who decided and when). A conversation's
 page replays it with the same bubbles and action cards as the panel, read-only; an action's page shows
 the tool arguments, request body, the snapshot taken before the change and the result. Both grids are
-Sylius grids (`sylius_ai_assistant_admin_conversation`, `sylius_ai_assistant_admin_agent_action`) and
-can be extended the usual way; the pages are built from twig hooks under `sylius_ai_assistant.conversation.show`
-and `sylius_ai_assistant.agent_action.show`.
+Sylius grids (`sylius_ask_ai_admin_conversation`, `sylius_ask_ai_admin_agent_action`) and
+can be extended the usual way; the pages are built from twig hooks under `sylius_ask_ai.conversation.show`
+and `sylius_ask_ai.agent_action.show`.
 
 ## How a turn runs
 
@@ -285,7 +285,7 @@ and shown under it in the panel.
 
 A model of your own names its output budget itself, in the provider's own option (the
 examples below): a proposed write carries the whole resource, and the 1000 tokens Claude
-defaults to cut it in the middle of the tool call, which fails the turn. `sylius_ai_assistant.max_output_tokens`
+defaults to cut it in the middle of the tool call, which fails the turn. `sylius_ask_ai.max_output_tokens`
 sets the budget of the default model only.
 
 Any other Symfony AI platform works the same way once the vendor's platform package is
@@ -302,7 +302,7 @@ ai:
         openai:
             api_key: '%env(OPENAI_API_KEY)%'
     agent:
-        sylius_ai_assistant:
+        sylius_ask_ai:
             platform: ai.platform.openai
             model: 'gpt-4o-mini?max_completion_tokens=8192'
 ```
@@ -342,7 +342,7 @@ on a different `platform`, nothing in the plugin changes:
           ollama:
               endpoint: 'http://127.0.0.1:11434'
       agent:
-          sylius_ai_assistant:
+          sylius_ask_ai:
               platform: ai.platform.ollama
               model: 'qwen3?num_ctx=32768&num_predict=8192'
   ```
@@ -373,7 +373,7 @@ on a different `platform`, nothing in the plugin changes:
           gemini:
               api_key: '%env(GEMINI_API_KEY)%'
       agent:
-          sylius_ai_assistant:
+          sylius_ask_ai:
               platform: ai.platform.gemini
               model: 'gemini-2.5-flash?max_output_tokens=8192'
   ```
@@ -385,63 +385,63 @@ fork and no copy of a service definition is needed for:
 
 | To                                                        | Use                                                                                          |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| Another vendor or model                                   | `ai.agent.sylius_ai_assistant.platform` / `model` ([Choosing the model](#choosing-the-model)) |
-| A few rules of the store in the prompt                    | `sylius_ai_assistant.prompt.additional_instructions` ([The agent](#the-agent))               |
-| A prompt of your own                                      | `ai.agent.sylius_ai_assistant.prompt.file`                                                   |
+| Another vendor or model                                   | `ai.agent.sylius_ask_ai.platform` / `model` ([Choosing the model](#choosing-the-model)) |
+| A few rules of the store in the prompt                    | `sylius_ask_ai.prompt.additional_instructions` ([The agent](#the-agent))               |
+| A prompt of your own                                      | `ai.agent.sylius_ask_ai.prompt.file`                                                   |
 | Fewer tools, or one tool less                             | `tools.read_only_prefixes`, `tools.write_prefixes`, `tools.exclude` ([The write gate](#the-write-gate)) |
-| A tool of your own                                        | `#[AsTool]` + the `sylius_ai_assistant.tool` tag, or `tools:` in `ai.yaml` ([Your own tools](#your-own-tools)) |
-| A resource of your own the agent may open                 | `sylius_ai_assistant.navigation.pages` ([Navigation](#navigation))                           |
-| Who sees and uses the panel                               | `sylius_ai_assistant.access.role`                                                            |
-| The store's own suggested questions                       | `sylius_ai_assistant.suggestions` ([The chat panel](#the-chat-panel))                        |
-| Something added to, removed from or reordered in the panel | the `sylius_ai_assistant.chat_panel.*` twig hooks ([The chat panel](#the-chat-panel))         |
-| Another look for a bubble, the action card, the log pages | `templates/bundles/SyliusAiAssistantPlugin/…` ([Models and services](#models-and-services)) |
-| Extra fields on the entities, another repository          | `sylius_ai_assistant.resources.<name>.classes` ([Models and services](#models-and-services)) |
+| A tool of your own                                        | `#[AsTool]` + the `sylius_ask_ai.tool` tag, or `tools:` in `ai.yaml` ([Your own tools](#your-own-tools)) |
+| A resource of your own the agent may open                 | `sylius_ask_ai.navigation.pages` ([Navigation](#navigation))                           |
+| Who sees and uses the panel                               | `sylius_ask_ai.access.role`                                                            |
+| The store's own suggested questions                       | `sylius_ask_ai.suggestions` ([The chat panel](#the-chat-panel))                        |
+| Something added to, removed from or reordered in the panel | the `sylius_ask_ai.chat_panel.*` twig hooks ([The chat panel](#the-chat-panel))         |
+| Another look for a bubble, the action card, the log pages | `templates/bundles/SyliusAskAiPlugin/…` ([Models and services](#models-and-services)) |
+| Extra fields on the entities, another repository          | `sylius_ask_ai.resources.<name>.classes` ([Models and services](#models-and-services)) |
 | Different behaviour of a service                          | Decorate it by id or interface ([Models and services](#models-and-services))                 |
 
 ## Models and services
 
 The entities (`Conversation`, `Message`, `AgentAction`) are Sylius resources: each has an
 interface, is mapped in `config/doctrine` as a mapped superclass, and can be replaced under
-`sylius_ai_assistant.resources.<name>.classes.model`; the resource bundle provides
-`sylius_ai_assistant.repository.<name>` and `sylius_ai_assistant.factory.<name>`; the message
+`sylius_ask_ai.resources.<name>.classes.model`; the resource bundle provides
+`sylius_ask_ai.repository.<name>` and `sylius_ask_ai.factory.<name>`; the message
 and agent action factories are decorated with `createForConversation()` and `createProposal()`, the only
 ways these two are created (`MessageFactoryInterface`, `AgentActionFactoryInterface`). Every
-service has an id (`sylius_ai_assistant.*`) and an interface aliased to it, so a service can be
+service has an id (`sylius_ask_ai.*`) and an interface aliased to it, so a service can be
 decorated or swapped by id. A turn that fails for any reason leaves the conversation in the
 `failed` state with a notice in the panel; a turn that never comes back can be cancelled there.
 
-Templates live under the bundle's `@SyliusAiAssistantPlugin` namespace, so the application
+Templates live under the bundle's `@SyliusAskAiPlugin` namespace, so the application
 overrides any of them the Symfony way: copy the file to
-`templates/bundles/SyliusAiAssistantPlugin/<same path>` (for example
-`templates/bundles/SyliusAiAssistantPlugin/component/action_card.html.twig` for the proposed
+`templates/bundles/SyliusAskAiPlugin/<same path>` (for example
+`templates/bundles/SyliusAskAiPlugin/component/action_card.html.twig` for the proposed
 action card, `component/message.html.twig` for a bubble). The panel itself is put together
 from twig hooks, so most changes to it need no copy at all.
 
 ### The chat panel
 
-The open panel renders the `sylius_ai_assistant.chat_panel` hook with the live component as
+The open panel renders the `sylius_ask_ai.chat_panel` hook with the live component as
 `panel` in the context (`hookable_metadata.context.panel`: `conversation`, `timeline`,
 `running`). Its hookables are themselves hooks, with the templates under
 `templates/component/chat_panel/`:
 
 | Hook                                              | Hookables (priority)                                          |
 |---------------------------------------------------|---------------------------------------------------------------|
-| `sylius_ai_assistant.chat_panel`                  | `header` (200), `body` (100), `footer` (0)                    |
-| `sylius_ai_assistant.chat_panel.header`           | `title` (200), `history` (100), `new_chat` (0)                |
-| `sylius_ai_assistant.chat_panel.body`             | `empty_state` (100), `timeline` (0); the context also carries `timeline` |
-| `sylius_ai_assistant.chat_panel.body.empty_state` | `intro` (100), `suggestions` (0)                              |
-| `sylius_ai_assistant.chat_panel.footer`           | `composer` (0)                                                |
+| `sylius_ask_ai.chat_panel`                  | `header` (200), `body` (100), `footer` (0)                    |
+| `sylius_ask_ai.chat_panel.header`           | `title` (200), `history` (100), `new_chat` (0)                |
+| `sylius_ask_ai.chat_panel.body`             | `empty_state` (100), `timeline` (0); the context also carries `timeline` |
+| `sylius_ask_ai.chat_panel.body.empty_state` | `intro` (100), `suggestions` (0)                              |
+| `sylius_ask_ai.chat_panel.footer`           | `composer` (0)                                                |
 
 The suggested questions on an empty conversation are a list in the configuration, each a
 translation key or plain text; the list replaces the default one, so give the whole set, in
 order, and an empty list shows none:
 
 ```yaml
-sylius_ai_assistant:
+sylius_ask_ai:
     suggestions:
-        - app.ai_assistant.suggestion.unpaid_orders      # translated in your messages.<locale>.yaml
+        - app.ask_ai.suggestion.unpaid_orders      # translated in your messages.<locale>.yaml
         - Which coupons expire this month?               # or plain text, as is (a literal % is written %%)
-        - sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip   # one of the defaults kept
+        - sylius_ask_ai.ui.suggestion.create_a_customer_group_called_vip   # one of the defaults kept
 ```
 
 For anything else, the usual `sylius_twig_hooks` configuration adds, replaces, reorders or
@@ -450,18 +450,18 @@ disables a part, for example a notice above the composer or suggestions rendered
 ```yaml
 sylius_twig_hooks:
     hooks:
-        'sylius_ai_assistant.chat_panel.footer':
+        'sylius_ask_ai.chat_panel.footer':
             notice:
-                template: 'admin/ai_assistant/notice.html.twig'
+                template: 'admin/ask_ai/notice.html.twig'
                 priority: 10
-        'sylius_ai_assistant.chat_panel.body.empty_state':
+        'sylius_ask_ai.chat_panel.body.empty_state':
             suggestions:
-                template: 'admin/ai_assistant/suggestions.html.twig'
+                template: 'admin/ask_ai/suggestions.html.twig'
 ```
 
-A suggestion is any element with `data-ai-assistant-suggestion="<the question>"`: clicking it
+A suggestion is any element with `data-ask-ai-suggestion="<the question>"`: clicking it
 sends the question; the configured list is `panel.suggestions` in the hook context.
-The composer's textarea keeps the `ai-assistant__input` class and the `draft` live model, which
+The composer's textarea keeps the `ask-ai__input` class and the `draft` live model, which
 the keyboard handling and the browser tests rely on.
 
 ## The write gate
@@ -475,7 +475,7 @@ turn so the assistant reports the outcome. Rejections are passed to the model wi
 message. Reads always pass through, as does everything outside a chat turn (OAuth clients).
 
 Requirements: the administrator using the chat needs `ROLE_API_ACCESS` (the agent calls the
-Admin API as them). Which tools the agent gets: `sylius_ai_assistant.tools.read_only_prefixes`
+Admin API as them). Which tools the agent gets: `sylius_ask_ai.tools.read_only_prefixes`
 and `tools.write_prefixes`, minus the names listed in `tools.exclude`.
 
 ### Your own tools
@@ -496,7 +496,7 @@ final class CountOpenTickets
 ```yaml
 services:
     App\Ai\Tool\CountOpenTickets:
-        tags: [sylius_ai_assistant.tool]
+        tags: [sylius_ask_ai.tool]
 ```
 
 or list it under the agent in `ai.yaml`, as for any Symfony AI agent (`tools: [{ service: ... }]`,
@@ -515,13 +515,13 @@ for see/show/open/edit requests and to answer with one confirming sentence, and 
 pages it can open; data goes to the chat only for questions. After an approved action is
 executed, the panel goes to the page of what was created (show page) or changed (edit page)
 on its own, from the `@id` of the API response; nothing happens when the administrator is
-already there. The pages the agent may open are `sylius_ai_assistant.navigation.pages`, a
+already there. The pages the agent may open are `sylius_ask_ai.navigation.pages`, a
 whitelist keyed by the Admin API collection segment (the defaults are in the plugin's
 `config/config.yaml`); the panel performs the navigation on its next poll and keeps itself
 open across the page load (cookie). Add a resource of your own, or switch a default one off:
 
 ```yaml
-sylius_ai_assistant:
+sylius_ask_ai:
     navigation:
         pages:
             tickets:                                  # /api/v2/admin/tickets/{id}
@@ -544,7 +544,7 @@ vendor/bin/console doctrine:migrations:migrate -n
 vendor/bin/console sylius:fixtures:load default -n
 (cd vendor/sylius/test-application && yarn install && yarn build)
 symfony server:start -d --document-root=vendor/sylius/test-application/public --no-tls
-vendor/bin/console messenger:consume sylius_ai_assistant --sleep=0.25 -vv
+vendor/bin/console messenger:consume sylius_ask_ai --sleep=0.25 -vv
 ```
 
 Admin: http://127.0.0.1:8000/admin/ (`sylius` / `sylius`). Database and Admin MCP plugin
@@ -563,7 +563,7 @@ Would like to help us build a more capable Sylius admin? Start from reading our
 ## Bug Tracking
 
 If you want to report a bug or suggest an idea, please use
-[GitHub issues](https://github.com/Sylius/AiAssistantPlugin/issues).
+[GitHub issues](https://github.com/Sylius/AskAiPlugin/issues).
 
 ## Security Issues
 
@@ -577,4 +577,4 @@ Get Sylius support on [Slack](https://sylius.com/slack), [Forum](https://forum.s
 
 ## MIT License
 
-The Sylius AI Assistant Plugin is released under the terms of the [MIT License](LICENSE).
+The Sylius Ask AI Plugin is released under the terms of the [MIT License](LICENSE).

@@ -16,7 +16,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Sylius\AiAssistantPlugin\Entity\Message" table="sylius_ai_assistant_message">
+    <mapped-superclass name="Sylius\AskAiPlugin\Entity\Message" table="sylius_ask_ai_message">
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
@@ -27,7 +27,7 @@
         <field name="toolCalls" column="tool_calls" type="json" nullable="true" />
         <field name="createdAt" column="created_at" type="datetime_immutable" />
 
-        <many-to-one field="conversation" target-entity="Sylius\AiAssistantPlugin\Entity\ConversationInterface" inversed-by="messages">
+        <many-to-one field="conversation" target-entity="Sylius\AskAiPlugin\Entity\ConversationInterface" inversed-by="messages">
             <join-column name="conversation_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
         </many-to-one>
     </mapped-superclass>

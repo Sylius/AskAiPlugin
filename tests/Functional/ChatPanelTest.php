@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
-use Sylius\AiAssistantPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\Conversation;
 use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -34,26 +34,26 @@ final class ChatPanelTest extends WebTestCase
         $this->admin = $this->createAdministrator('panel-test');
 
         $this->client->loginUser($this->admin, 'admin');
-        $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));
+        $this->client->getCookieJar()->set(new Cookie('sylius_ask_ai_open', '1'));
     }
 
     public function testTheHeaderLinksToTheHistoryNextToTheNewChatButton(): void
     {
-        $this->client->request('GET', '/admin/ai-assistant/conversations');
+        $this->client->request('GET', '/admin/ask-ai/conversations');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('.ai-assistant__panel .card-header', 'AI assistant');
-        self::assertSelectorExists('.ai-assistant__panel .card-header a[href="/admin/ai-assistant/conversations"]');
-        self::assertSelectorTextContains('.ai-assistant__panel .card-header button[data-live-action-param="startConversation"]', 'New chat');
+        self::assertSelectorTextContains('.ask-ai__panel .card-header', 'Ask AI');
+        self::assertSelectorExists('.ask-ai__panel .card-header a[href="/admin/ask-ai/conversations"]');
+        self::assertSelectorTextContains('.ask-ai__panel .card-header button[data-live-action-param="startConversation"]', 'New chat');
     }
 
     public function testWithoutAConversationThePanelOffersToStartOne(): void
     {
-        $this->client->request('GET', '/admin/ai-assistant/conversations');
+        $this->client->request('GET', '/admin/ask-ai/conversations');
 
-        self::assertSelectorTextContains('.ai-assistant__messages', 'What would you like to do?');
-        self::assertSelectorNotExists('.ai-assistant__messages [data-ai-assistant-suggestion]');
-        self::assertSelectorTextContains('.ai-assistant__panel .card-footer', 'Start conversation');
+        self::assertSelectorTextContains('.ask-ai__messages', 'What would you like to do?');
+        self::assertSelectorNotExists('.ask-ai__messages [data-ask-ai-suggestion]');
+        self::assertSelectorTextContains('.ask-ai__panel .card-footer', 'Start conversation');
     }
 
     public function testAnEmptyConversationShowsTheSuggestionsAndTheComposer(): void
@@ -63,10 +63,10 @@ final class ChatPanelTest extends WebTestCase
         $this->entityManager()->persist($conversation);
         $this->entityManager()->flush();
 
-        $this->client->request('GET', '/admin/ai-assistant/conversations');
+        $this->client->request('GET', '/admin/ask-ai/conversations');
 
-        self::assertSelectorTextContains('.ai-assistant__messages', 'What would you like to do?');
-        self::assertSelectorCount(3, '.ai-assistant__messages [data-ai-assistant-suggestion]');
-        self::assertSelectorExists('.ai-assistant__panel textarea.ai-assistant__input[data-model="draft"]');
+        self::assertSelectorTextContains('.ask-ai__messages', 'What would you like to do?');
+        self::assertSelectorCount(3, '.ask-ai__messages [data-ask-ai-suggestion]');
+        self::assertSelectorExists('.ask-ai__panel textarea.ask-ai__input[data-model="draft"]');
     }
 }

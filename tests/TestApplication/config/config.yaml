@@ -1,8 +1,8 @@
 imports:
     - { resource: "@SyliusAdminMcpServerPlugin/config/config.yaml" }
-    - { resource: "@SyliusAiAssistantPlugin/config/config.yaml" }
+    - { resource: "@SyliusAskAiPlugin/config/config.yaml" }
 
-sylius_ai_assistant:
+sylius_ask_ai:
     prompt:
         additional_instructions: 'Our product codes look like Ethereal_Drift_T_Shirt.'
     navigation:
@@ -25,29 +25,29 @@ doctrine:
                         is_bundle: false
                         type: attribute
                         dir: '%kernel.project_dir%/../../../tests/TestApplication/src/Entity'
-                        prefix: Tests\Sylius\AiAssistantPlugin
+                        prefix: Tests\Sylius\AskAiPlugin
 
 when@test:
     services:
-        sylius_ai_assistant_test.platform:
-            class: Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform
+        sylius_ask_ai_test.platform:
+            class: Tests\Sylius\AskAiPlugin\Ai\ScriptedPlatform
             public: true
-        test.sylius_ai_assistant.chat:
-            alias: sylius_ai_assistant.chat
+        test.sylius_ask_ai.chat:
+            alias: sylius_ask_ai.chat
             public: true
-        test.sylius_ai_assistant.agent.context:
-            alias: sylius_ai_assistant.agent.context
+        test.sylius_ask_ai.agent.context:
+            alias: sylius_ask_ai.agent.context
             public: true
-        test.sylius_ai_assistant.navigation.admin_url_resolver:
-            alias: sylius_ai_assistant.navigation.admin_url_resolver
+        test.sylius_ask_ai.navigation.admin_url_resolver:
+            alias: sylius_ask_ai.navigation.admin_url_resolver
             public: true
-        test.sylius_ai_assistant.message_handler.run_agent_turn:
-            alias: sylius_ai_assistant.message_handler.run_agent_turn
+        test.sylius_ask_ai.message_handler.run_agent_turn:
+            alias: sylius_ask_ai.message_handler.run_agent_turn
             public: true
     ai:
         agent:
-            sylius_ai_assistant:
-                platform: sylius_ai_assistant_test.platform
+            sylius_ask_ai:
+                platform: sylius_ask_ai_test.platform
                 model: scripted
 
 when@prod:

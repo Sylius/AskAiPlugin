@@ -11,17 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Twig\Component;
+namespace Sylius\AskAiPlugin\Twig\Component;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Chat\ConversationTimelineInterface;
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Sylius\AiAssistantPlugin\Message\ExecuteAgentAction;
-use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
+use Sylius\AskAiPlugin\Chat\ConversationTimelineInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\MessageInterface;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Message\ExecuteAgentAction;
+use Sylius\AskAiPlugin\Message\RunAgentTurn;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Sylius\Resource\Factory\FactoryInterface;
@@ -42,7 +42,7 @@ final class ChatPanelComponent
     use ComponentToolsTrait;
     use DefaultActionTrait;
 
-    public const SESSION_CONVERSATION = 'sylius_ai_assistant.conversation';
+    public const SESSION_CONVERSATION = 'sylius_ask_ai.conversation';
 
     #[LiveProp]
     public ?int $conversationId = null;
@@ -146,7 +146,7 @@ final class ChatPanelComponent
             return;
         }
 
-        $this->dispatchBrowserEvent('ai-assistant:navigate', ['url' => $url]);
+        $this->dispatchBrowserEvent('ask-ai:navigate', ['url' => $url]);
     }
 
     #[LiveAction]
@@ -255,7 +255,7 @@ final class ChatPanelComponent
     private function getAdminUser(): AdminUserInterface
     {
         if (!$this->security->isGranted($this->accessRole)) {
-            throw new AccessDeniedException(sprintf('The AI assistant needs the "%s" role.', $this->accessRole));
+            throw new AccessDeniedException(sprintf('Ask AI needs the "%s" role.', $this->accessRole));
         }
 
         $user = $this->security->getUser();

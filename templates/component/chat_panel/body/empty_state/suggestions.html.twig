@@ -3,7 +3,7 @@
     <div class="d-grid gap-2">
         {% for suggestion in panel.suggestions %}
             {% set text = suggestion|trans %}
-            <button type="button" class="btn justify-content-start text-start text-wrap" data-ai-assistant-suggestion="{{ text }}">{{ text }}</button>
+            <button type="button" class="btn justify-content-start text-start text-wrap" data-ask-ai-suggestion="{{ text }}">{{ text }}</button>
         {% endfor %}
     </div>
 {% endif %}

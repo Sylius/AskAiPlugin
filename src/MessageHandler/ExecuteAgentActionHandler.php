@@ -11,19 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\MessageHandler;
+namespace Sylius\AskAiPlugin\MessageHandler;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Sylius\AiAssistantPlugin\Agent\AgentActionExecutorInterface;
-use Sylius\AiAssistantPlugin\Chat\SystemNotices;
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\AgentActionStates;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Sylius\AiAssistantPlugin\Message\ExecuteAgentAction;
-use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
-use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
+use Sylius\AskAiPlugin\Agent\AgentActionExecutorInterface;
+use Sylius\AskAiPlugin\Chat\SystemNotices;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionStates;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Message\ExecuteAgentAction;
+use Sylius\AskAiPlugin\Message\RunAgentTurn;
+use Sylius\AskAiPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 

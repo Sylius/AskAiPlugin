@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Chat;
+namespace Sylius\AskAiPlugin\Chat;
 
 final class SystemNotices
 {

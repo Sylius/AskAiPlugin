@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Controller\Admin;
+namespace Sylius\AskAiPlugin\Controller\Admin;
 
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Twig\Component\ChatPanelComponent;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Twig\Component\ChatPanelComponent;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -42,7 +42,7 @@ final class ResumeConversationAction
     public function __invoke(Request $request, int $id): Response
     {
         if (!$this->security->isGranted($this->accessRole)) {
-            throw new AccessDeniedHttpException(sprintf('The AI assistant needs the "%s" role.', $this->accessRole));
+            throw new AccessDeniedHttpException(sprintf('Ask AI needs the "%s" role.', $this->accessRole));
         }
 
         $conversation = $this->conversationRepository->find($id);
@@ -57,7 +57,7 @@ final class ResumeConversationAction
         $request->getSession()->set(ChatPanelComponent::SESSION_CONVERSATION, $id);
 
         $response = new RedirectResponse((string) $request->headers->get('referer') ?: $this->router->generate('sylius_admin_dashboard'));
-        $response->headers->setCookie(Cookie::create('sylius_ai_assistant_open', '1', httpOnly: false));
+        $response->headers->setCookie(Cookie::create('sylius_ask_ai_open', '1', httpOnly: false));
 
         return $response;
     }

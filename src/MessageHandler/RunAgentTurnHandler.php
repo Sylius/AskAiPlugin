@@ -11,15 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\MessageHandler;
+namespace Sylius\AskAiPlugin\MessageHandler;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Sylius\AiAssistantPlugin\Chat\ConversationChatInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
+use Sylius\AskAiPlugin\Chat\ConversationChatInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Message\RunAgentTurn;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\AI\Agent\Exception\ConflictException;
 

@@ -1,18 +1,18 @@
-<div {{ attributes.defaults({ class: 'ai-assistant d-flex flex-column-reverse align-items-end gap-3' ~ (open ? ' ai-assistant--open' : '') }) }}
+<div {{ attributes.defaults({ class: 'ask-ai d-flex flex-column-reverse align-items-end gap-3' ~ (open ? ' ask-ai--open' : '') }) }}
     {% if open and (this.running or (this.conversation and this.conversation.pendingNavigation)) %}data-poll="delay({{ pollInterval }})|refresh"{% endif %}
 >
-    <button type="button" class="btn rounded-circle shadow p-2 ai-assistant__toggle" data-action="live#action" data-live-action-param="toggle"
-            title="{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}" aria-label="{{ 'sylius_ai_assistant.ui.ai_assistant'|trans }}" aria-expanded="{{ open ? 'true' : 'false' }}">
+    <button type="button" class="btn rounded-circle shadow p-2 ask-ai__toggle" data-action="live#action" data-live-action-param="toggle"
+            title="{{ 'sylius_ask_ai.ui.ask_ai'|trans }}" aria-label="{{ 'sylius_ask_ai.ui.ask_ai'|trans }}" aria-expanded="{{ open ? 'true' : 'false' }}">
         {% if open %}
             {{ ux_icon('tabler:x', { class: 'icon m-0' }) }}
         {% else %}
-            <img src="{{ asset('bundles/syliusaiassistantplugin/images/assistant.webp') }}" alt="" class="w-100 h-100">
+            <img src="{{ asset('bundles/syliusaskaiplugin/images/assistant.webp') }}" alt="" class="w-100 h-100">
         {% endif %}
     </button>
 
     {% if open %}
-        <div class="card ai-assistant__panel">
-            {% hook 'sylius_ai_assistant.chat_panel' with { panel: this } %}
+        <div class="card ask-ai__panel">
+            {% hook 'sylius_ask_ai.chat_panel' with { panel: this } %}
         </div>
     {% endif %}
 </div>

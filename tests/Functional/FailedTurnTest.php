@@ -11,18 +11,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\ConversationStates;
-use Sylius\AiAssistantPlugin\Entity\Message;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
-use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
-use Sylius\AiAssistantPlugin\MessageHandler\RunAgentTurnHandler;
+use Sylius\AskAiPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\ConversationStates;
+use Sylius\AskAiPlugin\Entity\Message;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Message\RunAgentTurn;
+use Sylius\AskAiPlugin\MessageHandler\RunAgentTurnHandler;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
+use Tests\Sylius\AskAiPlugin\Ai\ScriptedPlatform;
 
 final class FailedTurnTest extends KernelTestCase
 {
@@ -42,19 +42,19 @@ final class FailedTurnTest extends KernelTestCase
         $conversation = new Conversation();
         $conversation->setAdminUser($admin);
         /** @var MessageFactoryInterface $messages */
-        $messages = self::getContainer()->get('sylius_ai_assistant.factory.message');
+        $messages = self::getContainer()->get('sylius_ask_ai.factory.message');
         $messages->createForConversation($conversation, MessageRoles::ROLE_USER, 'Hello?');
         $this->entityManager->persist($conversation);
         $this->entityManager->flush();
 
         /** @var ScriptedPlatform $platform */
-        $platform = self::getContainer()->get('sylius_ai_assistant_test.platform');
+        $platform = self::getContainer()->get('sylius_ask_ai_test.platform');
         $platform->setScript(static function (): never {
             throw new \LogicException('model is down');
         });
 
         /** @var RunAgentTurnHandler $handler */
-        $handler = self::getContainer()->get('test.sylius_ai_assistant.message_handler.run_agent_turn');
+        $handler = self::getContainer()->get('test.sylius_ask_ai.message_handler.run_agent_turn');
         $handler(new RunAgentTurn((int) $conversation->getId()));
 
         $this->entityManager->clear();

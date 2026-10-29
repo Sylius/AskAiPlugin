@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Tool;
+namespace Sylius\AskAiPlugin\Tool;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
+use Sylius\AskAiPlugin\Agent\ChatTurnContextInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 

@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Twig\Extension;
+namespace Sylius\AskAiPlugin\Twig\Extension;
 
-use Sylius\AiAssistantPlugin\Chat\ConversationTimelineInterface;
+use Sylius\AskAiPlugin\Chat\ConversationTimelineInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -27,7 +27,7 @@ final class TimelineExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('sylius_ai_assistant_timeline', $this->timeline->of(...)),
+            new TwigFunction('sylius_ask_ai_timeline', $this->timeline->of(...)),
         ];
     }
 }

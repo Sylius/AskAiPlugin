@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Chat;
+namespace Sylius\AskAiPlugin\Chat;
 
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\MessageInterface;
 
 interface ConversationTimelineInterface
 {

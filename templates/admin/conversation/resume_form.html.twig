@@ -1,6 +1,6 @@
 {# Only the administrator who had the conversation can pick it up again in the chat panel. #}
 {% if conversation.adminUser.id == app.user.id %}
-    <form action="{{ path('sylius_ai_assistant_admin_conversation_resume', { id: conversation.id }) }}" method="post" class="d-inline">
+    <form action="{{ path('sylius_ask_ai_admin_conversation_resume', { id: conversation.id }) }}" method="post" class="d-inline">
         {% if sylius_csrf_protection_enabled() %}
             <input type="hidden" name="_csrf_token" value="{{ csrf_token(conversation.id) }}" />
         {% endif %}
