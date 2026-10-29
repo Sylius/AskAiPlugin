@@ -23,6 +23,14 @@ sylius_ai_assistant_admin_conversation_show:
             vars:
                 hook_prefix: sylius_ai_assistant.conversation
 
+sylius_ai_assistant_admin_conversation_resume:
+    path: /conversations/{id}/resume
+    methods: [POST]
+    requirements:
+        id: '\d+'
+    defaults:
+        _controller: sylius_ai_assistant.controller.admin.resume_conversation
+
 sylius_ai_assistant_admin_agent_action_index:
     path: /agent-actions
     methods: [GET]

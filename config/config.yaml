@@ -32,6 +32,11 @@ sylius_ai_assistant:
             exchange-rates: { repository: sylius.repository.exchange_rate, field: id, edit: sylius_admin_exchange_rate_update, index: sylius_admin_exchange_rate_index }
             administrators: { repository: sylius.repository.admin_user, field: id, edit: sylius_admin_admin_user_update, index: sylius_admin_admin_user_index, search: search }
 
+sylius_grid:
+    templates:
+        action:
+            resume_conversation: '@SyliusAiAssistantPlugin/admin/grid/action/resume_conversation.html.twig'
+
 twig:
     globals:
         sylius_ai_assistant_access_role: '%sylius_ai_assistant.access.role%'

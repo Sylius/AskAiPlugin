@@ -48,6 +48,16 @@ sylius_twig_hooks:
                 template: '@SyliusAiAssistantPlugin/component/chat_panel/footer/composer.html.twig'
                 priority: 0
 
+        'sylius_ai_assistant.conversation.show.content.header.title_block':
+            actions:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/actions.html.twig'
+                priority: -100
+
+        'sylius_ai_assistant.conversation.show.content.header.title_block.actions':
+            resume:
+                template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/header/title_block/actions/resume.html.twig'
+                priority: 0
+
         'sylius_ai_assistant.conversation.show.content':
             sections:
                 template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/sections.html.twig'

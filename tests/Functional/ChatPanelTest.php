@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Tests\Sylius\AiAssistantPlugin\Functional;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Sylius\AiAssistantPlugin\Entity\Conversation;
 use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -69,13 +68,5 @@ final class ChatPanelTest extends WebTestCase
         self::assertSelectorTextContains('.ai-assistant__messages', 'What would you like to do?');
         self::assertSelectorCount(3, '.ai-assistant__messages [data-ai-assistant-suggestion]');
         self::assertSelectorExists('.ai-assistant__panel textarea.ai-assistant__input[data-model="draft"]');
-    }
-
-    private function entityManager(): EntityManagerInterface
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get('doctrine.orm.entity_manager');
-
-        return $em;
     }
 }

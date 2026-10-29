@@ -27,6 +27,7 @@ use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -40,6 +41,8 @@ final class ChatPanelComponent
 {
     use ComponentToolsTrait;
     use DefaultActionTrait;
+
+    public const SESSION_CONVERSATION = 'sylius_ai_assistant.conversation';
 
     #[LiveProp]
     public ?int $conversationId = null;
@@ -82,6 +85,11 @@ final class ChatPanelComponent
 
     public function mount(): void
     {
+        $this->conversationId = $this->session()?->get(self::SESSION_CONVERSATION);
+        if (null !== $this->getConversation()) {
+            return;
+        }
+
         $latest = $this->conversationRepository->findBy(['adminUser' => $this->getAdminUser()], ['id' => 'DESC'], 1);
         $this->conversationId = ($latest[0] ?? null)?->getId();
     }
@@ -214,6 +222,7 @@ final class ChatPanelComponent
         $this->entityManager->flush();
 
         $this->conversationId = $conversation->getId();
+        $this->session()?->set(self::SESSION_CONVERSATION, $this->conversationId);
         $this->open = true;
     }
 
@@ -222,6 +231,13 @@ final class ChatPanelComponent
         $path = static fn (string $u): string => rtrim((string) parse_url($u, \PHP_URL_PATH), '/') . '?' . (string) parse_url($u, \PHP_URL_QUERY);
 
         return $path($referer) === $path($url);
+    }
+
+    private function session(): ?SessionInterface
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        return $request?->hasSession() ? $request->getSession() : null;
     }
 
     private function findPendingAction(int $id): ?AgentActionInterface

@@ -1,0 +1,11 @@
+{# Only the administrator who had the conversation can pick it up again in the chat panel. #}
+{% if conversation.adminUser.id == app.user.id %}
+    <form action="{{ path('sylius_ai_assistant_admin_conversation_resume', { id: conversation.id }) }}" method="post" class="d-inline">
+        {% if sylius_csrf_protection_enabled() %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token(conversation.id) }}" />
+        {% endif %}
+        <button type="submit" class="btn{{ icon_only ? ' btn-icon' }}"{% if icon_only %} data-bs-toggle="tooltip" data-bs-title="{{ label|trans }}"{% endif %} {{ sylius_test_html_attribute('resume-conversation', conversation.id) }}>
+            {{ ux_icon('tabler:player-play') }}{% if not icon_only %} {{ label|trans }}{% endif %}
+        </button>
+    </form>
+{% endif %}
