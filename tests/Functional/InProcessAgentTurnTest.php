@@ -11,17 +11,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Agent\ChatTurnContext;
-use Sylius\AiAssistantPlugin\Chat\ConversationChatInterface;
-use Sylius\AiAssistantPlugin\Entity\AgentAction;
-use Sylius\AiAssistantPlugin\Entity\AgentActionStates;
-use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\Message;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Agent\ChatTurnContext;
+use Sylius\AskAiPlugin\Chat\ConversationChatInterface;
+use Sylius\AskAiPlugin\Entity\AgentAction;
+use Sylius\AskAiPlugin\Entity\AgentActionStates;
+use Sylius\AskAiPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\Message;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
 use Symfony\AI\Platform\Model;
 use Symfony\AI\Platform\Result\MultiPartResult;
 use Symfony\AI\Platform\Result\ResultInterface;
@@ -29,7 +29,7 @@ use Symfony\AI\Platform\Result\TextResult;
 use Symfony\AI\Platform\Result\ToolCall;
 use Symfony\AI\Platform\Result\ToolCallResult;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Sylius\AiAssistantPlugin\Ai\ScriptedPlatform;
+use Tests\Sylius\AskAiPlugin\Ai\ScriptedPlatform;
 
 final class InProcessAgentTurnTest extends KernelTestCase
 {
@@ -50,7 +50,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         $exposedTools = [];
 
         /** @var ScriptedPlatform $platform */
-        $platform = self::getContainer()->get('sylius_ai_assistant_test.platform');
+        $platform = self::getContainer()->get('sylius_ask_ai_test.platform');
         $templateVars = [];
         $platform->setScript(static function (Model $model, array|string|object $input, array $options) use (&$calls, &$exposedTools, &$templateVars): ResultInterface {
             ++$calls;
@@ -65,7 +65,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         });
 
         /** @var ConversationChatInterface $chat */
-        $chat = self::getContainer()->get('test.sylius_ai_assistant.chat');
+        $chat = self::getContainer()->get('test.sylius_ask_ai.chat');
         $reply = $chat->submit($conversation);
 
         self::assertSame(2, $calls, 'The agent runs the tool and asks the model again with the result.');
@@ -95,7 +95,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         self::assertSame(['name' => 'Renamed by the agent'], $actions[0]->getBody());
 
         /** @var ChatTurnContext $context */
-        $context = self::getContainer()->get('test.sylius_ai_assistant.agent.context');
+        $context = self::getContainer()->get('test.sylius_ask_ai.agent.context');
         self::assertFalse($context->isChatTurn(), 'The turn context is left after the turn.');
     }
 
@@ -105,7 +105,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         $calls = 0;
 
         /** @var ScriptedPlatform $platform */
-        $platform = self::getContainer()->get('sylius_ai_assistant_test.platform');
+        $platform = self::getContainer()->get('sylius_ask_ai_test.platform');
         $platform->setScript(static function () use (&$calls): ResultInterface {
             ++$calls;
 
@@ -117,7 +117,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         });
 
         /** @var ConversationChatInterface $chat */
-        $chat = self::getContainer()->get('test.sylius_ai_assistant.chat');
+        $chat = self::getContainer()->get('test.sylius_ask_ai.chat');
         self::assertSame('Proposed, approve action #1.', $chat->submit($conversation));
 
         $messages = array_values($conversation->getMessages()->toArray());
@@ -132,13 +132,13 @@ final class InProcessAgentTurnTest extends KernelTestCase
     {
         $conversation = $this->createConversation();
         /** @var MessageFactoryInterface $messages */
-        $messages = self::getContainer()->get('sylius_ai_assistant.factory.message');
+        $messages = self::getContainer()->get('sylius_ask_ai.factory.message');
         $messages->createForConversation($conversation, MessageRoles::ROLE_ASSISTANT, 'Already answered.');
         $this->entityManager->flush();
 
         $calls = 0;
         /** @var ScriptedPlatform $platform */
-        $platform = self::getContainer()->get('sylius_ai_assistant_test.platform');
+        $platform = self::getContainer()->get('sylius_ask_ai_test.platform');
         $platform->setScript(static function () use (&$calls): ResultInterface {
             ++$calls;
 
@@ -146,7 +146,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
         });
 
         /** @var ConversationChatInterface $chat */
-        $chat = self::getContainer()->get('test.sylius_ai_assistant.chat');
+        $chat = self::getContainer()->get('test.sylius_ask_ai.chat');
         self::assertNull($chat->submit($conversation));
         self::assertSame(0, $calls);
         self::assertCount(2, $conversation->getMessages());
@@ -160,7 +160,7 @@ final class InProcessAgentTurnTest extends KernelTestCase
 
         $conversation->setAdminUser($admin);
         /** @var MessageFactoryInterface $messages */
-        $messages = self::getContainer()->get('sylius_ai_assistant.factory.message');
+        $messages = self::getContainer()->get('sylius_ask_ai.factory.message');
         $messages->createForConversation($conversation, MessageRoles::ROLE_USER, 'Rename the T-shirt to "Renamed by the agent".');
         $this->entityManager->persist($conversation);
         $this->entityManager->flush();

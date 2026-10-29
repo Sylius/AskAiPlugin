@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Provider;
+namespace Sylius\AskAiPlugin\Provider;
 
 use Sylius\AdminMcpServerPlugin\Provider\TokenProviderInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;

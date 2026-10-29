@@ -3,7 +3,7 @@ parameters:
     env(OLLAMA_MODEL): 'qwen3:4b?num_ctx=32768'
 
 services:
-    sylius_ai_assistant_test.platform.ollama:
+    sylius_ask_ai_test.platform.ollama:
         class: Symfony\AI\Platform\Platform
         factory: ['Symfony\AI\Platform\Bridge\Ollama\Factory', 'createPlatform']
         arguments:
@@ -17,6 +17,6 @@ services:
 
 ai:
     agent:
-        sylius_ai_assistant:
-            platform: sylius_ai_assistant_test.platform.ollama
+        sylius_ask_ai:
+            platform: sylius_ask_ai_test.platform.ollama
             model: '%env(OLLAMA_MODEL)%'

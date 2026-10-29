@@ -5,28 +5,28 @@
     rejected: 'secondary',
     failed: 'danger',
 }[action.state] %}
-{% set state = ('sylius_ai_assistant.ui.state.' ~ action.state)|trans %}
+{% set state = ('sylius_ask_ai.ui.state.' ~ action.state)|trans %}
 {% set json_flags = constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') %}
 {% set interactive = interactive is defined ? interactive : true %}
 {% set link = link is defined ? link : false %}
-<div class="card ai-assistant__action rounded-3{{ action.proposed ? ' border-warning' : '' }}" data-action-id="{{ action.id }}">
+<div class="card ask-ai__action rounded-3{{ action.proposed ? ' border-warning' : '' }}" data-action-id="{{ action.id }}">
     <div class="card-body p-3 d-flex flex-column gap-2">
         {% set header %}
             <span class="badge bg-{{ tone }}-lt text-{{ tone }}">{{ state }}</span>
             <span class="text-secondary text-truncate">#{{ action.id }} · {{ action.toolName ?? action.httpMethod }}</span>
         {% endset %}
         {% if link %}
-            <a href="{{ path('sylius_ai_assistant_admin_agent_action_show', { id: action.id }) }}" class="d-flex align-items-center gap-2 small text-decoration-none">{{ header }}</a>
+            <a href="{{ path('sylius_ask_ai_admin_agent_action_show', { id: action.id }) }}" class="d-flex align-items-center gap-2 small text-decoration-none">{{ header }}</a>
         {% else %}
             <div class="d-flex align-items-center gap-2 small">{{ header }}</div>
         {% endif %}
         {% if action.body is iterable and action.body is not empty %}
-            <dl class="ai-assistant__changes small mb-0">
+            <dl class="ask-ai__changes small mb-0">
                 {% for field, value in action.body %}
                     <div class="d-flex flex-wrap align-items-center gap-1 text-break">
                         <dt class="fw-normal text-secondary">{{ field }}</dt>
                         {{ ux_icon('tabler:arrow-right', { class: 'icon icon-sm text-secondary' }) }}
-                        <dd class="m-0 fw-medium">{{ value|sylius_ai_assistant_value }}</dd>
+                        <dd class="m-0 fw-medium">{{ value|sylius_ask_ai_value }}</dd>
                     </div>
                 {% endfor %}
             </dl>
@@ -34,24 +34,24 @@
         <details class="small">
             <summary class="text-secondary">{{ action.httpMethod }} {{ action.path }}</summary>
             {% if action.body is not null %}
-                <pre class="ai-assistant__json mt-1 mb-0">{{ action.body|json_encode(json_flags) }}</pre>
+                <pre class="ask-ai__json mt-1 mb-0">{{ action.body|json_encode(json_flags) }}</pre>
             {% endif %}
             {% if action.snapshotBefore is not null %}
-                <div class="text-secondary mt-1">{{ 'sylius_ai_assistant.ui.current_state'|trans }}</div>
-                <pre class="ai-assistant__json mb-0">{{ action.snapshotBefore|slice(0, 4000) }}</pre>
+                <div class="text-secondary mt-1">{{ 'sylius_ask_ai.ui.current_state'|trans }}</div>
+                <pre class="ask-ai__json mb-0">{{ action.snapshotBefore|slice(0, 4000) }}</pre>
             {% endif %}
             {% if action.result is not null %}
-                <div class="text-secondary mt-1">{{ 'sylius_ai_assistant.ui.result'|trans }}</div>
-                <pre class="ai-assistant__json mb-0">{{ action.result|slice(0, 4000) }}</pre>
+                <div class="text-secondary mt-1">{{ 'sylius_ask_ai.ui.result'|trans }}</div>
+                <pre class="ask-ai__json mb-0">{{ action.result|slice(0, 4000) }}</pre>
             {% endif %}
         </details>
         {% if action.proposed and interactive %}
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm flex-fill" data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ action.id }}">{{ 'sylius_ai_assistant.ui.reject'|trans }}</button>
-                <button type="button" class="btn btn-sm btn-primary flex-fill" data-action="live#action" data-live-action-param="approve" data-live-id-param="{{ action.id }}">{{ 'sylius_ai_assistant.ui.approve'|trans }}</button>
+                <button type="button" class="btn btn-sm flex-fill" data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ action.id }}">{{ 'sylius_ask_ai.ui.reject'|trans }}</button>
+                <button type="button" class="btn btn-sm btn-primary flex-fill" data-action="live#action" data-live-action-param="approve" data-live-id-param="{{ action.id }}">{{ 'sylius_ask_ai.ui.approve'|trans }}</button>
             </div>
         {% elseif action.decidedBy is not null %}
-            <div class="text-secondary small">{{ 'sylius_ai_assistant.ui.decided_by'|trans({'%state%': state, '%user%': action.decidedBy.username}) }}</div>
+            <div class="text-secondary small">{{ 'sylius_ask_ai.ui.decided_by'|trans({'%state%': state, '%user%': action.decidedBy.username}) }}</div>
         {% endif %}
     </div>
 </div>

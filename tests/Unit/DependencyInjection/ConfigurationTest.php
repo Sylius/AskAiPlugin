@@ -11,16 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Unit\DependencyInjection;
+namespace Tests\Sylius\AskAiPlugin\Unit\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
-use Sylius\AiAssistantPlugin\DependencyInjection\Configuration;
-use Sylius\AiAssistantPlugin\Entity\AgentAction;
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\Message;
-use Sylius\AiAssistantPlugin\Entity\MessageInterface;
+use Sylius\AskAiPlugin\DependencyInjection\Configuration;
+use Sylius\AskAiPlugin\Entity\AgentAction;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\Message;
+use Sylius\AskAiPlugin\Entity\MessageInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Sylius\Resource\Factory\Factory;
@@ -92,17 +92,17 @@ final class ConfigurationTest extends TestCase
     public function testTheStoreReplacesTheSuggestedQuestions(): void
     {
         self::assertSame([
-            'sylius_ai_assistant.ui.suggestion.what_are_the_latest_orders',
-            'sylius_ai_assistant.ui.suggestion.which_orders_are_waiting_to_be_shipped',
-            'sylius_ai_assistant.ui.suggestion.create_a_customer_group_called_vip',
+            'sylius_ask_ai.ui.suggestion.what_are_the_latest_orders',
+            'sylius_ask_ai.ui.suggestion.which_orders_are_waiting_to_be_shipped',
+            'sylius_ask_ai.ui.suggestion.create_a_customer_group_called_vip',
         ], $this->process([])['suggestions']);
 
-        $config = $this->process(['suggestions' => ['app.ai_assistant.suggestion.unpaid_orders', 'Which coupons expire this month?']]);
-        self::assertSame(['app.ai_assistant.suggestion.unpaid_orders', 'Which coupons expire this month?'], $config['suggestions'], 'Keys and plain text mix; the list replaces the default one.');
+        $config = $this->process(['suggestions' => ['app.ask_ai.suggestion.unpaid_orders', 'Which coupons expire this month?']]);
+        self::assertSame(['app.ask_ai.suggestion.unpaid_orders', 'Which coupons expire this month?'], $config['suggestions'], 'Keys and plain text mix; the list replaces the default one.');
 
         self::assertSame([], $this->process(['suggestions' => []])['suggestions'], 'No suggestions at all is a choice.');
 
-        $config = $this->process(['suggestions' => ['app.ai_assistant.suggestion.unpaid_orders']], ['suggestions' => []]);
+        $config = $this->process(['suggestions' => ['app.ask_ai.suggestion.unpaid_orders']], ['suggestions' => []]);
         self::assertSame([], $config['suggestions'], 'A later file (when@test, a dev override) replaces the list instead of appending to it.');
     }
 
@@ -124,7 +124,7 @@ final class ConfigurationTest extends TestCase
     public function testThePanelIsForApiAccessByDefault(): void
     {
         self::assertSame('ROLE_API_ACCESS', $this->process([])['access']['role']);
-        self::assertSame('ROLE_AI_ASSISTANT', $this->process(['access' => ['role' => 'ROLE_AI_ASSISTANT']])['access']['role']);
+        self::assertSame('ROLE_ASK_AI', $this->process(['access' => ['role' => 'ROLE_ASK_AI']])['access']['role']);
     }
 
     public function testTheNavigationPagesMergeAcrossConfigsAndSwitchOffWithFalse(): void

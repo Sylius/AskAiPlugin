@@ -16,7 +16,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Sylius\AiAssistantPlugin\Entity\Conversation" table="sylius_ai_assistant_conversation">
+    <mapped-superclass name="Sylius\AskAiPlugin\Entity\Conversation" table="sylius_ask_ai_conversation">
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
@@ -31,7 +31,7 @@
             <join-column name="admin_user_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
         </many-to-one>
 
-        <one-to-many field="messages" target-entity="Sylius\AiAssistantPlugin\Entity\MessageInterface" mapped-by="conversation" orphan-removal="true">
+        <one-to-many field="messages" target-entity="Sylius\AskAiPlugin\Entity\MessageInterface" mapped-by="conversation" orphan-removal="true">
             <cascade>
                 <cascade-persist />
                 <cascade-remove />

@@ -2,9 +2,9 @@ imports:
     - { resource: 'twig_hooks.yaml' }
 
 parameters:
-    env(SYLIUS_AI_ASSISTANT_TRANSPORT_DSN): 'doctrine://default?queue_name=sylius_ai_assistant'
+    env(SYLIUS_ASK_AI_TRANSPORT_DSN): 'doctrine://default?queue_name=sylius_ask_ai'
 
-sylius_ai_assistant:
+sylius_ask_ai:
     navigation:
         pages:
             products: { repository: sylius.repository.product, field: code, show: sylius_admin_product_show, edit: sylius_admin_product_update, index: sylius_admin_product_index, search: search }
@@ -35,22 +35,22 @@ sylius_ai_assistant:
 sylius_grid:
     templates:
         action:
-            resume_conversation: '@SyliusAiAssistantPlugin/admin/grid/action/resume_conversation.html.twig'
+            resume_conversation: '@SyliusAskAiPlugin/admin/grid/action/resume_conversation.html.twig'
 
 twig:
     globals:
-        sylius_ai_assistant_access_role: '%sylius_ai_assistant.access.role%'
+        sylius_ask_ai_access_role: '%sylius_ask_ai.access.role%'
 
 framework:
     messenger:
         buses:
-            sylius_ai_assistant.command_bus:
+            sylius_ask_ai.command_bus:
                 middleware:
                     - doctrine_ping_connection
                     - doctrine_close_connection
         transports:
-            sylius_ai_assistant:
-                dsn: '%env(SYLIUS_AI_ASSISTANT_TRANSPORT_DSN)%'
+            sylius_ask_ai:
+                dsn: '%env(SYLIUS_ASK_AI_TRANSPORT_DSN)%'
         routing:
-            'Sylius\AiAssistantPlugin\Message\RunAgentTurn': sylius_ai_assistant
-            'Sylius\AiAssistantPlugin\Message\ExecuteAgentAction': sylius_ai_assistant
+            'Sylius\AskAiPlugin\Message\RunAgentTurn': sylius_ask_ai
+            'Sylius\AskAiPlugin\Message\ExecuteAgentAction': sylius_ask_ai

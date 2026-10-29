@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Twig\Extension;
+namespace Sylius\AskAiPlugin\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -21,7 +21,7 @@ final class ValueExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('sylius_ai_assistant_value', $this->format(...)),
+            new TwigFilter('sylius_ask_ai_value', $this->format(...)),
         ];
     }
 

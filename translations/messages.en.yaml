@@ -1,6 +1,6 @@
-sylius_ai_assistant:
+sylius_ask_ai:
     ui:
-        ai_assistant: AI assistant
+        ask_ai: Ask AI
         resume: Resume
         new_chat: New chat
         start_a_conversation_to_ask_about_your_store: Start a conversation to ask about your store.

@@ -1,24 +1,24 @@
-<div class="ai-assistant__message ai-assistant__message--{{ message.role }}">
+<div class="ask-ai__message ask-ai__message--{{ message.role }}">
     {%- if message.role == 'notice' -%}
-        <div class="ai-assistant__notice small text-secondary bg-secondary-lt rounded-3 px-3 py-1 text-center">{{ message.content|nl2br }}</div>
+        <div class="ask-ai__notice small text-secondary bg-secondary-lt rounded-3 px-3 py-1 text-center">{{ message.content|nl2br }}</div>
     {%- else -%}
-        <div class="ai-assistant__bubble">
+        <div class="ask-ai__bubble">
             {%- if message.role == 'assistant' -%}
-                {{ message.content|sylius_ai_assistant_markdown }}
+                {{ message.content|sylius_ask_ai_markdown }}
             {%- else -%}
                 {{ message.content|nl2br }}
             {%- endif -%}
         </div>
     {%- endif -%}
     {% if message.toolCalls is not empty %}
-        <div class="ai-assistant__tools d-flex flex-wrap gap-1 small">
+        <div class="ask-ai__tools d-flex flex-wrap gap-1 small">
             {% for call in message.toolCalls %}
-                <details class="ai-assistant__tool">
+                <details class="ask-ai__tool">
                     <summary class="badge bg-secondary-lt text-secondary font-monospace fw-normal">{{ call.name }}</summary>
                     {% if call.arguments is not empty %}
-                        <dl class="ai-assistant__arguments font-monospace bg-body border rounded-2 px-2 py-1 mt-1 mb-0">
+                        <dl class="ask-ai__arguments font-monospace bg-body border rounded-2 px-2 py-1 mt-1 mb-0">
                             {% for name, value in call.arguments %}
-                                <div class="text-break"><dt class="d-inline fw-normal text-secondary">{{ name }}:</dt> <dd class="d-inline m-0">{{ value|sylius_ai_assistant_value }}</dd></div>
+                                <div class="text-break"><dt class="d-inline fw-normal text-secondary">{{ name }}:</dt> <dd class="d-inline m-0">{{ value|sylius_ask_ai_value }}</dd></div>
                             {% endfor %}
                         </dl>
                     {% endif %}

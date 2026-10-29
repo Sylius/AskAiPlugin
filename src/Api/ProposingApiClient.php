@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Api;
+namespace Sylius\AskAiPlugin\Api;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\AdminMcpServerPlugin\Api\ApiClientInterface;
-use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Factory\AgentActionFactoryInterface;
-use Sylius\AiAssistantPlugin\Mcp\CurrentToolCallInterface;
+use Sylius\AskAiPlugin\Agent\ChatTurnContextInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Factory\AgentActionFactoryInterface;
+use Sylius\AskAiPlugin\Mcp\CurrentToolCallInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
 final class ProposingApiClient implements ApiClientInterface

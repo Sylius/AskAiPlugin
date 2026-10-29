@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Agent;
+namespace Sylius\AskAiPlugin\Agent;
 
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
 
 interface AgentActionExecutorInterface
 {

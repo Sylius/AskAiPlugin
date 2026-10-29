@@ -1,10 +1,10 @@
 sylius_grid:
     grids:
-        sylius_ai_assistant_admin_conversation:
+        sylius_ask_ai_admin_conversation:
             driver:
                 name: doctrine/orm
                 options:
-                    class: '%sylius_ai_assistant.model.conversation.class%'
+                    class: '%sylius_ask_ai.model.conversation.class%'
             sorting:
                 createdAt: desc
             fields:
@@ -14,20 +14,20 @@ sylius_grid:
                     sortable: ~
                 topic:
                     type: twig
-                    label: sylius_ai_assistant.ui.topic
+                    label: sylius_ask_ai.ui.topic
                     path: .
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/conversation_topic.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/conversation_topic.html.twig'
                 adminUser:
                     type: string
-                    label: sylius_ai_assistant.ui.administrator
+                    label: sylius_ask_ai.ui.administrator
                     path: adminUser.username
                     sortable: adminUser.username
                 messages:
                     type: twig
-                    label: sylius_ai_assistant.ui.messages
+                    label: sylius_ask_ai.ui.messages
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/count.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/count.html.twig'
                         vars:
                             th_class: 'w-1 text-center'
                 state:
@@ -35,7 +35,7 @@ sylius_grid:
                     label: sylius.ui.state
                     sortable: ~
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/state.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/state.html.twig'
                 createdAt:
                     type: twig
                     label: sylius.ui.creation_date
@@ -55,7 +55,7 @@ sylius_grid:
             filters:
                 adminUser:
                     type: entity
-                    label: sylius_ai_assistant.ui.administrator
+                    label: sylius_ask_ai.ui.administrator
                     form_options:
                         class: '%sylius.model.admin_user.class%'
                         choice_label: username
@@ -64,9 +64,9 @@ sylius_grid:
                     label: sylius.ui.state
                     form_options:
                         choices:
-                            sylius_ai_assistant.ui.state.idle: !php/const Sylius\AiAssistantPlugin\Entity\ConversationStates::STATE_IDLE
-                            sylius_ai_assistant.ui.state.running: !php/const Sylius\AiAssistantPlugin\Entity\ConversationStates::STATE_RUNNING
-                            sylius_ai_assistant.ui.state.failed: !php/const Sylius\AiAssistantPlugin\Entity\ConversationStates::STATE_FAILED
+                            sylius_ask_ai.ui.state.idle: !php/const Sylius\AskAiPlugin\Entity\ConversationStates::STATE_IDLE
+                            sylius_ask_ai.ui.state.running: !php/const Sylius\AskAiPlugin\Entity\ConversationStates::STATE_RUNNING
+                            sylius_ask_ai.ui.state.failed: !php/const Sylius\AskAiPlugin\Entity\ConversationStates::STATE_FAILED
                 createdAt:
                     type: date
                     label: sylius.ui.creation_date
@@ -74,20 +74,20 @@ sylius_grid:
                 item:
                     resume:
                         type: resume_conversation
-                        label: sylius_ai_assistant.ui.resume
+                        label: sylius_ask_ai.ui.resume
                     show:
                         type: show
                         options:
                             link:
-                                route: sylius_ai_assistant_admin_conversation_show
+                                route: sylius_ask_ai_admin_conversation_show
                                 parameters:
                                     id: resource.id
 
-        sylius_ai_assistant_admin_agent_action:
+        sylius_ask_ai_admin_agent_action:
             driver:
                 name: doctrine/orm
                 options:
-                    class: '%sylius_ai_assistant.model.agent_action.class%'
+                    class: '%sylius_ask_ai.model.agent_action.class%'
             sorting:
                 createdAt: desc
             fields:
@@ -97,29 +97,29 @@ sylius_grid:
                     sortable: ~
                 conversation:
                     type: twig
-                    label: sylius_ai_assistant.ui.conversation
+                    label: sylius_ask_ai.ui.conversation
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/conversation_link.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/conversation_link.html.twig'
                 tool:
                     type: twig
-                    label: sylius_ai_assistant.ui.tool
+                    label: sylius_ask_ai.ui.tool
                     path: .
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/agent_action_tool.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/agent_action_tool.html.twig'
                 state:
                     type: twig
                     label: sylius.ui.state
                     sortable: ~
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/state.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/state.html.twig'
                 decidedBy:
                     type: twig
-                    label: sylius_ai_assistant.ui.decided_by_user
+                    label: sylius_ask_ai.ui.decided_by_user
                     options:
-                        template: '@SyliusAiAssistantPlugin/admin/grid/field/admin_user.html.twig'
+                        template: '@SyliusAskAiPlugin/admin/grid/field/admin_user.html.twig'
                 decidedAt:
                     type: twig
-                    label: sylius_ai_assistant.ui.decided_at
+                    label: sylius_ask_ai.ui.decided_at
                     sortable: ~
                     options:
                         template: '@SyliusAdmin/shared/grid/field/date.html.twig'
@@ -136,20 +136,20 @@ sylius_grid:
             filters:
                 toolName:
                     type: string
-                    label: sylius_ai_assistant.ui.tool
+                    label: sylius_ask_ai.ui.tool
                 state:
                     type: select
                     label: sylius.ui.state
                     form_options:
                         choices:
-                            sylius_ai_assistant.ui.state.proposed: !php/const Sylius\AiAssistantPlugin\Entity\AgentActionStates::STATE_PROPOSED
-                            sylius_ai_assistant.ui.state.approved: !php/const Sylius\AiAssistantPlugin\Entity\AgentActionStates::STATE_APPROVED
-                            sylius_ai_assistant.ui.state.executed: !php/const Sylius\AiAssistantPlugin\Entity\AgentActionStates::STATE_EXECUTED
-                            sylius_ai_assistant.ui.state.rejected: !php/const Sylius\AiAssistantPlugin\Entity\AgentActionStates::STATE_REJECTED
-                            sylius_ai_assistant.ui.state.failed: !php/const Sylius\AiAssistantPlugin\Entity\AgentActionStates::STATE_FAILED
+                            sylius_ask_ai.ui.state.proposed: !php/const Sylius\AskAiPlugin\Entity\AgentActionStates::STATE_PROPOSED
+                            sylius_ask_ai.ui.state.approved: !php/const Sylius\AskAiPlugin\Entity\AgentActionStates::STATE_APPROVED
+                            sylius_ask_ai.ui.state.executed: !php/const Sylius\AskAiPlugin\Entity\AgentActionStates::STATE_EXECUTED
+                            sylius_ask_ai.ui.state.rejected: !php/const Sylius\AskAiPlugin\Entity\AgentActionStates::STATE_REJECTED
+                            sylius_ask_ai.ui.state.failed: !php/const Sylius\AskAiPlugin\Entity\AgentActionStates::STATE_FAILED
                 decidedBy:
                     type: entity
-                    label: sylius_ai_assistant.ui.decided_by_user
+                    label: sylius_ask_ai.ui.decided_by_user
                     form_options:
                         class: '%sylius.model.admin_user.class%'
                         choice_label: username
@@ -162,6 +162,6 @@ sylius_grid:
                         type: show
                         options:
                             link:
-                                route: sylius_ai_assistant_admin_agent_action_show
+                                route: sylius_ask_ai_admin_agent_action_show
                                 parameters:
                                     id: resource.id

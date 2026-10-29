@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Navigation;
+namespace Sylius\AskAiPlugin\Navigation;
 
 use Psr\Container\ContainerInterface;
 use Sylius\Resource\Model\ResourceInterface;

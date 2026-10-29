@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Agent;
+namespace Sylius\AskAiPlugin\Agent;
 
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
 
 final class ChatTurnContext implements ChatTurnContextInterface
 {

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Mcp;
+namespace Sylius\AskAiPlugin\Mcp;
 
 interface CurrentToolCallInterface
 {

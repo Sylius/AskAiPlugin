@@ -11,14 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Chat;
+namespace Sylius\AskAiPlugin\Chat;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
-use Sylius\AiAssistantPlugin\Entity\ConversationInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageInterface as MessageEntityInterface;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Agent\ChatTurnContextInterface;
+use Sylius\AskAiPlugin\Entity\ConversationInterface;
+use Sylius\AskAiPlugin\Entity\MessageInterface as MessageEntityInterface;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\AI\Agent\Exception\ConflictException;
 use Symfony\AI\Agent\Exception\RuntimeException;

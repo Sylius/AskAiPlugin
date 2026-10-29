@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Navigation;
+namespace Sylius\AskAiPlugin\Navigation;
 
 interface AdminUrlResolverInterface
 {

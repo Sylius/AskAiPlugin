@@ -1,5 +1,5 @@
 {
-    "name": "sylius/ai-assistant-plugin",
+    "name": "sylius/ask-ai-plugin",
     "type": "sylius-plugin",
     "description": "AI chat panel inside the Sylius admin, driven by the Admin MCP tools with human approval of write actions.",
     "keywords": [
@@ -87,12 +87,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Sylius\\AiAssistantPlugin\\": "src/"
+            "Sylius\\AskAiPlugin\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Sylius\\AiAssistantPlugin\\": [
+            "Tests\\Sylius\\AskAiPlugin\\": [
                 "tests/",
                 "tests/TestApplication/src/"
             ],

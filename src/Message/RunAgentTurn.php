@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Message;
+namespace Sylius\AskAiPlugin\Message;
 
 final class RunAgentTurn
 {

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Agent\Platform;
+namespace Sylius\AskAiPlugin\Agent\Platform;
 
 use Psr\Log\LoggerInterface;
 use Symfony\AI\Platform\Event\InvocationEvent;

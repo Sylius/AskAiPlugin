@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-12 col-lg-6">
         <div class="card mb-3">
-            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.tool_arguments'|trans }}</div></div>
+            <div class="card-header"><div class="card-title">{{ 'sylius_ask_ai.ui.tool_arguments'|trans }}</div></div>
             <div class="card-body"><pre class="m-0">{{ action.toolArguments is not null ? action.toolArguments|json_encode(json) : '—' }}</pre></div>
         </div>
         <div class="card mb-3">
@@ -13,11 +13,11 @@
     </div>
     <div class="col-12 col-lg-6">
         <div class="card mb-3">
-            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.current_state'|trans }}</div></div>
+            <div class="card-header"><div class="card-title">{{ 'sylius_ask_ai.ui.current_state'|trans }}</div></div>
             <div class="card-body"><pre class="m-0">{{ action.snapshotBefore ?? '—' }}</pre></div>
         </div>
         <div class="card mb-3">
-            <div class="card-header"><div class="card-title">{{ 'sylius_ai_assistant.ui.result'|trans }}</div></div>
+            <div class="card-header"><div class="card-title">{{ 'sylius_ask_ai.ui.result'|trans }}</div></div>
             <div class="card-body"><pre class="m-0">{{ action.result ?? '—' }}</pre></div>
         </div>
     </div>

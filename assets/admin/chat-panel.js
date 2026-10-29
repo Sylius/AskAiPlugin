@@ -1,21 +1,21 @@
-// The AI assistant panel: remembers whether it is open across page loads, follows the
+// The Ask AI panel: remembers whether it is open across page loads, follows the
 // navigation the agent asks for, and keeps the timeline scrolled to the newest message.
 // The panel itself is a live component (see templates/component/chat_panel.html.twig).
 
-const COOKIE = 'sylius_ai_assistant_open';
+const COOKIE = 'sylius_ask_ai_open';
 
 const rememberOpen = (open) => {
     document.cookie = `${COOKIE}=${open ? '1' : '0'};path=/;SameSite=Lax`;
 };
 
 document.addEventListener('click', (event) => {
-    const toggle = event.target.closest('.ai-assistant__toggle');
+    const toggle = event.target.closest('.ask-ai__toggle');
     if (toggle) {
-        rememberOpen(!toggle.closest('.ai-assistant').classList.contains('ai-assistant--open'));
+        rememberOpen(!toggle.closest('.ask-ai').classList.contains('ask-ai--open'));
     }
 });
 
-document.addEventListener('ai-assistant:navigate', (event) => {
+document.addEventListener('ask-ai:navigate', (event) => {
     if (event.detail && event.detail.url) {
         rememberOpen(true);
         window.location.assign(event.detail.url);
@@ -26,7 +26,7 @@ document.addEventListener('ai-assistant:navigate', (event) => {
 const STICK_DISTANCE = 48;
 let sent = false;
 
-const messagesOf = (root) => root.querySelector('.ai-assistant__messages');
+const messagesOf = (root) => root.querySelector('.ask-ai__messages');
 
 const isAtBottom = (messages) => messages.scrollHeight - messages.scrollTop - messages.clientHeight <= STICK_DISTANCE;
 
@@ -38,19 +38,19 @@ const scrollDown = (root) => {
 };
 
 document.addEventListener('submit', (event) => {
-    if (event.target.closest('.ai-assistant')) {
+    if (event.target.closest('.ask-ai')) {
         sent = true;
     }
 }, true);
 
 document.addEventListener('click', (event) => {
-    if (event.target.closest('.ai-assistant [data-live-action-param]')) {
+    if (event.target.closest('.ask-ai [data-live-action-param]')) {
         sent = true;
     }
 }, true);
 
 document.addEventListener('live:connect', (event) => {
-    const root = event.target.closest ? event.target.closest('.ai-assistant') : null;
+    const root = event.target.closest ? event.target.closest('.ask-ai') : null;
     if (!root) {
         return;
     }
@@ -65,7 +65,7 @@ document.addEventListener('live:connect', (event) => {
             scrollDown(root);
         }
         sent = false;
-        autosize(root.querySelector('.ai-assistant__input'));
+        autosize(root.querySelector('.ask-ai__input'));
     });
 }, true);
 
@@ -78,20 +78,20 @@ const autosize = (input) => {
 };
 
 document.addEventListener('input', (event) => {
-    if (event.target.matches && event.target.matches('.ai-assistant__input')) {
+    if (event.target.matches && event.target.matches('.ask-ai__input')) {
         autosize(event.target);
     }
 });
 
 document.addEventListener('keydown', (event) => {
-    const toggle = event.key === 'Escape' && event.target.closest ? event.target.closest('.ai-assistant--open')?.querySelector('.ai-assistant__toggle') : null;
+    const toggle = event.key === 'Escape' && event.target.closest ? event.target.closest('.ask-ai--open')?.querySelector('.ask-ai__toggle') : null;
     if (toggle) {
         toggle.click();
     }
 });
 
 document.addEventListener('keydown', (event) => {
-    const input = event.target.closest ? event.target.closest('.ai-assistant__input') : null;
+    const input = event.target.closest ? event.target.closest('.ask-ai__input') : null;
     if (!input || event.key !== 'Enter' || event.shiftKey || event.isComposing) {
         return;
     }
@@ -100,12 +100,12 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('click', (event) => {
-    const suggestion = event.target.closest('[data-ai-assistant-suggestion]');
-    const input = suggestion ? suggestion.closest('.ai-assistant').querySelector('.ai-assistant__input') : null;
+    const suggestion = event.target.closest('[data-ask-ai-suggestion]');
+    const input = suggestion ? suggestion.closest('.ask-ai').querySelector('.ask-ai__input') : null;
     if (!input || input.disabled) {
         return;
     }
-    input.value = suggestion.dataset.aiAssistantSuggestion;
+    input.value = suggestion.dataset.askAiSuggestion;
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.form.requestSubmit();
 });

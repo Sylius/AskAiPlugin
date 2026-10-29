@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Unit\Translations;
+namespace Tests\Sylius\AskAiPlugin\Unit\Translations;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
@@ -36,7 +36,7 @@ final class TranslationFilesTest extends TestCase
         $used = [];
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(__DIR__ . '/../../../templates', \FilesystemIterator::SKIP_DOTS));
         foreach (new \RegexIterator($iterator, '/\.twig$/') as $template) {
-            preg_match_all("/'(sylius_ai_assistant\\.ui\\.[a-z_.]+)'\\|trans/", (string) file_get_contents($template->getPathname()), $matches);
+            preg_match_all("/'(sylius_ask_ai\\.ui\\.[a-z_.]+)'\\|trans/", (string) file_get_contents($template->getPathname()), $matches);
             $used = array_merge($used, $matches[1]);
         }
 

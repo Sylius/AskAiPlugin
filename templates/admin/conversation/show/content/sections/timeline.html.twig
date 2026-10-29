@@ -4,12 +4,12 @@
     <div class="card-header">
         <div class="card-title">{{ 'sylius.ui.history'|trans }}</div>
     </div>
-    <div class="card-body ai-assistant__messages" data-test-timeline>
-        {% for item in sylius_ai_assistant_timeline(conversation) %}
+    <div class="card-body ask-ai__messages" data-test-timeline>
+        {% for item in sylius_ask_ai_timeline(conversation) %}
             {% if item.role is defined %}
-                {{ include('@SyliusAiAssistantPlugin/component/message.html.twig', { message: item }) }}
+                {{ include('@SyliusAskAiPlugin/component/message.html.twig', { message: item }) }}
             {% else %}
-                {{ include('@SyliusAiAssistantPlugin/component/action_card.html.twig', { action: item, interactive: false, link: true }) }}
+                {{ include('@SyliusAskAiPlugin/component/action_card.html.twig', { action: item, interactive: false, link: true }) }}
             {% endif %}
         {% else %}
             <p class="text-secondary m-0">{{ 'sylius.ui.no_results'|trans }}</p>

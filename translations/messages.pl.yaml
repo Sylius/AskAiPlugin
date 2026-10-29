@@ -1,6 +1,6 @@
-sylius_ai_assistant:
+sylius_ask_ai:
     ui:
-        ai_assistant: Asystent AI
+        ask_ai: Ask AI
         resume: Wznów
         new_chat: Nowa rozmowa
         start_a_conversation_to_ask_about_your_store: Rozpocznij rozmowę, aby zapytać o swój sklep.

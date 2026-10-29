@@ -1,85 +1,85 @@
 sylius_twig_hooks:
     hooks:
         'sylius_admin.base#javascripts':
-            ai_assistant_panel:
-                template: '@SyliusAiAssistantPlugin/hook/chat_panel.html.twig'
+            ask_ai_panel:
+                template: '@SyliusAskAiPlugin/hook/chat_panel.html.twig'
                 priority: -100
 
-        'sylius_ai_assistant.chat_panel':
+        'sylius_ask_ai.chat_panel':
             header:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/header.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/header.html.twig'
                 priority: 200
             body:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/body.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/body.html.twig'
                 priority: 100
             footer:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/footer.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/footer.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.chat_panel.header':
+        'sylius_ask_ai.chat_panel.header':
             title:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/title.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/header/title.html.twig'
                 priority: 200
             history:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/history.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/header/history.html.twig'
                 priority: 100
             new_chat:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/header/new_chat.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/header/new_chat.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.chat_panel.body':
+        'sylius_ask_ai.chat_panel.body':
             empty_state:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/body/empty_state.html.twig'
                 priority: 100
             timeline:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/timeline.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/body/timeline.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.chat_panel.body.empty_state':
+        'sylius_ask_ai.chat_panel.body.empty_state':
             intro:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state/intro.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/body/empty_state/intro.html.twig'
                 priority: 100
             suggestions:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/body/empty_state/suggestions.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/body/empty_state/suggestions.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.chat_panel.footer':
+        'sylius_ask_ai.chat_panel.footer':
             composer:
-                template: '@SyliusAiAssistantPlugin/component/chat_panel/footer/composer.html.twig'
+                template: '@SyliusAskAiPlugin/component/chat_panel/footer/composer.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.conversation.show.content.header.title_block':
+        'sylius_ask_ai.conversation.show.content.header.title_block':
             actions:
                 template: '@SyliusAdmin/shared/crud/common/content/header/title_block/actions.html.twig'
                 priority: -100
 
-        'sylius_ai_assistant.conversation.show.content.header.title_block.actions':
+        'sylius_ask_ai.conversation.show.content.header.title_block.actions':
             resume:
-                template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/header/title_block/actions/resume.html.twig'
+                template: '@SyliusAskAiPlugin/admin/conversation/show/content/header/title_block/actions/resume.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.conversation.show.content':
+        'sylius_ask_ai.conversation.show.content':
             sections:
-                template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/sections.html.twig'
+                template: '@SyliusAskAiPlugin/admin/conversation/show/content/sections.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.conversation.show.content.sections':
+        'sylius_ask_ai.conversation.show.content.sections':
             general:
-                template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/sections/general.html.twig'
+                template: '@SyliusAskAiPlugin/admin/conversation/show/content/sections/general.html.twig'
                 priority: 100
             timeline:
-                template: '@SyliusAiAssistantPlugin/admin/conversation/show/content/sections/timeline.html.twig'
+                template: '@SyliusAskAiPlugin/admin/conversation/show/content/sections/timeline.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.agent_action.show.content':
+        'sylius_ask_ai.agent_action.show.content':
             sections:
-                template: '@SyliusAiAssistantPlugin/admin/agent_action/show/content/sections.html.twig'
+                template: '@SyliusAskAiPlugin/admin/agent_action/show/content/sections.html.twig'
                 priority: 0
 
-        'sylius_ai_assistant.agent_action.show.content.sections':
+        'sylius_ask_ai.agent_action.show.content.sections':
             general:
-                template: '@SyliusAiAssistantPlugin/admin/agent_action/show/content/sections/general.html.twig'
+                template: '@SyliusAskAiPlugin/admin/agent_action/show/content/sections/general.html.twig'
                 priority: 100
             details:
-                template: '@SyliusAiAssistantPlugin/admin/agent_action/show/content/sections/details.html.twig'
+                template: '@SyliusAskAiPlugin/admin/agent_action/show/content/sections/details.html.twig'
                 priority: 0

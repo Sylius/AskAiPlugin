@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Core\Model\AdminUser;

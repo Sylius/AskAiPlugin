@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sylius\AiAssistantPlugin\Functional;
+namespace Tests\Sylius\AskAiPlugin\Functional;
 
-use Sylius\AiAssistantPlugin\Entity\Conversation;
-use Sylius\AiAssistantPlugin\Entity\MessageRoles;
-use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
+use Sylius\AskAiPlugin\Entity\Conversation;
+use Sylius\AskAiPlugin\Entity\MessageRoles;
+use Sylius\AskAiPlugin\Factory\MessageFactoryInterface;
 use Sylius\Component\Core\Model\AdminUser;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -47,24 +47,24 @@ final class ResumeConversationTest extends WebTestCase
 
     public function testThePanelShowsTheNewestConversationUntilAnOlderOneIsResumed(): void
     {
-        $this->client->request('GET', '/admin/ai-assistant/conversations');
+        $this->client->request('GET', '/admin/ask-ai/conversations');
         self::assertSame($this->newer->getId(), $this->panelConversationId());
 
         $this->resume($this->older);
 
-        self::assertResponseRedirects(sprintf('/admin/ai-assistant/conversations/%d', $this->older->getId()));
-        self::assertSame('1', $this->client->getCookieJar()->get('sylius_ai_assistant_open')?->getValue());
+        self::assertResponseRedirects(sprintf('/admin/ask-ai/conversations/%d', $this->older->getId()));
+        self::assertSame('1', $this->client->getCookieJar()->get('sylius_ask_ai_open')?->getValue());
 
         $this->client->followRedirect();
         self::assertResponseIsSuccessful();
         self::assertSame($this->older->getId(), $this->panelConversationId());
-        self::assertSelectorTextContains('.ai-assistant__messages', 'Which orders are waiting to be shipped?');
+        self::assertSelectorTextContains('.ask-ai__messages', 'Which orders are waiting to be shipped?');
     }
 
     public function testTheResumedConversationStaysInThePanelOnOtherPages(): void
     {
         $this->resume($this->older);
-        $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));
+        $this->client->getCookieJar()->set(new Cookie('sylius_ask_ai_open', '1'));
 
         $this->client->request('GET', '/admin/');
 
@@ -75,11 +75,11 @@ final class ResumeConversationTest extends WebTestCase
     public function testANewChatTakesOverFromAResumedConversation(): void
     {
         $this->resume($this->older);
-        $panel = $this->createLiveComponent('sylius_ai_assistant:panel', [], $this->client)->call('startConversation');
+        $panel = $this->createLiveComponent('sylius_ask_ai:panel', [], $this->client)->call('startConversation');
         $fresh = $panel->component()->conversationId;
         self::assertNotSame($this->older->getId(), $fresh);
 
-        $this->client->getCookieJar()->set(new Cookie('sylius_ai_assistant_open', '1'));
+        $this->client->getCookieJar()->set(new Cookie('sylius_ask_ai_open', '1'));
         $this->client->request('GET', '/admin/');
 
         self::assertSame($fresh, $this->panelConversationId());
@@ -90,17 +90,17 @@ final class ResumeConversationTest extends WebTestCase
         $other = $this->createAdministrator('resume-other');
         $foreign = $this->createConversation($other, 'Create a customer group called VIP');
 
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations?criteria[adminUser]=%d', $this->admin->getId()));
+        $this->client->request('GET', sprintf('/admin/ask-ai/conversations?criteria[adminUser]=%d', $this->admin->getId()));
         self::assertResponseIsSuccessful();
         self::assertSelectorExists(sprintf('form[action$="/conversations/%d/resume"] button', $this->older->getId()));
         self::assertSelectorExists(sprintf('form[action$="/conversations/%d/resume"] button', $this->newer->getId()));
 
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations?criteria[adminUser]=%d', $other->getId()));
+        $this->client->request('GET', sprintf('/admin/ask-ai/conversations?criteria[adminUser]=%d', $other->getId()));
         self::assertResponseIsSuccessful();
         self::assertSelectorExists(sprintf('[data-test-resource-id="%d"]', $foreign->getId()));
         self::assertSelectorNotExists('form[action$="/resume"]');
 
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $foreign->getId()));
+        $this->client->request('GET', sprintf('/admin/ask-ai/conversations/%d', $foreign->getId()));
         self::assertResponseIsSuccessful();
         self::assertSelectorNotExists('form[action$="/resume"]');
     }
@@ -110,37 +110,37 @@ final class ResumeConversationTest extends WebTestCase
         $other = $this->createAdministrator('resume-other');
         $foreign = $this->createConversation($other, 'Create a customer group called VIP');
 
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $foreign->getId()));
+        $this->client->request('POST', sprintf('/admin/ask-ai/conversations/%d/resume', $foreign->getId()));
 
         self::assertResponseStatusCodeSame(404);
     }
 
     public function testResumingNeedsAValidCsrfToken(): void
     {
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => 'forged']);
+        $this->client->request('POST', sprintf('/admin/ask-ai/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => 'forged']);
 
         self::assertResponseStatusCodeSame(403);
     }
 
     public function testResumingWithoutARefererLandsOnTheDashboard(): void
     {
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $this->older->getId()));
+        $this->client->request('GET', sprintf('/admin/ask-ai/conversations/%d', $this->older->getId()));
         $token = (string) $this->client->getCrawler()->filter('form[action$="/resume"] input[name="_csrf_token"]')->attr('value');
 
-        $this->client->request('POST', sprintf('/admin/ai-assistant/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => $token], [], ['HTTP_REFERER' => '']);
+        $this->client->request('POST', sprintf('/admin/ask-ai/conversations/%d/resume', $this->older->getId()), ['_csrf_token' => $token], [], ['HTTP_REFERER' => '']);
 
         self::assertResponseRedirects('/admin/');
     }
 
     private function resume(Conversation $conversation): void
     {
-        $this->client->request('GET', sprintf('/admin/ai-assistant/conversations/%d', $conversation->getId()));
+        $this->client->request('GET', sprintf('/admin/ask-ai/conversations/%d', $conversation->getId()));
         $this->client->submitForm('Resume');
     }
 
     private function panelConversationId(): ?int
     {
-        $props = json_decode((string) $this->client->getCrawler()->filter('.ai-assistant')->attr('data-live-props-value'), true, flags: \JSON_THROW_ON_ERROR);
+        $props = json_decode((string) $this->client->getCrawler()->filter('.ask-ai')->attr('data-live-props-value'), true, flags: \JSON_THROW_ON_ERROR);
 
         return $props['conversationId'];
     }
@@ -150,7 +150,7 @@ final class ResumeConversationTest extends WebTestCase
         $conversation = new Conversation();
         $conversation->setAdminUser($this->entityManager()->find(AdminUser::class, $admin->getId()));
         /** @var MessageFactoryInterface $messages */
-        $messages = self::getContainer()->get('sylius_ai_assistant.factory.message');
+        $messages = self::getContainer()->get('sylius_ask_ai.factory.message');
         $messages->createForConversation($conversation, MessageRoles::ROLE_USER, $question);
         $this->entityManager()->persist($conversation);
         $this->entityManager()->flush();

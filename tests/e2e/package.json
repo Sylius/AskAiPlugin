@@ -1,5 +1,5 @@
 {
-    "name": "sylius-ai-assistant-e2e",
+    "name": "sylius-ask-ai-e2e",
     "private": true,
     "type": "module",
     "scripts": {

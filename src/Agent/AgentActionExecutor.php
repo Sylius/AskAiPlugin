@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Agent;
+namespace Sylius\AskAiPlugin\Agent;
 
 use Sylius\AdminMcpServerPlugin\Api\ApiClientInterface;
-use Sylius\AiAssistantPlugin\Entity\AgentActionInterface;
-use Sylius\AiAssistantPlugin\Entity\AgentActionStates;
-use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProviderInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionInterface;
+use Sylius\AskAiPlugin\Entity\AgentActionStates;
+use Sylius\AskAiPlugin\Provider\AdminUserTokenProviderInterface;
 
 final class AgentActionExecutor implements AgentActionExecutorInterface
 {

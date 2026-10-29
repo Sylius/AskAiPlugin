@@ -4,7 +4,7 @@ import { openPanel, log } from './lib.mjs';
 const ui = await openPanel();
 const measure = async (label) => {
     const m = await ui.page.evaluate(() => {
-        const el = document.querySelector('.ai-assistant__messages');
+        const el = document.querySelector('.ask-ai__messages');
         return { top: Math.round(el.scrollTop), max: Math.round(el.scrollHeight - el.clientHeight), items: el.children.length };
     });
     log(label.padEnd(26), `scrollTop=${m.top} max=${m.max} items=${m.items}`, m.max - m.top <= 2 ? 'AT BOTTOM' : `!! ${m.max - m.top}px FROM BOTTOM`);
@@ -17,7 +17,7 @@ const prompts = [
     'Which of all those is the most expensive? Answer with name, code and price.',
 ];
 for (const [i, prompt] of prompts.entries()) {
-    await ui.page.fill('.ai-assistant [data-model="draft"]', prompt);
+    await ui.page.fill('.ask-ai [data-model="draft"]', prompt);
     await ui.page.keyboard.press('Enter');
     await ui.running();
     await ui.page.waitForTimeout(300);
@@ -32,13 +32,13 @@ for (const [i, prompt] of prompts.entries()) {
 }
 // The same conversation after a page load with the panel open, and after closing and reopening the panel.
 await ui.page.reload();
-await ui.page.waitForSelector('.ai-assistant__panel');
+await ui.page.waitForSelector('.ask-ai__panel');
 await ui.page.waitForTimeout(300);
 await measure('after page reload');
-await ui.page.click('.ai-assistant__toggle');
-await ui.page.waitForSelector('.ai-assistant__panel', { state: 'detached' });
-await ui.page.click('.ai-assistant__toggle');
-await ui.page.waitForSelector('.ai-assistant__panel');
+await ui.page.click('.ask-ai__toggle');
+await ui.page.waitForSelector('.ask-ai__panel', { state: 'detached' });
+await ui.page.click('.ask-ai__toggle');
+await ui.page.waitForSelector('.ask-ai__panel');
 await ui.page.waitForTimeout(300);
 await measure('after close and reopen');
 await ui.snap('reopened');

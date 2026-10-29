@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Entity;
+namespace Sylius\AskAiPlugin\Entity;
 
 use Sylius\Component\Core\Model\AdminUserInterface;
 

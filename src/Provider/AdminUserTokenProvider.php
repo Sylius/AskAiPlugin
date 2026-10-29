@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Sylius\AiAssistantPlugin\Provider;
+namespace Sylius\AskAiPlugin\Provider;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Sylius\AdminMcpServerPlugin\Exception\NotAuthenticatedException;
 use Sylius\AdminMcpServerPlugin\Provider\TokenProviderInterface;
-use Sylius\AiAssistantPlugin\Agent\ChatTurnContextInterface;
+use Sylius\AskAiPlugin\Agent\ChatTurnContextInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
