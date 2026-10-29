@@ -1,6 +1,7 @@
 sylius_ai_assistant:
     ui:
         ai_assistant: Asystent AI
+        resume: Wznów
         new_chat: Nowa rozmowa
         changes_need_your_approval: Zmiany wymagają Twojej zgody
         start_a_conversation_to_ask_about_your_store: Rozpocznij rozmowę, aby zapytać o swój sklep.

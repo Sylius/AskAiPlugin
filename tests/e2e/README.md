@@ -12,6 +12,7 @@ npm run navigation     # "show me…" requests open admin pages instead of listi
 npm run approve-edit   # an approved change opens the edit page of what changed
 npm run scroll         # the timeline stays scrolled to the newest message (send, run, reply, reload, reopen)
 npm run suggestions  # the empty-state suggestions are offered and a click sends each one as the first message
+npm run resume       # an old conversation is resumed from the history (grid and show page) and the agent continues it
 ```
 
 Environment: `BASE_URL` (default `http://127.0.0.1:8000`), `ADMIN_USERNAME`/`ADMIN_PASSWORD`

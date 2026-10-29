@@ -28,6 +28,7 @@ use Sylius\AiAssistantPlugin\Chat\ConversationChatInterface;
 use Sylius\AiAssistantPlugin\Chat\ConversationMessageStore;
 use Sylius\AiAssistantPlugin\Chat\ConversationTimeline;
 use Sylius\AiAssistantPlugin\Chat\ConversationTimelineInterface;
+use Sylius\AiAssistantPlugin\Controller\Admin\ResumeConversationAction;
 use Sylius\AiAssistantPlugin\DependencyInjection\Compiler\CollectToolsPass;
 use Sylius\AiAssistantPlugin\Factory\AgentActionFactory;
 use Sylius\AiAssistantPlugin\Factory\AgentActionFactoryInterface;
@@ -42,6 +43,7 @@ use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolver;
 use Sylius\AiAssistantPlugin\Navigation\AdminUrlResolverInterface;
 use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProvider;
 use Sylius\AiAssistantPlugin\Provider\AdminUserTokenProviderInterface;
+use Sylius\AiAssistantPlugin\Repository\ConversationRepositoryInterface;
 use Sylius\AiAssistantPlugin\Tool\OpenAdminPage;
 use Sylius\AiAssistantPlugin\Twig\Component\ChatPanelComponent;
 use Sylius\AiAssistantPlugin\Twig\Extension\MarkdownExtension;
@@ -64,6 +66,20 @@ return static function (ContainerConfigurator $container): void {
         ->args([service('.inner')])
     ;
     $services->alias(AgentActionFactoryInterface::class, 'sylius_ai_assistant.factory.agent_action');
+
+    $services->alias(ConversationRepositoryInterface::class, 'sylius_ai_assistant.repository.conversation');
+
+    $services->set('sylius_ai_assistant.controller.admin.resume_conversation', ResumeConversationAction::class)
+        ->args([
+            service('sylius_ai_assistant.repository.conversation'),
+            service('doctrine.orm.entity_manager'),
+            service('security.helper'),
+            service('security.csrf.token_manager'),
+            service('router'),
+            param('sylius_ai_assistant.access.role'),
+        ])
+        ->tag('controller.service_arguments')
+    ;
 
     $services->set('sylius_ai_assistant.twig.component.chat_panel', ChatPanelComponent::class)
         ->args([

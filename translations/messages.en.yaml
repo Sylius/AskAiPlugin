@@ -1,6 +1,7 @@
 sylius_ai_assistant:
     ui:
         ai_assistant: AI assistant
+        resume: Resume
         new_chat: New chat
         changes_need_your_approval: Changes need your approval
         start_a_conversation_to_ask_about_your_store: Start a conversation to ask about your store.

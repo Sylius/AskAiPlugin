@@ -64,6 +64,14 @@ final class SyliusAiAssistantExtension extends AbstractResourceExtension impleme
         $this->prependDoctrineMappings($container);
         $this->prependDoctrineMigrations($container);
 
+        $container->prependExtensionConfig('sylius_grid', [
+            'templates' => [
+                'action' => [
+                    'resume_conversation' => '@SyliusAiAssistantPlugin/admin/grid/action/resume_conversation.html.twig',
+                ],
+            ],
+        ]);
+
         $container->prependExtensionConfig('framework', [
             'translator' => [
                 'paths' => [__DIR__ . '/../../translations'],

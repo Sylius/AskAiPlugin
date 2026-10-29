@@ -22,6 +22,7 @@ use Sylius\AiAssistantPlugin\Entity\MessageRoles;
 use Sylius\AiAssistantPlugin\Factory\MessageFactoryInterface;
 use Sylius\AiAssistantPlugin\Message\ExecuteAgentAction;
 use Sylius\AiAssistantPlugin\Message\RunAgentTurn;
+use Sylius\AiAssistantPlugin\Repository\ConversationRepositoryInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Sylius\Resource\Factory\FactoryInterface;
@@ -57,13 +58,13 @@ final class ChatPanelComponent
     public readonly array $suggestions;
 
     /**
-     * @param RepositoryInterface<ConversationInterface> $conversationRepository
+     * @param ConversationRepositoryInterface<ConversationInterface> $conversationRepository
      * @param RepositoryInterface<AgentActionInterface> $actionRepository
      * @param FactoryInterface<ConversationInterface> $conversationFactory
      * @param list<string> $suggestions
      */
     public function __construct(
-        private readonly RepositoryInterface $conversationRepository,
+        private readonly ConversationRepositoryInterface $conversationRepository,
         private readonly FactoryInterface $conversationFactory,
         private readonly MessageFactoryInterface $messageFactory,
         private readonly RepositoryInterface $actionRepository,
@@ -82,8 +83,7 @@ final class ChatPanelComponent
 
     public function mount(): void
     {
-        $latest = $this->conversationRepository->findBy(['adminUser' => $this->getAdminUser()], ['id' => 'DESC'], 1);
-        $this->conversationId = ($latest[0] ?? null)?->getId();
+        $this->conversationId = $this->conversationRepository->findLastActiveOf($this->getAdminUser())?->getId();
     }
 
     public function getConversation(): ?ConversationInterface
