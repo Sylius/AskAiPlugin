@@ -144,33 +144,6 @@ needs `ROLE_API_ACCESS`. The panel then appears on every admin page, for the adm
 with that role only (`sylius_ask_ai.access.role` names another role when the assistant
 should be narrower than the API, see Configuration).
 
-## Demo in Docker
-
-The repository ships a Compose stack that builds the test application with the plugin, loads
-the Sylius fixtures and runs the Messenger worker, so the assistant can be shown without any
-local PHP setup:
-
-```bash
-echo "ANTHROPIC_API_KEY=sk-ant-..." > tests/TestApplication/.env.local
-docker compose up -d --build
-```
-
-The admin is at http://localhost:8000/admin (`sylius` / `sylius`, with `ROLE_API_ACCESS`
-already granted). `APP_PORT` changes the published port, `docker compose down -v` resets the
-database.
-
-To run it on a server, publish the image and use `compose.deploy.yaml`, which pulls it instead
-of building and serves the domain over HTTPS (Caddy obtains the certificate):
-
-```bash
-docker buildx build --platform linux/amd64,linux/arm64 \
-    -t ghcr.io/mpysiak/sylius-ask-ai-demo:latest --push .
-
-# on the server, with DNS pointing at it and ports 80/443 open
-SERVER_NAME=demo.example.com ANTHROPIC_API_KEY=sk-ant-... APP_SECRET=$(openssl rand -hex 16) \
-    docker compose -f compose.deploy.yaml up -d
-```
-
 ## Configuration
 
 Everything lives under `sylius_ask_ai` (`bin/console config:dump-reference
