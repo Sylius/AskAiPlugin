@@ -83,6 +83,12 @@ final class ConfigurationTest extends TestCase
         self::assertContains('update_', $config['tools']['write_prefixes'], 'Excluding a tool leaves the prefixes alone.');
     }
 
+    public function testToolResultsAreBoundedByDefault(): void
+    {
+        self::assertSame(50000, $this->process([])['tools']['max_result_size']);
+        self::assertSame(200000, $this->process(['tools' => ['max_result_size' => 200000]])['tools']['max_result_size']);
+    }
+
     public function testTheStoreAddsInstructionsToThePrompt(): void
     {
         self::assertNull($this->process([])['prompt']['additional_instructions']);
