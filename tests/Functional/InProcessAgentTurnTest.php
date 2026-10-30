@@ -15,6 +15,7 @@ namespace Tests\Sylius\AskAiPlugin\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\AskAiPlugin\Agent\ChatTurnContext;
+use Sylius\AskAiPlugin\Agent\Toolbox\BoundedToolbox;
 use Sylius\AskAiPlugin\Chat\ConversationChatInterface;
 use Sylius\AskAiPlugin\Entity\AgentAction;
 use Sylius\AskAiPlugin\Entity\AgentActionStates;
@@ -29,6 +30,7 @@ use Symfony\AI\Platform\Result\TextResult;
 use Symfony\AI\Platform\Result\ToolCall;
 use Symfony\AI\Platform\Result\ToolCallResult;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Sylius\AskAiPlugin\Ai\HugeResultTool;
 use Tests\Sylius\AskAiPlugin\Ai\ScriptedPlatform;
 
 final class InProcessAgentTurnTest extends KernelTestCase
@@ -97,6 +99,41 @@ final class InProcessAgentTurnTest extends KernelTestCase
         /** @var ChatTurnContext $context */
         $context = self::getContainer()->get('test.sylius_ask_ai.agent.context');
         self::assertFalse($context->isChatTurn(), 'The turn context is left after the turn.');
+    }
+
+    public function testAHugeToolResultIsCutBeforeTheModelSeesIt(): void
+    {
+        $conversation = $this->createConversation();
+        $calls = 0;
+        $toolResult = null;
+
+        /** @var ScriptedPlatform $platform */
+        $platform = self::getContainer()->get('sylius_ask_ai_test.platform');
+        $platform->setScript(static function (Model $model, array|string|object $input) use (&$calls, &$toolResult): ResultInterface {
+            ++$calls;
+
+            if (1 === $calls) {
+                return new ToolCallResult([new ToolCall('call_1', 'test_huge_result')]);
+            }
+
+            \assert(\is_array($input));
+            foreach ($input['messages'] as $message) {
+                if ('tool' === $message['role']) {
+                    $toolResult = $message['content'];
+                }
+            }
+
+            return new TextResult('That was too much.');
+        });
+
+        /** @var ConversationChatInterface $chat */
+        $chat = self::getContainer()->get('test.sylius_ask_ai.chat');
+        self::assertSame('That was too much.', $chat->submit($conversation));
+
+        self::assertIsString($toolResult);
+        self::assertStringEndsWith(sprintf(BoundedToolbox::NOTE, \strlen((new HugeResultTool())()), 50000), $toolResult);
+        self::assertLessThan(HugeResultTool::SIZE, \strlen($toolResult));
+        self::assertStringStartsWith(str_repeat('{"code":"MUG_0001","name":"Mug"},', 3), $toolResult);
     }
 
     public function testWhatTheModelSaysNextToAToolCallIsKeptWithThatCall(): void

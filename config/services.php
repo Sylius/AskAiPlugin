@@ -21,6 +21,7 @@ use Sylius\AskAiPlugin\Agent\ChatTurnContextInterface;
 use Sylius\AskAiPlugin\Agent\CurrentDateInputProcessor;
 use Sylius\AskAiPlugin\Agent\Platform\PlatformCallLogger;
 use Sylius\AskAiPlugin\Agent\StoreInstructionsInputProcessor;
+use Sylius\AskAiPlugin\Agent\Toolbox\BoundedToolbox;
 use Sylius\AskAiPlugin\Agent\Toolbox\ToolCallListener;
 use Sylius\AskAiPlugin\Api\ProposingApiClient;
 use Sylius\AskAiPlugin\Chat\ConversationChat;
@@ -134,6 +135,11 @@ return static function (ContainerConfigurator $container): void {
     $services->set('sylius_ask_ai.agent.input_processor.current_date', CurrentDateInputProcessor::class)
         ->args([service('clock'), param('sylius_ask_ai.prompt.time_zone')])
         ->tag('ai.agent.input_processor', ['agent' => CollectToolsPass::AGENT_SERVICE])
+    ;
+
+    $services->set('sylius_ask_ai.agent.toolbox.bounded', BoundedToolbox::class)
+        ->decorate(CollectToolsPass::TOOLBOX_SERVICE)
+        ->args([service('.inner'), param('sylius_ask_ai.tools.max_result_size')])
     ;
 
     $services->set('sylius_ask_ai.agent.tool_call_listener', ToolCallListener::class)

@@ -39,6 +39,7 @@ final class SyliusAskAiExtension extends AbstractResourceExtension implements Pr
         $container->setParameter('sylius_ask_ai.tools.read_only_prefixes', $config['tools']['read_only_prefixes']);
         $container->setParameter('sylius_ask_ai.tools.write_prefixes', $config['tools']['write_prefixes']);
         $container->setParameter('sylius_ask_ai.tools.exclude', $config['tools']['exclude']);
+        $container->setParameter('sylius_ask_ai.tools.max_result_size', $config['tools']['max_result_size']);
 
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.php');

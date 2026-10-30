@@ -32,6 +32,9 @@ when@test:
         sylius_ask_ai_test.platform:
             class: Tests\Sylius\AskAiPlugin\Ai\ScriptedPlatform
             public: true
+        sylius_ask_ai_test.tool.huge_result:
+            class: Tests\Sylius\AskAiPlugin\Ai\HugeResultTool
+            tags: [sylius_ask_ai.tool]
         test.sylius_ask_ai.chat:
             alias: sylius_ask_ai.chat
             public: true

@@ -182,6 +182,7 @@ sylius_ask_ai:
         read_only_prefixes: [list_, get_, search_, count_, open_]
         write_prefixes: [create_, update_, add_, remove_, set_, archive_, restore_, resend_, cancel_, ship_, complete_, accept_, reject_, generate_]
         exclude: []                 # single tools taken away by name, e.g. [update_channel]
+        max_result_size: 50000      # bytes; a longer tool result is cut and the model told to narrow the query
     access:
         role: ROLE_API_ACCESS       # who sees and uses the panel; a role of your own must imply ROLE_API_ACCESS
     prompt:
@@ -201,8 +202,9 @@ sylius_ask_ai:
 ### The agent
 
 The agent is `ai.agent.sylius_ask_ai`, defined by `symfony/ai-bundle` from
-configuration the plugin prepends; the plugin only adds the Admin MCP tools to its toolbox and
-tags its processors for it. So the agent is configured where every Symfony AI agent is, and the
+configuration the plugin prepends; the plugin only adds the Admin MCP tools to its toolbox, cuts
+every tool result down to `tools.max_result_size` bytes (a page of products from the Admin API is
+over 400 KB, enough of them end a turn with "prompt is too long") and tags its processors for it. So the agent is configured where every Symfony AI agent is, and the
 application overrides any of it:
 
 ```yaml
