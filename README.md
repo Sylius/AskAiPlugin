@@ -25,7 +25,7 @@ held as a proposed action with Approve/Reject in the panel.
 
 ## Requirements
 
-- Sylius 2.1+, PHP 8.2+, Symfony 7.4+.
+- Sylius 2.2+, PHP 8.2+, Symfony 7.4+.
 - [`sylius/admin-mcp-server-plugin`](https://github.com/Sylius/AdminMcpServerPlugin) installed and
   configured: the assistant works the store through its tools and the Admin API it talks to.
 - A working Admin API: the agent calls it as the administrator who is chatting, so the Lexik JWT
@@ -570,6 +570,14 @@ not post it publicly. Instead, all security issues must be sent to `security@syl
 Get Sylius support on [Slack](https://sylius.com/slack), [Forum](https://forum.sylius.com/) or
 [Stack Overflow](https://stackoverflow.com/questions/tagged/sylius).
 
-## MIT License
+## License
 
-The Sylius Ask AI Plugin is released under the terms of the [MIT License](LICENSE).
+Released under the [Business Source License 1.1](LICENSE). The plugin is source-available, not
+open source, and each version converts to the MIT License four years after it is published.
+
+Production use is free as long as Sylius telemetry is not deliberately disabled and the plugin is
+not used to provide a competing offering. Disabling telemetry (e.g. `SYLIUS_TELEMETRY_ENABLED=0`)
+in production has licensing consequences for this plugin: you need a commercial license. See the
+[License FAQ](LICENSE-FAQ.md) and the [Licensor Statement](LICENSOR-STATEMENT.md).
+
+For commercial licensing, contact contact@sylius.com.

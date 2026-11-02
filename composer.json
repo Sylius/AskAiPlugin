@@ -10,13 +10,14 @@
         "mcp",
         "agent"
     ],
-    "license": "MIT",
+    "license": "BUSL-1.1",
     "require": {
         "php": "^8.2",
         "league/commonmark": "^2.6",
         "psr/clock": "^1.0",
-        "sylius/admin-mcp-server-plugin": "^0.1 || ^0.2",
-        "sylius/sylius": "^2.1",
+        "sylius/admin-mcp-server-plugin": "^0.2",
+        "sylius/sylius": "^2.2",
+        "sylius/telemetry": "^1.0",
         "symfony/ai-agent": "^1.0@beta",
         "symfony/ai-anthropic-platform": "^1.0@beta",
         "symfony/ai-bundle": "^1.0@beta",
