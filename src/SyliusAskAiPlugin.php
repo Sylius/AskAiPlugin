@@ -15,6 +15,7 @@ namespace Sylius\AskAiPlugin;
 
 use Sylius\AskAiPlugin\DependencyInjection\Compiler\CollectToolsPass;
 use Sylius\Bundle\CoreBundle\Application\SyliusPluginTrait;
+use Sylius\Telemetry\TelemetryCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,6 +28,7 @@ final class SyliusAskAiPlugin extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new CollectToolsPass());
+        $container->addCompilerPass(new TelemetryCompilerPass());
     }
 
     public function getPath(): string

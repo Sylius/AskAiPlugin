@@ -570,6 +570,13 @@ not post it publicly. Instead, all security issues must be sent to `security@syl
 Get Sylius support on [Slack](https://sylius.com/slack), [Forum](https://forum.sylius.com/) or
 [Stack Overflow](https://stackoverflow.com/questions/tagged/sylius).
 
+## Telemetry
+
+The plugin registers the `sylius/telemetry` compiler pass, which keeps Sylius telemetry running
+in production for as long as the plugin is installed. Telemetry is a condition of the free
+production use under the license; what it sends and how to stay compliant is in the
+[License FAQ](LICENSE-FAQ.md).
+
 ## License
 
 Released under the [Business Source License 1.1](LICENSE). The plugin is source-available, not
