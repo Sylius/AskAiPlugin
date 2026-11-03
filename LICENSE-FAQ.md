@@ -7,30 +7,36 @@ obligation. If this FAQ and the LICENSE conflict, the LICENSE prevails.
 ## Which license applies?
 
 The plugin is released under the Business Source License 1.1 (BUSL-1.1). It is source-available,
-not open source. Each version converts to the MIT license four years after it is published.
+not open source: the source code is publicly accessible, but production use is subject to the
+conditions set out in the license. Each version converts to the MIT license four years after it is
+published.
 
 Sylius core and its libraries remain under the MIT license. BUSL-1.1 applies to this plugin only.
 
 ## What can I do without a commercial license?
 
-Regardless of telemetry, you may always:
+The following rights are not conditional on telemetry being enabled. You may:
 
 - copy, modify and create derivative works of the plugin,
-- redistribute it,
+- redistribute it, together with this license,
 - use it in development, testing, staging and demonstration environments.
 
 You may also use it in production for free, provided that:
 
-- you do not deliberately disable, remove, block or modify the telemetry functionality so as to
+- you do not deliberately disable, remove, block or modify the Telemetry Functionality so as to
   prevent it from operating as defined in the LICENSE, and
-- you do not use the plugin to provide a competing offering.
+- you do not use the plugin to provide a Competing Offering.
+
+If you use the plugin in production without meeting these conditions, all your rights under the
+license terminate, including the rights listed above (see
+[What happens if I disable telemetry in production?](#what-happens-if-i-disable-telemetry-in-production)).
 
 ## What is production use?
 
-Running the plugin in an online store that is available to its customers. Development, testing,
+Running the plugin in an online store that is available to its end users. Development, testing,
 staging and demonstration environments are non-production use.
 
-## What does telemetry require?
+## What does the telemetry condition require?
 
 The free production use requires Sylius **2.2 or later**, with the Sylius telemetry feature and the
 `sylius/telemetry` integration required by the plugin, with the following settings of
@@ -53,18 +59,18 @@ breach the condition. Only a deliberate action that stops telemetry from working
 
 ## What happens if I disable telemetry in production?
 
-The shop keeps working, but production use without telemetry falls outside the free license.
-Under BUSL-1.1, use in violation of the license terminates your rights under it, for this and all
-other versions of the plugin, including non-production use.
-
-You then need to either restore telemetry or purchase a commercial license. Sylius has published a
-[licensor statement](LICENSOR-STATEMENT.md) giving you 30 days from notice to do so before it
-enforces the termination.
-
 Setting any of the required settings above to `false` or `0`, or pointing `url` to a different
-endpoint, is such a deliberate action.
+endpoint, is a deliberate action that breaches the telemetry condition.
 
-## What is a competing offering?
+The shop keeps working, but as a consequence, production use without telemetry falls outside the
+free license. Under BUSL-1.1, use in violation of the license terminates your rights under it, for
+this and all other versions of the plugin, including non-production use.
+
+You then need to either restore telemetry or purchase a commercial license. To give you time to fix
+the situation, Sylius has committed, in a separate [licensor statement](LICENSOR-STATEMENT.md), not
+to enforce the termination if you do so within 30 days of receiving notice from Sylius.
+
+## What is a Competing Offering?
 
 A paid product or service, offered to third parties, that copies, embeds or hosts the plugin or a
 substantial portion of it, and that provides functionality substantially similar to the plugin.
@@ -72,13 +78,25 @@ substantial portion of it, and that provides functionality substantially similar
 You remain free to build and sell your own AI assistant for the Sylius admin independently, without
 using the plugin's code.
 
-## I am an agency. Can I implement the plugin for my clients?
+## I am an agency or a hosting provider. Can I implement or host the plugin for my clients?
 
-Yes. Implementation, customization, maintenance and support services provided to a store that uses
-the plugin are not a competing offering.
+Yes. Implementation, customization, maintenance and support services, as well as hosting an online
+store on behalf of its operator, do not constitute a Competing Offering when provided to a store
+that uses the plugin.
 
 ## Who can sell me a commercial license?
 
 Only Sylius sp. z o.o.
 
 Contact: contact@sylius.com
+
+## How is my telemetry data processed?
+
+Telemetry data is processed by Sylius sp. z o.o. on the basis of its legitimate interest, to
+improve Sylius, measure adoption and verify compliance with the license conditions.
+
+The data collected, the purposes, legal basis, retention and your rights are described in the
+[Sylius Privacy Policy](https://sylius.com/privacy-policy/).
+
+You can object to the processing of your telemetry data at any time by writing to
+privacy@sylius.com.

@@ -28,7 +28,7 @@ Additional Use Grant: You may make production use of the Licensed Work,
                       For purposes of this Additional Use Grant:
 
                       "Production use" means use of the Licensed Work in an
-                      online store that is available to its customers.
+                      online store that is available to its end users.
                       Development, testing, staging and demonstration
                       environments are non-production use.
 
@@ -37,13 +37,15 @@ Additional Use Grant: You may make production use of the Licensed Work,
                       sylius/telemetry integration required by the Licensed
                       Work, with telemetry and its business, technical and
                       plugins categories enabled, sending data to the
-                      default Sylius telemetry endpoint.
+                      default Sylius telemetry endpoint as described in the
+                      Sylius telemetry documentation.
 
                       "Competing Offering" means a paid product or service,
                       offered to third parties, that copies, embeds or hosts
                       the Licensed Work or a substantial portion of it, and
                       that provides functionality substantially similar to
                       the Licensed Work. Implementation, customization,
+                      hosting of an online store on behalf of its operator,
                       maintenance and support services provided to an
                       operator of an online store that uses the Licensed Work
                       are not a Competing Offering.
