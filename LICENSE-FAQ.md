@@ -90,13 +90,19 @@ Only Sylius sp. z o.o.
 
 Contact: contact@sylius.com
 
-## How is my telemetry data processed?
+## What telemetry data is collected?
 
-Telemetry data is processed by Sylius sp. z o.o. on the basis of its legitimate interest, to
-improve Sylius, measure adoption and verify compliance with the license conditions.
+Sylius collects the following telemetry data:
 
-The data collected, the purposes, legal basis, retention and your rights are described in the
-[Sylius Privacy Policy](https://sylius.com/privacy-policy/).
+- **Technical data:** such as software versions, server environment, database configuration and
+  installed public plugins.
+- **Business data:** such as store configuration (locales, currencies, countries and channels),
+  revenue and order statistics (mainly as ranges), and payment and shipping methods.
+- **Installation identifier:** a unique identifier derived from the store's hostname and a salt.
+  The hostname itself is not transmitted.
 
-You can object to the processing of your telemetry data at any time by writing to
-privacy@sylius.com.
+Telemetry is designed not to collect personal data. No customer data, admin data, product names,
+order contents or exact monetary amounts are transmitted.
+
+For the complete list of data collected, please refer to the
+[Sylius telemetry documentation](https://docs.sylius.com/the-book/configuration/telemetry).
